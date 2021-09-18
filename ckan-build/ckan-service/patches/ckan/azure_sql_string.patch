@@ -1,0 +1,13 @@
+diff --git a/ckan/model/__init__.py b/ckan/model/__init__.py
+index 03f3c13..9981737 100644
+--- a/ckan/model/__init__.py
++++ b/ckan/model/__init__.py
+@@ -266,7 +266,7 @@ class Repository():
+         self.reset_alembic_output()
+         alembic_config = AlembicConfig(self._alembic_ini)
+         alembic_config.set_main_option(
+-            "sqlalchemy.url", str(self.metadata.bind.url)
++            "sqlalchemy.url", config.get("sqlalchemy.url")
+         )
+         try:
+             sqlalchemy_migrate_version = self.metadata.bind.execute(

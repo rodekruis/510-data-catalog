@@ -1,0 +1,14 @@
+# data_catalog_510-js:
+#   filter: rjsmin
+#   output: ckanext-data_catalog_510/%(version)s-data_catalog_510.js
+#   contents:
+#     - js/data_catalog_510.js
+#   extra:
+#     preload:
+#       - base/main
+
+# data_catalog_510-css:
+#   filter: cssrewrite
+#   output: ckanext-data_catalog_510/%(version)s-data_catalog_510.css
+#   contents:
+#     - css/data_catalog_510.css

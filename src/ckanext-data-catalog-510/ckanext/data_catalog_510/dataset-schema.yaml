@@ -1,0 +1,118 @@
+scheming_version: 2
+dataset_type: dataset
+about: A reimplementation of the default CKAN dataset schema
+about_url: http://github.com/ckan/ckanext-scheming
+
+dataset_fields:
+  - field_name: dataset_name
+    label: Dataset name
+    preset: title
+    form_placeholder: eg. data 510
+
+  - field_name: name
+    label: URL
+    preset: dataset_slug
+    form_placeholder: eg. my-dataset
+
+  - field_name: notes
+    label: Description
+    form_snippet: markdown.html
+    form_placeholder: eg. Some useful notes about the 510 data
+
+  - field_name: tag_string
+    label: Tags
+    preset: tag_string_autocomplete
+    form_placeholder: eg. economy, mental health, government
+
+  - field_name: license_id
+    label: License
+    form_snippet: license.html
+    help_text: License definitions and additional information can be found at http://opendefinition.org/
+
+  - field_name: owner_org
+    label: Organization
+    preset: dataset_organization
+
+  - field_name: url
+    label: Source
+    form_placeholder: http://example.com/dataset.json
+    display_property: foaf:homepage
+    display_snippet: link.html
+
+  - field_name: dataset_owner
+    label: Dataset Owner
+    form_placeholder: Joe Bloggs
+    display_property: dc:creator
+
+  - field_name: dataset_owner_email
+    label: Dataset Owner Email
+    form_placeholder: joe@510.com
+    display_property: dc:creator
+    display_snippet: email.html
+    display_email_name_field: author
+
+  - field_name: dataset_version
+    label: Dateset Version
+    validators: ignore_missing unicode package_version_validator
+    form_placeholder: "1.0"
+
+  - field_name: country
+    label: Country
+    form_snippet: country.html
+    help_text: Countries
+
+  - field_name: initally_used
+    label: Initally Used in Project
+    validators: ignore_missing unicode
+    form_placeholder: "e.g Project Name"
+
+  - field_name: expiry_date
+    label: Expiry date
+    validators: ignore_missing unicode validate_date_yyyy_mm_dd
+    form_placeholder: "e.g 2020-21-12"
+
+  - field_name: data_quality
+    label: Dateset Quality
+    validators: ignore_missing unicode
+    form_placeholder: "e.g Good"
+
+  - field_name: data_source
+    label: Dateset Source
+    validators: ignore_missing unicode
+    form_placeholder: "e.g Source of the Data"
+
+  - field_name: no_of_files
+    label: No of Files
+    validators: ignore_missing unicode is_positive_integer
+    form_placeholder: "e.g 10"
+
+  - field_name: date_added
+    label: Date Added
+    validators: ignore_missing unicode validate_date_yyyy_mm_dd
+    form_placeholder: "e.g 2020-21-12"
+
+  - field_name: maintainer
+    label: Maintainer
+    form_placeholder: Joe Bloggs
+    display_property: dc:contributor
+
+  - field_name: maintainer_email
+    label: Maintainer Email
+    form_placeholder: joe@example.com
+    display_property: dc:contributor
+    display_snippet: email.html
+    display_email_name_field: maintainer
+
+resource_fields:
+  - field_name: url
+    label: URL
+    preset: resource_url_upload
+
+  - field_name: name
+    label: Name
+    form_placeholder: eg. January 2011 Gold Prices
+
+  - field_name: description
+    label: Description
+    form_snippet: markdown.html
+    form_placeholder: Some useful notes about the data

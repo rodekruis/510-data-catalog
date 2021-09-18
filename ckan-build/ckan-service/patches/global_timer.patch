@@ -1,0 +1,20 @@
+diff --git a/ckan/config/middleware/flask_app.py b/ckan/config/middleware/flask_app.py
+index e69e0e0b4..8df98b691 100644
+--- a/ckan/config/middleware/flask_app.py
++++ b/ckan/config/middleware/flask_app.py
+@@ -362,6 +362,8 @@ def ckan_before_request():
+     '''
+     response = None
+
++
++    g.__timer = time.time()
+     # Update app_globals
+     app_globals.app_globals._check_uptodate()
+
+@@ -374,7 +376,6 @@ def ckan_before_request():
+     set_controller_and_action()
+
+     set_ckan_current_url(request.environ)
+-    g.__timer = time.time()
+
+     return response
