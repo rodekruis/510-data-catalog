@@ -1,4 +1,4 @@
-# See CKAN docs on installation from Docker Compose on usage
+ckan-build/ckan/Dockerfile# See CKAN docs on installation from Docker Compose on usage
 FROM ubuntu:focal-20210119
 MAINTAINER Open Knowledge
 
@@ -42,14 +42,14 @@ RUN apt-get -q -y update \
 ENV CKAN_HOME /usr/lib/ckan
 ENV CKAN_VENV $CKAN_HOME/venv
 ENV CKAN_CONFIG /etc/ckan
-ENV CKAN_STORAGE_PATH=/var/lib/ckan
+ENV CKAN_STORAGE_PATH=/var/lib/ckan_storage
 ENV CKAN_INI /etc/ckan/production.ini
 
 # Build-time variables specified by docker-compose.yml / .env
 ARG CKAN_SITE_URL
 
 # Create ckan user
-RUN useradd -r -u 900 -m -c "ckan account" -d $CKAN_HOME -s /bin/false ckan
+RUN useradd -r -u 900 -m -c "ckan" -d $CKAN_HOME -s /bin/false ckan
 
 # Setup virtual environment for CKAN
 RUN mkdir -p $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH && \
