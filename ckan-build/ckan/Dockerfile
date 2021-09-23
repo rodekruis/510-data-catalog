@@ -1,4 +1,4 @@
-ckan-build/ckan/Dockerfile# See CKAN docs on installation from Docker Compose on usage
+# See CKAN docs on installation from Docker Compose on usage
 FROM ubuntu:focal-20210119
 MAINTAINER Open Knowledge
 
