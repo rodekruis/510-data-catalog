@@ -1,88 +1,61 @@
-from sqlalchemy import connection   
-import psycopg2.extras
-from pgconnection import get_connection
+from sqlalchemy import create_engine, inspect
 
 class PostgresHandle:
     def __init__(self):
-        # self.connection_string = "postgresql://azure_postgres_sql_db@ckan-test:l7#lJ9IWlSF1v00LCEXLe​@ckan-test.postgres.database.azure.com/azure_postgres_sql_db?sslmode=require"
         self.db = ""
         self.schema = ""
-
+        self.db_uri = ""
+    
     def fetch_db(self):
         '''
         To fetch the db details
         '''
         try:
-            db_conn = get_connection()
-            return db_conn.info.dbname
+            return self.db_uri.split('?')[0].split('/')[-1]
 
         except Exception as e:
             print('psycopg2 Error')
         
-        finally:
-            db_conn.close()
-    
     def fetch_schema(self,db=None):
         '''
-        To fetch the schema of the db
+        To fetch the schemas of the db
         '''
         try:
-            print('check2')
-            db_conn = get_connection()
-            cursor = db_conn.cursor()
-            cursor.execute("SELECT current_schema();")
+            engine = create_engine(self.db_uri)
+            inspector = inspect(engine)
+            schemas = inspector.get_schema_names()
+            return schemas 
 
-            return cursor.fetchone()[0]
-
-        except Exception as e:
-            print('psycopg2 Error')
-        
-        finally:
-            cursor.close()
-            db_conn.close()
-
-    def fetch_metadata(self,schema=None):
-        try:
-            db_conn = get_connection()
-            cursor = db_conn.cursor()
-            cursor.execute("""select table_name from information_schema.tables \
-                    WHERE table_schema='public'""")
-            data = cursor.fetchall()
-            data_list = []
-            for row in data:
-                data_list.append(row[0])
-            return data_list
         except Exception as e:
             print(e)
-        finally:
-            cursor.close()
-            db_conn.close()
-    
+        
     def fetch_tables(self, db=None, schema=None):
         """
-        Create and return a list of dictionaries with the
-        schemas and names of tables in the database
-        connected to by the connection argument.
+        To fetch the tables of db and schema
         """
         try:
-            db_conn = get_connection()
-            cursor = db_conn.cursor()
-            cursor.execute("""SELECT table_name FROM information_schema.tables
-                WHERE table_schema = 'public'""")
-
-            tables = cursor.fetchall()
-            tables_list = []
-            for table in tables:
-                tables_list.append(table[0])
-            return tables_list
+            engine = create_engine(self.db_uri)
+            inspector = inspect(engine)
+            tables = inspector.get_table_names(schema='public')
+            return tables
 
         except Exception as e:
-            print('Error')
+            print(e)
         
-        finally:
-            cursor.close()
-            db_conn.close()
+    def fetch_metadata(self,db=None, schema=None, table_name=None):
+        '''
+        To fetch metadata of the table
+        '''
+        try:
+            engine = create_engine(self.db_uri)
+            inspector = inspect(engine)
+            columns = inspector.get_columns(table_name, schema=schema)
+            cols_list = list(map(lambda x:x['name'],columns))
+            return cols_list
 
+        except Exception as e:
+            print(e)
+        
     def __to_dict__(self):
         pass
 
