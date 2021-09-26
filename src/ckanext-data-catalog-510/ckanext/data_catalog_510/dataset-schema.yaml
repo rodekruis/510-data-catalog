@@ -69,7 +69,7 @@ dataset_fields:
   - field_name: expiry_date
     label: Expiry date
     validators: ignore_missing unicode validate_date_yyyy_mm_dd
-    form_placeholder: "e.g 2020-21-12"
+    form_placeholder: "e.g 2020-12-21"
 
   - field_name: data_quality
     label: Dateset Quality
@@ -83,13 +83,13 @@ dataset_fields:
 
   - field_name: no_of_files
     label: No of Files
-    validators: ignore_missing unicode is_positive_integer
+    validators: ignore_missing unicode
     form_placeholder: "e.g 10"
 
   - field_name: date_added
     label: Date Added
     validators: ignore_missing unicode validate_date_yyyy_mm_dd
-    form_placeholder: "e.g 2020-21-12"
+    form_placeholder: "e.g 2020-12-21"
 
   - field_name: maintainer
     label: Maintainer
@@ -112,7 +112,31 @@ resource_fields:
     label: Name
     form_placeholder: eg. January 2011 Gold Prices
 
+  - field_name: format
+    label: Format
+    preset: resource_format_autocomplete
+
   - field_name: description
     label: Description
     form_snippet: markdown.html
     form_placeholder: Some useful notes about the data
+
+  - field_name: spatial_resolution
+    label: Spatial Resolution
+    form_placeholder: Spatial Resolution
+
+  - field_name: temporal_resolution
+    label: Temporal Resolution
+    form_placeholder: Temporal Resolution
+
+  - field_name: spatial_extent
+    label: Spatial Extent
+    form_placeholder: Spatial Extent
+
+  - field_name: temporal_extent
+    label: Temporal Extent
+    form_placeholder: Temporal Extent
+
+  - field_name: spatial_reference_system
+    label: Spatial Reference System
+    form_placeholder: Spatial Reference System
