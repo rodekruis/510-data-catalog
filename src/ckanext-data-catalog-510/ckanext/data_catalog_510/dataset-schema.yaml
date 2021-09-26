@@ -123,20 +123,20 @@ resource_fields:
 
   - field_name: spatial_resolution
     label: Spatial Resolution
-    form_placeholder: eg. January 2011 Gold Prices
+    form_placeholder: Spatial Resolution
 
   - field_name: temporal_resolution
     label: Temporal Resolution
-    form_placeholder: eg. January 2011 Gold Prices
+    form_placeholder: Temporal Resolution
 
   - field_name: spatial_extent
     label: Spatial Extent
-    form_placeholder: eg. January 2011 Gold Prices
+    form_placeholder: Spatial Extent
 
   - field_name: temporal_extent
     label: Temporal Extent
-    form_placeholder: eg. January 2011 Gold Prices
+    form_placeholder: Temporal Extent
 
   - field_name: spatial_reference_system
     label: Spatial Reference System
-    form_placeholder: eg. January 2011 Gold Prices
+    form_placeholder: Spatial Reference System
