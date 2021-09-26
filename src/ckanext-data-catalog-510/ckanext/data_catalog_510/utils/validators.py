@@ -10,10 +10,12 @@ def validate_date_yyyy_mm_dd(value, context):
     ''' Method to validate the Date format string
         for the yyyy-mm-dd
     '''
-    format = "%Y-%m-%d"
-    try:
-        datetime.datetime.strptime(value, format)
-    except ValueError:
-        raise Invalid(_('This is the incorrect date string format.'
-                        'It should be YYYY-MM-DD'))
-    return value
+    if value:
+        format = "%Y-%m-%d"
+        try:
+            datetime.datetime.strptime(value, format)
+        except ValueError:
+            raise Invalid(_('This is the incorrect date string format.'
+                            'It should be YYYY-MM-DD'))
+        return value
+    return None
