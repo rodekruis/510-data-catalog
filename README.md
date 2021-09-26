@@ -1,5 +1,6 @@
-## 510 Data Catalog Portal
-
+510 Data Catalog Portal
+==========================
+----------------------------------------------------------------
 ### Developer Documentation
 
 #### Installation
@@ -11,3 +12,6 @@
 
 The above setup will use the `src/` directory and mount it is as volume to docker so the changes made in `src/` will be directly updated in the docker setup.
 
+#### Documentation to update Metadata fields for the dataset and resource
+
+To update the metadata fields please follow the instructions in [a relative link](documentation/update_metadata_fields.md)
