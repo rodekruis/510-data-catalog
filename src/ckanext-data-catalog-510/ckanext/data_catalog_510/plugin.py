@@ -5,10 +5,16 @@ from ckanext.data_catalog_510.\
 from ckanext.data_catalog_510.\
      utils.helpers import (get_countries)
 
+from ckanext.data_catalog_510.logic import (get_db_connections,
+                                            get_schemas,
+                                            get_tables,
+                                            get_tables_metadata)
+
 
 class DataCatalog510Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IValidators)
+    plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)
 
     # IConfigurer
@@ -24,6 +30,16 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'validate_date_yyyy_mm_dd': validate_date_yyyy_mm_dd
         }
 
+    # IActions
+    def get_actions(self):
+        return {
+            'get_db_connections': get_db_connections,
+            'get_schemas': get_schemas,
+            'get_tables': get_tables,
+            'get_tables_metadata': get_tables_metadata
+        }
+
+    # Helpers
     def get_helpers(self):
         return {
             'get_countries_list': get_countries

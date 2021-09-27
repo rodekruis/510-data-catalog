@@ -3,6 +3,7 @@ version: "3.8"
 services:
   ckan-dev:
     container_name: ckan
+    restart: always
     image: ckanbase.azurecr.io/ckan-510:latest
     env_file:
       - .env
@@ -15,6 +16,25 @@ services:
       main:
         aliases:
           - ckan
+
+  dbsql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - my-db:/var/lib/mysql
+    networks:
+      main:
+        aliases:
+          - mysql
 
   db:
     container_name: db
@@ -59,6 +79,7 @@ volumes:
   ckan_storage:
   pg_data_510:
   solr_data:
+  my-db:
 
 networks:
   main:
