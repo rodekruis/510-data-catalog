@@ -11,7 +11,7 @@ NotFound = logic.NotFound
 NotAuthorized = logic.NotAuthorized
 ValidationError = logic.ValidationError
 
-ALLOWED_DB_TYPE = ['mysql', 'postgres', 'azure_sql']
+ALLOWED_DB_TYPE = ['mysql', 'postgres', 'azuresql']
 
 
 def validate_db_connections_and_init(db_type):
@@ -39,6 +39,7 @@ def get_db_connections(context, data_dict):
     db_type = data_dict.get('db_type', '')
     db_obj = validate_db_connections_and_init(db_type)
     db_connections = db_obj.get_databases(db_type)
+    print(db_connections)
     return db_connections
 
 
