@@ -4,7 +4,7 @@ services:
   ckan-dev:
     container_name: ckan
     restart: always
-    image: ckanbase.azurecr.io/ckan-510:latest
+    image: ${CKAN_SERVICE_IMAGE}
     env_file:
       - .env
     ports:

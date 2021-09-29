@@ -35,6 +35,14 @@ RUN apt-get -q -y update \
         vim \
         wget \
         curl \
+        apt-utils \
+        apt-transport-https \
+        debconf-utils \
+        gcc \
+        build-essential \
+        g++ \
+        unixodbc \
+        unixodbc-dev \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/*
 

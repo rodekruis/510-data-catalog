@@ -3,7 +3,7 @@
 ----------------------------------------------------------------
 ### Developer Documentation
 
-#### Installation
+#### Installation to Run in Local environment
 
 - Clone the repository
 - Run the make file to create the images by `make` command.

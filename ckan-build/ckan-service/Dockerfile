@@ -1,4 +1,5 @@
-FROM ckanbase.azurecr.io/ckan-base-2.9.3:base
+ARG baseImage
+FROM ${baseImage}
 
 # Define environment variables
 ENV CKAN_HOME /usr/lib/ckan
