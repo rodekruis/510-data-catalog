@@ -46,6 +46,12 @@ RUN apt-get -q -y update \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/19.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+
+RUN apt-get -y update \
+    && ACCEPT_EULA=Y apt-get install -y msodbcsql17
+
 # Define environment variables
 ENV CKAN_HOME /usr/lib/ckan
 ENV CKAN_VENV $CKAN_HOME/venv

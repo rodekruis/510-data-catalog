@@ -1,4 +1,14 @@
-#s2id_field-format {
+#s2id_field-format,
+#s2id_database_connection_type,
+#s2id_database_connection,
+#s2id_schema_name,
+#s2id_table_name {
   padding: 0 !important;
   border: 0 !important;
+}
+
+#form_database_connection,
+#form_schema_name,
+#form_table_name {
+  display: none;
 }
