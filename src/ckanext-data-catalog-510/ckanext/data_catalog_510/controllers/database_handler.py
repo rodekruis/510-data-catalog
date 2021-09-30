@@ -32,6 +32,8 @@ class SQLHandler:
             db_connections = config.get('ckan.postgresql_db_connections', '')
         if db_type == 'mysql':
             db_connections = config.get('ckan.mysql_db_connections', '')
+        if db_type == 'azuresql':
+            db_connections = config.get('ckan.azuresql_db_connections', '')
         db_connections = json.loads(db_connections)
         if not return_url:
             [db.pop('url', None) for db in db_connections]
@@ -47,8 +49,7 @@ class SQLHandler:
         :rtype: string
         '''
         db_connections = self.get_databases(self.db_type, return_url=True)
-        filtered = [db['url'] for db in db_connections
-                    if db['name'] == db_name]
+        filtered = [db['url'] for db in db_connections if db['name'] == db_name]
         if bool(filtered):
             return filtered[0]
         else:

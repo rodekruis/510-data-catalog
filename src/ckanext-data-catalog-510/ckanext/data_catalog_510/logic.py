@@ -1,5 +1,6 @@
 import ckan.logic as logic
-from ckan.common import _
+from ckan.common import g, config, _
+import ckan.model as model
 
 from ckanext.data_catalog_510.\
      controllers.database_handler import SQLHandler
@@ -11,7 +12,26 @@ NotFound = logic.NotFound
 NotAuthorized = logic.NotAuthorized
 ValidationError = logic.ValidationError
 
-ALLOWED_DB_TYPE = ['mysql', 'postgres', 'azure_sql']
+LIST_ALL_DB = [{
+   "name": "mysql",
+   "title": "MYSQL"
+    },
+    {
+    "name": "postgres",
+    "title": "Postgresql"
+    },
+    {
+    "name": "azuresql",
+    "title": "Azure SQL"
+    }
+]
+
+ALLOWED_DB_TYPE = ['mysql', 'postgres', 'azuresql']
+
+
+def get_all_dbs(context, data_dict):
+    logic.check_access(u'package_create', context)
+    return LIST_ALL_DB
 
 
 def validate_db_connections_and_init(db_type):
@@ -34,7 +54,7 @@ def get_db_connections(context, data_dict):
 
     :rtype: list of strings
     '''
-
+    logic.check_access(u'package_create', context)
     db_connections = []
     db_type = data_dict.get('db_type', '')
     db_obj = validate_db_connections_and_init(db_type)
@@ -52,6 +72,7 @@ def get_schemas(context, data_dict):
 
     :rtype: list of strings
     '''
+    logic.check_access(u'package_create', context)
     db_name = data_dict.get('db_name', '')
     db_type = data_dict.get('db_type')
     db_obj = validate_db_connections_and_init(db_type)
@@ -60,6 +81,7 @@ def get_schemas(context, data_dict):
 
 
 def get_tables(context, data_dict):
+    logic.check_access(u'package_create', context)
     db_name = data_dict.get('db_name', '')
     db_type = data_dict.get('db_type', '')
     schema = data_dict.get('schema', '')
@@ -69,6 +91,7 @@ def get_tables(context, data_dict):
 
 
 def get_tables_metadata(context, data_dict):
+    logic.check_access(u'package_create', context)
     db_name = data_dict.get('db_name', '')
     db_type = data_dict.get('db_type', '')
     schema = data_dict.get('schema', '')

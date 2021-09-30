@@ -24,10 +24,19 @@ mysql_env = json.dumps([
     "url": "mysql+pymysql://test:test@mysql/test"
   }
 ])
+azuresql_env = json.dumps([
+  {
+    "name": "test",
+    "title": "Test",
+    "url": ""
+  }
+])
+
 
 
 @pytest.mark.ckan_config("ckan.postgresql_db_connections", postgres_env)
 @pytest.mark.ckan_config("ckan.mysql_db_connections", mysql_env)
+@pytest.mark.ckan_config("ckan.azuresql_db_connections", azuresql_env)
 @pytest.mark.ckan_config("ckan.plugins", "data_catalog_510")
 @pytest.mark.usefixtures("clean_db", "with_plugins")
 class TestDatabasesConnectionAction:
@@ -66,6 +75,18 @@ class TestDatabasesConnectionAction:
         # Validating the connection action response
         assert expected_res == get_dbs
 
+    def test_get_db_connections_azuresql(self):
+        '''Test for validating azuresql connection type'''
+        expected_res = [{'name': 'test', 'title': 'Test'}]
+        get_dbs = helpers.call_action(
+            "get_db_connections",
+            {},
+            db_type="azuresql",
+        )
+        # Validating the connection action response
+        assert expected_res == get_dbs
+
+    
     def test_get_schema_for_mysql(self):
         expected_value = ['test']
         mock_method = ('ckanext.data_catalog_510.controllers'
@@ -94,6 +115,20 @@ class TestDatabasesConnectionAction:
         # Validating the get_schema
         assert get_dbs == expected_value
 
+    def test_get_schema_for_azuresql(self):
+        expected_value = ['Forecast', 'test']
+        mock_method = ('ckanext.data_catalog_510.controllers'
+                       '.database_handler.SQLHandler.fetch_schema')
+        with mock.patch(mock_method) as r:
+            r.return_value = ['Forecast', 'test']
+            get_dbs = helpers.call_action(
+                "get_schemas",
+                {},
+                db_type="azuresql",
+            )
+        # Validating the get_schema
+        assert get_dbs == expected_value
+
     def test_get_tables_for_postgres(self):
         expected_value = ['rating', 'activity']
         mock_method = ('ckanext.data_catalog_510.controllers'
@@ -105,7 +140,7 @@ class TestDatabasesConnectionAction:
                 {},
                 db_type="postgres",
             )
-        # Validating the get_schema
+        # Validating the get_tables
         assert get_dbs == expected_value
 
     def test_get_tables_for_mysql(self):
@@ -119,7 +154,21 @@ class TestDatabasesConnectionAction:
                 {},
                 db_type="mysql",
             )
-        # Validating the get_schema
+        # Validating the get_tables
+        assert get_dbs == expected_value
+
+    def test_get_tables_for_azuresql(self):
+        expected_value = ['projects']
+        mock_method = ('ckanext.data_catalog_510.controllers'
+                       '.database_handler.SQLHandler.fetch_tables')
+        with mock.patch(mock_method) as r:
+            r.return_value = ['projects']
+            get_dbs = helpers.call_action(
+                "get_tables",
+                {},
+                db_type="mysql",
+            )
+        # Validating the get_tables
         assert get_dbs == expected_value
 
     def test_get_metadata_for_postgres(self):

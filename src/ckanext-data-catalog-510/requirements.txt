@@ -1,0 +1,2 @@
+pyodbc==4.0.32
+pymysql==1.0.2
