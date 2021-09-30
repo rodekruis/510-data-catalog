@@ -10,7 +10,7 @@
     {%- set countries = h.get_countries_list() -%}
 {%- endif -%}
 {% for country in countries %}
-     {%- if country['code'] or not h.scheming_field_required(field) -%}
+     {%- if country['name'] or not h.scheming_field_required(field) -%}
         {%- do options.append({
             'value': country['name'],
             'text': country['name']}) -%}

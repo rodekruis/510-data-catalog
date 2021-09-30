@@ -45,7 +45,9 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
 
     # Helpers
     def get_helpers(self):
-        return {}
+        return {
+            'get_countries_list': get_countries
+        }
 
     def _modify_package_schema(self, schema):
         # Add our custom_resource_text metadata field to the schema

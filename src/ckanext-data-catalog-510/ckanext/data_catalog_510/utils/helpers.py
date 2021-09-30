@@ -1,14 +1,16 @@
+
+import requests
+
 import logging
-import json
 log = logging.getLogger(__name__)
-import os
-HERE = os.path.dirname(__file__)
+
 
 def get_countries():
-    
-    log.info(HERE)
-    with open(os.path.join(HERE, 'country.json'),'r') as f:
-        license_data = json.load(f)
-    return license_data
-
-
+    # URL for fetching countries
+    url = 'https://goadmin.ifrc.org/api/v2/country/?limit=400&offset=0'
+    response = requests.get(url)
+    results = response.json()['results']
+    country_list = []
+    for country in results:
+        country_list.append({'name': country.get('name')})
+    return country_list
