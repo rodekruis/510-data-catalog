@@ -1,0 +1,9 @@
+[submodule "src/ckanext-developerpage"]
+	path = src/ckanext-developerpage
+	url = https://github.com/datopian/ckanext-developerpage.git
+[submodule "src/ckanext-envvars"]
+	path = src/ckanext-envvars
+	url = https://github.com/okfn/ckanext-envvars.git
+[submodule "src/ckanext-scheming"]
+	path = src/ckanext-scheming
+	url = https://github.com/ckan/ckanext-scheming.git
