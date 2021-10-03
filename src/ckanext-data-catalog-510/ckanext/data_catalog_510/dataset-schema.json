@@ -141,6 +141,21 @@
             "form_placeholder": "Some useful notes about the data"
         },
         {
+            "field_name": "no_of_records",
+            "label": "No of Records",
+            "form_placeholder": "No of records"
+        },
+        {
+            "field_name": "no_of_attributes",
+            "label": "No of Attributes",
+            "form_placeholder": "No of Attributes"
+        },
+        {
+            "field_name": "date_last_edited",
+            "label": "Date Last edited",
+            "form_placeholder": "Date Last edited"
+        },
+        {
             "field_name": "spatial_resolution",
             "label": "Spatial Resolution",
             "form_placeholder": "Spatial Resolution"
