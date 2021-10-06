@@ -4,17 +4,17 @@
 # https://aka.ms/yaml
 
 trigger:
-- develop
+  - develop
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- checkout: self
-  submodules: true
+  - checkout: self
+    submodules: true
 
-- script: |
-    echo "Build CKAN Image"
-    touch .env
-    make build-base-images
-  displayName: 'Build CKAN Image'
+  - script: |
+      echo "Build CKAN Image"
+      docker build -t $(CKAN_BASE_IMAGE) -f ckan-build/ckan/Dockerfile . --no-cache
+      docker build -t $(CKAN_SERVICE_IMAGE) -f ckan-build/ckan-service/Dockerfile . --build-arg baseImage=${CKAN_BASE_IMAGE} --no-cache
+    displayName: "Build CKAN Image"
