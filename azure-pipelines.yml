@@ -10,8 +10,11 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- checkout: self
+  submodules: true
 
 - script: |
     echo "Build CKAN Image"
+    touch .env
     make build-base-images
   displayName: 'Build CKAN Image'
