@@ -16,5 +16,6 @@ steps:
   - script: |
       echo "Build CKAN Image"
       docker build -t $(CKAN_BASE_IMAGE) -f ckan-build/ckan/Dockerfile .
-      docker build -t $(CKAN_SERVICE_IMAGE) -f ckan-build/ckan-service/Dockerfile . --build-arg baseImage=$(CKAN_BASE_IMAGE) --no-cache
+      docker build -t $(CKAN_SERVICE_IMAGE) -f ckan-build/ckan-service/Dockerfile . --build-arg baseImage=$(CKAN_BASE_IMAGE)
+      docker push $(CKAN_IMAGE_REG)/
     displayName: "Build CKAN Image"
