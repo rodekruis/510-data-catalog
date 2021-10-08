@@ -7,7 +7,6 @@ ckan db init
 
 # Update the Plugins from the ENV
 ckan config-tool $CKAN_CONFIG/production.ini "ckan.plugins = ${CKAN__PLUGINS}"
-/bin/sh scripts/ckan_ini.sh
 
 # Start the CKAN
-/usr/lib/ckan/venv/bin/uwsgi -i /etc/ckan/uwsgi.ini
+ckan run --host 0.0.0.0 --port 5000

@@ -18,10 +18,11 @@ USER root
 COPY ckan-build/ckan-service/scripts ${CKAN_HOME}/scripts
 COPY ckan-build/ckan-service/patches ${SRC_DIR}/patches
 COPY src $SRC_DIR/extensions
+RUN pip install uwsgi
 RUN chown -R ckan:ckan $SRC_DIR
 RUN chmod +x -R ${CKAN_HOME}/scripts
 
-RUN chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH
+RUN chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH /tmp
 RUN chmod u+rwx $CKAN_STORAGE_PATH
 # USER ckan
 WORKDIR $CKAN_VENV/src/ckan 

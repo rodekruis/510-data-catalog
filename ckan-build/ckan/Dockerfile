@@ -43,6 +43,8 @@ RUN apt-get -q -y update \
         g++ \
         unixodbc \
         unixodbc-dev \
+        xmlsec1 \
+        uwsgi \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/*
 
