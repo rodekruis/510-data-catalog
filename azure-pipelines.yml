@@ -8,21 +8,21 @@ steps:
     submodules: true
   - task: Docker@2
     inputs:
-      containerRegistry: "ckan510"
-      repository: "ckan"
+      containerRegistry: $(CKAN_CONTAINER_REGISTRY)
+      repository: $(CKAN_CONTAINER_REPOSITORY)
       tags: base
       command: "build"
       Dockerfile: "ckan-build/ckan/Dockerfile"
   - task: Docker@2
     inputs:
-      containerRegistry: "ckan510"
-      repository: "ckan"
+      containerRegistry: $(CKAN_CONTAINER_REGISTRY)
+      repository: $(CKAN_CONTAINER_REPOSITORY)
       command: "build"
       Dockerfile: "**/ckan-build/ckan-service/Dockerfile"
       arguments: "--build-arg baseImage=$(CKAN_BASE_IMAGE)"
       buildContext: $(Build.Repository.LocalPath)
   - task: Docker@2
     inputs:
-      containerRegistry: "ckan510"
-      repository: "ckan"
+      containerRegistry: $(CKAN_CONTAINER_REGISTRY)
+      repository: $(CKAN_CONTAINER_REPOSITORY)
       command: "push"
