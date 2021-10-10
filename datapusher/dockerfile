@@ -1,0 +1,55 @@
+FROM debian:buster
+
+LABEL Maintainer="Shubham Mahajan"
+
+ENV GIT_BRANCH=master
+ENV GIT_URL=https://github.com/ckan/datapusher.git
+ENV SRC_DIR=/usr/lib/ckan/datapusher/src
+
+# Runtime env vars - these you might want to adapt to your deployments
+ENV DEBUG False
+ENV TESTING False
+ENV NAME datapusher
+ENV HOST 0.0.0.0
+ENV PORT 8800
+ENV DATAPUSHER_PORT 8800
+ENV MAX_CONTENT_LENGTH 102400000000
+
+RUN apt-get update && \
+    apt-get install -y python-dev \
+    python-virtualenv \
+    build-essential \
+    libxslt1-dev \
+    libxml2-dev \
+    zlib1g-dev \
+    git \
+    libffi-dev \
+    wget
+
+RUN apt-get install -y python3-venv \
+    python3-dev \
+    build-essential \
+    postgresql \
+    libpq-dev
+
+# RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+# RUN python3 get-pip.py
+RUN python3 -m venv /usr/lib/ckan/datapusher
+RUN mkdir -p ${SRC_DIR} && cd ${SRC_DIR} && \
+    git clone -b ${GIT_BRANCH} --depth=1 --single-branch \
+    ${GIT_URL}
+
+WORKDIR ${SRC_DIR}/datapusher
+RUN /usr/lib/ckan/datapusher/bin/pip install --upgrade pip
+RUN /usr/lib/ckan/datapusher/bin/pip install -r requirements.txt
+RUN /usr/lib/ckan/datapusher/bin/python setup.py develop
+
+RUN /usr/lib/ckan/datapusher/bin/pip install psycopg2
+RUN /usr/lib/ckan/datapusher/bin/pip install uwsgi
+# RUN addgroup -a -f www-data && adduser -a -G www-data www-data
+
+COPY setup/ ${SRC_DIR}/datapusher/deployment/
+WORKDIR ${SRC_DIR}/datapusher
+EXPOSE 8800
+
+CMD exec /usr/lib/ckan/datapusher/bin/uwsgi -i ${SRC_DIR}/datapusher/deployment/datapusher-uwsgi.ini
