@@ -1,0 +1,20 @@
+diff --git a/ckanext/saml2auth/plugin.py b/ckanext/saml2auth/plugin.py
+index 83f703b..9b0c35c 100644
+--- a/ckanext/saml2auth/plugin.py
++++ b/ckanext/saml2auth/plugin.py
+@@ -28,7 +28,6 @@ import ckan.plugins.toolkit as toolkit
+ from ckan.common import g
+ import ckan.lib.base as base
+
+-from ckanext.saml2auth.views.saml2auth import saml2auth
+ from ckanext.saml2auth.cache import get_subject_id, get_saml_session_info
+ from ckanext.saml2auth.spconfig import get_config as sp_config
+ from ckanext.saml2auth import helpers as h
+@@ -84,6 +83,7 @@ class Saml2AuthPlugin(plugins.SingletonPlugin):
+     # IBlueprint
+
+     def get_blueprint(self):
++        from ckanext.saml2auth.views.saml2auth import saml2auth
+         return [saml2auth]
+
+     # IConfigurer

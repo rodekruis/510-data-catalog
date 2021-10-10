@@ -17,6 +17,7 @@ USER root
 
 COPY ckan-build/ckan-service/scripts ${CKAN_HOME}/scripts
 COPY ckan-build/ckan-service/patches ${SRC_DIR}/patches
+COPY ckan-build/ckan-service/patch_extensions ${SRC_DIR}/patch_extensions
 COPY src $SRC_DIR/extensions
 RUN pip install uwsgi
 RUN chown -R ckan:ckan $SRC_DIR
@@ -31,6 +32,13 @@ WORKDIR $CKAN_VENV/src/ckan
 RUN for d in ${SRC_DIR}/patches/*; do \
         for f in `ls $d/*.patch | sort -g`; do \
 			cd $SRC_DIR/`basename "$d"` && echo "$0: Applying patch $f to $SRC_DIR/`basename $d`"; patch -p1 < "$f" ; \
+        done ; \
+    done
+
+# Apply patches Extensions (if any)
+RUN for d in ${SRC_DIR}/patch_extensions/*; do \
+        for f in `ls $d/*.patch | sort -g`; do \
+			cd $SRC_DIR/extensions/`basename "$d"` && echo "$0: Applying patch $f to $SRC_DIR/extensions/`basename $d`"; patch -p1 < "$f" ; \
         done ; \
     done
 
