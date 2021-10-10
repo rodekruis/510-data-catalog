@@ -1,21 +1,28 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
   - develop
 
 pool:
   vmImage: ubuntu-latest
-
 steps:
   - checkout: self
     submodules: true
-
-  - script: |
-      echo "Build CKAN Image"
-      docker build -t $(CKAN_BASE_IMAGE) -f ckan-build/ckan/Dockerfile .
-      docker build -t $(CKAN_SERVICE_IMAGE) -f ckan-build/ckan-service/Dockerfile . --build-arg baseImage=$(CKAN_BASE_IMAGE)
-      docker push $(CKAN_IMAGE_REG)/
-    displayName: "Build CKAN Image"
+  - task: Docker@2
+    inputs:
+      containerRegistry: "ckan510"
+      repository: "ckan"
+      tags: base
+      command: "build"
+      Dockerfile: "ckan-build/ckan/Dockerfile"
+  - task: Docker@2
+    inputs:
+      containerRegistry: "ckan510"
+      repository: "ckan"
+      command: "build"
+      Dockerfile: "**/ckan-build/ckan-service/Dockerfile"
+      arguments: "--build-arg baseImage=$(CKAN_BASE_IMAGE)"
+      buildContext: $(Build.Repository.LocalPath)
+  - task: Docker@2
+    inputs:
+      containerRegistry: "ckan510"
+      repository: "ckan"
+      command: "push"
