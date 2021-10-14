@@ -1,6 +1,3 @@
-trigger:
-  - develop
-
 stages:
   - stage: Build
     displayName: Build stage
