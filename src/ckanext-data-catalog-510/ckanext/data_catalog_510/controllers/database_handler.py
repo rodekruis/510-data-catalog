@@ -58,7 +58,7 @@ class SQLHandler:
         if bool(filtered):
             return filtered[0]
         else:
-            raise ValidationError(_('Database not available'))
+            raise ValidationError(_('Database is not available'))
 
     def fetch_schema(self, db_type, db_name):
         '''Method is used to get the fetch the schemas for given db
@@ -82,7 +82,7 @@ class SQLHandler:
                                  .format(db_name)))
 
         except Exception as e:
-            raise ValidationError(_('Schema not available'))
+            raise ValidationError(_('Schema is not available'))
 
     def fetch_tables(self, db_type, db_name, schema):
         '''Method is used to get the fetch the table for given db and schema
@@ -108,7 +108,7 @@ class SQLHandler:
                                  .format(schema, db_name)))
 
         except Exception as e:
-            raise ValidationError(_('Tables not available'))
+            raise ValidationError(_('Tables are not available'))
 
     def fetch_metadata(self, db_type, db_name, schema, table_name):
         '''Method is used to get the fetch the metadata of tables for given
@@ -139,4 +139,4 @@ class SQLHandler:
                                  .format(table_name, schema, db_name)))
 
         except Exception as e:
-            raise ValidationError(_('Metadata not available'))
+            raise ValidationError(_('Metadata is not available'))
