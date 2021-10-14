@@ -56,4 +56,4 @@ stages:
                     kubernetesServiceConnection: $(KUBERNETES_SERVICE_CON)
                     namespace: $(KUBERNETES_NAMESPACE)
                     command: "set"
-                    arguments: $(KUBERNETES_DEPLOY_ARG)
+                    arguments: $(KUBERNETES_DEPLOY_ARG):$(Build.BuildId)
