@@ -6,10 +6,12 @@ import json
 from sqlalchemy import create_engine, inspect
 import logging
 log = logging.getLogger(__name__)
-EXCLUDE_SCHEMAS = ['information_schema']
+# EXCLUDE_SCHEMAS = ['information_schema']
+EXCLUDE_SCHEMAS = config.get('ckan.exclude_schemas', '')
 
 ValidationError = logic.ValidationError
 NotFound = logic.NotFound
+NotAuthorized =  logic.NotAuthorized
 
 
 class SQLHandler:
@@ -28,16 +30,19 @@ class SQLHandler:
                 }
             ]
         '''
-        if db_type == 'postgres':
-            db_connections = config.get('ckan.postgresql_db_connections', '')
-        if db_type == 'mysql':
-            db_connections = config.get('ckan.mysql_db_connections', '')
-        if db_type == 'azuresql':
-            db_connections = config.get('ckan.azuresql_db_connections', '')
-        db_connections = json.loads(db_connections)
-        if not return_url:
-            [db.pop('url', None) for db in db_connections]
-        return db_connections
+        try:
+            if db_type == 'postgres':
+                db_connections = config.get('ckan.postgresql_db_connections', '')
+            if db_type == 'mysql':
+                db_connections = config.get('ckan.mysql_db_connections', '')
+            if db_type == 'azuresql':
+                db_connections = config.get('ckan.azuresql_db_connections', '')
+            db_connections = json.loads(db_connections)
+            if not return_url:
+                [db.pop('url', None) for db in db_connections]
+            return db_connections
+        except Exception as e:
+            raise ValidationError(_('Database not available'))
 
     def get_db_connection_string(self, db_name):
         '''Method is used to get the url for the db from the connection
@@ -77,7 +82,7 @@ class SQLHandler:
                                  .format(db_name)))
 
         except Exception as e:
-            raise e
+            raise ValidationError(_('Schema not available'))
 
     def fetch_tables(self, db_type, db_name, schema):
         '''Method is used to get the fetch the table for given db and schema
@@ -103,7 +108,7 @@ class SQLHandler:
                                  .format(schema, db_name)))
 
         except Exception as e:
-            raise e
+            raise ValidationError(_('Tables not available'))
 
     def fetch_metadata(self, db_type, db_name, schema, table_name):
         '''Method is used to get the fetch the metadata of tables for given
@@ -127,7 +132,11 @@ class SQLHandler:
             inspector = inspect(engine)
             columns = inspector.get_columns(table_name, schema=schema)
             cols_list = list(map(lambda x: x['name'], columns))
-            return cols_list
+            if bool(cols_list):
+                return cols_list
+            else:
+                raise NotFound(_('No Metadata found in {} Table of {} schema of Database {}'
+                                 .format(table_name, schema, db_name)))
 
         except Exception as e:
-            raise e
+            raise ValidationError(_('Metadata not available'))
