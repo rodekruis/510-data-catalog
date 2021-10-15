@@ -33,24 +33,3 @@ stages:
               command: "push"
               tags: |
                 $(Build.BuildId)
-
-  - stage: Deploy
-    displayName: Deploy stage
-    dependsOn: Build
-    jobs:
-      - deployment: Deploy
-        displayName: Deploy job
-        pool:
-          vmImage: ubuntu-latest
-        environment: $(ENVIRONMENT)
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: Kubernetes@0
-                  displayName: "Deploy job"
-                  inputs:
-                    kubernetesServiceConnection: $(KUBERNETES_SERVICE_CON)
-                    namespace: $(KUBERNETES_NAMESPACE)
-                    command: "set"
-                    arguments: $(KUBERNETES_DEPLOY_ARG):$(Build.BuildId)
