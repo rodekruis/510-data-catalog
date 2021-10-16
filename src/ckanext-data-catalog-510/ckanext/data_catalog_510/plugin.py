@@ -62,6 +62,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
                                               'ignore_missing')],
                 'metadata': [toolkit.get_validator(
                                               'ignore_missing')],
+                'geo_metadata': [toolkit.get_validator(
+                                              'ignore_missing')],
                 'resource_type': [toolkit.get_validator(
                                               'ignore_missing')],
                 })
@@ -79,6 +81,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
                 'table_name': [toolkit.get_validator(
                                               'ignore_missing')],
                 'metadata': [toolkit.get_validator(
+                                              'ignore_missing')],
+                'geo_metadata': [toolkit.get_validator(
                                               'ignore_missing')],
                 'resource_type': [toolkit.get_validator(
                                               'ignore_missing')],
