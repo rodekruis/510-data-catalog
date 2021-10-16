@@ -2,8 +2,10 @@ from ckan.common import config, _
 import ckan.logic as logic
 
 import json
-
+from geoalchemy2 import Geometry
 from sqlalchemy import create_engine, inspect
+from sqlalchemy.exc import SQLAlchemyError
+
 import logging
 log = logging.getLogger(__name__)
 EXCLUDE_SCHEMAS = ['information_schema']
@@ -75,8 +77,12 @@ class SQLHandler:
             else:
                 raise NotFound(_('No Schema found in Database {}'
                                  .format(db_name)))
-
+        except SQLAlchemyError as e:
+            error = str(e.__dict__['orig'])
+            log.error(error)
+            raise ValidationError(_(error))
         except Exception as e:
+            log.error(e)
             raise e
 
     def fetch_tables(self, db_type, db_name, schema):
@@ -102,7 +108,12 @@ class SQLHandler:
                 raise NotFound(_('No Tables found in {} schema of Database {}'
                                  .format(schema, db_name)))
 
+        except SQLAlchemyError as e:
+            error = str(e.__dict__['orig'])
+            log.error(error)
+            raise ValidationError(_(error))
         except Exception as e:
+            log.error(e)
             raise e
 
     def fetch_metadata(self, db_type, db_name, schema, table_name):
@@ -124,10 +135,29 @@ class SQLHandler:
             self.db_type = db_type
             self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
+            query = f'Select Count(*) from {schema}.{table_name};'
+            result = engine.execute(query)
+            count = result.first()[0]
             inspector = inspect(engine)
             columns = inspector.get_columns(table_name, schema=schema)
-            cols_list = list(map(lambda x: x['name'], columns))
-            return cols_list
+            col_type_list = list(map(lambda column: column['type'], columns))
+            is_geo = False
+            for column_type in enumerate(col_type_list):
+                if 'geo' in str(column_type):
+                    is_geo = True
 
+            cols_list = list(map(lambda column: column['name'], columns))
+            table_metadata = {
+                'no_of_records': count,
+                'no_of_attributes': len(cols_list),
+                'is_geo': is_geo
+            }
+            return table_metadata
+
+        except SQLAlchemyError as e:
+            error = str(e.__dict__['orig'])
+            log.error(error)
+            raise ValidationError(_(error))
         except Exception as e:
+            log.error(e)
             raise e
