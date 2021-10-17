@@ -6,13 +6,13 @@ import json
 from sqlalchemy import create_engine, inspect
 import logging
 log = logging.getLogger(__name__)
-# EXCLUDE_SCHEMAS = ['information_schema']
 EXCLUDE_SCHEMAS = config.get('ckan.exclude_schemas', '')
 
 ValidationError = logic.ValidationError
 NotFound = logic.NotFound
 NotAuthorized =  logic.NotAuthorized
 
+from werkzeug.exceptions import InternalServerError
 
 class SQLHandler:
     def __init__(self):
@@ -71,6 +71,7 @@ class SQLHandler:
         try:
             self.db_type = db_type
             self.db_uri = self.get_db_connection_string(db_name)
+            self.db_uri = ''
             engine = create_engine(self.db_uri)
             inspector = inspect(engine)
             schemas = inspector.get_schema_names()
@@ -79,10 +80,9 @@ class SQLHandler:
                 return schemas
             else:
                 raise NotFound(_('No Schema found in Database {}'
-                                 .format(db_name)))
-
+                                 .format(db_name)))        
         except Exception as e:
-            raise ValidationError(_('Schema is not available'))
+            raise ValidationError(_('Schemas are not available'))
 
     def fetch_tables(self, db_type, db_name, schema):
         '''Method is used to get the fetch the table for given db and schema
