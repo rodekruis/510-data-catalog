@@ -9,20 +9,8 @@ DATAPUB_VERSION=${2-'master'}
 TAG=${3-'webassets'}
 UPLOAD_MODULE_PATH=ckanext/data_catalog_510/templates/datapub/snippets/resource_module
 
-echo "Removing old datapub directory..."
-rm -rf datapub
-
-if [[ $DATAPUB_APP == http* ]] ;
-then
-    echo "Cloning git repo, targetting $DATAPUB_VERSION..."
-    git clone --branch $DATAPUB_VERSION $DATAPUB_APP datapub
-else
-    echo "Copying local folder... $DATAPUB_APP"
-    cp -R $DATAPUB_APP datapub
-fi
-
 echo "Building datapub..."
-cd datapub
+cd datapub-510-custom-ui
 yarn install && yarn build:prod
 
 if [ $TAG = 'resources' ]
@@ -53,8 +41,8 @@ bash templater.sh ${UPLOAD_MODULE_PATH}.template > ${UPLOAD_MODULE_PATH}.html
 echo "Updating assets ..."
 rm -f ckanext/datapub/webassets/js/*.*
 rm -f ckanext/datapub/webassets/css/*.*
-cp datapub/build/main.* ckanext/data_catalog_510/assets/js/main.js
-cp datapub/build/[poll]* ckanext/data_catalog_510/assets/js/polyfills.js
-cp datapub/build/[style]* ckanext/data_catalog_510/assets/css/style.css
+cp datapub-510-custom-ui/build/main.* ckanext/data_catalog_510/assets/js/main.js
+cp datapub-510-custom-ui/build/[poll]* ckanext/data_catalog_510/assets/js/polyfills.js
+cp datapub-510-custom-ui/build/[style]* ckanext/data_catalog_510/assets/css/styles.css
 
 echo "Done!"

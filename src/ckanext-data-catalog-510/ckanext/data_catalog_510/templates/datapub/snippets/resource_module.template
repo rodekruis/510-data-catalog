@@ -1,0 +1,2 @@
+{{ASSETS}}
+<app-root pkg_name="{{ pkg_name }}" type="{{ type }}" res="{{ res }}"></app-root>
