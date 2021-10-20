@@ -14,7 +14,6 @@ ValidationError = logic.ValidationError
 NotFound = logic.NotFound
 NotAuthorized =  logic.NotAuthorized
 
-from werkzeug.exceptions import InternalServerError
 
 class SQLHandler:
     def __init__(self):
