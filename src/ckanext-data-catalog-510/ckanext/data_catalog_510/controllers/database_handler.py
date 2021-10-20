@@ -8,10 +8,11 @@ from sqlalchemy.exc import SQLAlchemyError
 
 import logging
 log = logging.getLogger(__name__)
-EXCLUDE_SCHEMAS = ['information_schema']
+EXCLUDE_SCHEMAS = config.get('ckan.exclude_schemas', '')
 
 ValidationError = logic.ValidationError
 NotFound = logic.NotFound
+NotAuthorized =  logic.NotAuthorized
 
 
 class SQLHandler:
@@ -30,16 +31,19 @@ class SQLHandler:
                 }
             ]
         '''
-        if db_type == 'postgres':
-            db_connections = config.get('ckan.postgresql_db_connections', '')
-        if db_type == 'mysql':
-            db_connections = config.get('ckan.mysql_db_connections', '')
-        if db_type == 'azuresql':
-            db_connections = config.get('ckan.azuresql_db_connections', '')
-        db_connections = json.loads(db_connections)
-        if not return_url:
-            [db.pop('url', None) for db in db_connections]
-        return db_connections
+        try:
+            if db_type == 'postgres':
+                db_connections = config.get('ckan.postgresql_db_connections', '')
+            if db_type == 'mysql':
+                db_connections = config.get('ckan.mysql_db_connections', '')
+            if db_type == 'azuresql':
+                db_connections = config.get('ckan.azuresql_db_connections', '')
+            db_connections = json.loads(db_connections)
+            if not return_url:
+                [db.pop('url', None) for db in db_connections]
+            return db_connections
+        except Exception as e:
+            raise ValidationError(_('Database not available'))
 
     def get_db_connection_string(self, db_name):
         '''Method is used to get the url for the db from the connection
@@ -55,7 +59,7 @@ class SQLHandler:
         if bool(filtered):
             return filtered[0]
         else:
-            raise ValidationError(_('Database not available'))
+            raise ValidationError(_('Database is not available'))
 
     def fetch_schema(self, db_type, db_name):
         '''Method is used to get the fetch the schemas for given db
@@ -68,6 +72,7 @@ class SQLHandler:
         try:
             self.db_type = db_type
             self.db_uri = self.get_db_connection_string(db_name)
+            self.db_uri = ''
             engine = create_engine(self.db_uri)
             inspector = inspect(engine)
             schemas = inspector.get_schema_names()
@@ -113,8 +118,7 @@ class SQLHandler:
             log.error(error)
             raise ValidationError(_(error))
         except Exception as e:
-            log.error(e)
-            raise e
+            raise ValidationError(_('Tables are not available'))
 
     def fetch_metadata(self, db_type, db_name, schema, table_name):
         '''Method is used to get the fetch the metadata of tables for given
