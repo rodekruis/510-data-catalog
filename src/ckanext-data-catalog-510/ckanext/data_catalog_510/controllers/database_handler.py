@@ -156,8 +156,6 @@ class SQLHandler:
                 'no_of_attributes': len(cols_list),
                 'is_geo': is_geo
             }
-            # log.info(table_metadata)
-            log.info("Hello world!")
             return table_metadata
 
         except SQLAlchemyError as e:
