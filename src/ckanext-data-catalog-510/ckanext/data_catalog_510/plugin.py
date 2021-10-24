@@ -6,6 +6,7 @@ from ckanext.data_catalog_510.\
      utils.validators import (validate_date_yyyy_mm_dd)
 from ckanext.data_catalog_510.\
      utils.helpers import (get_countries)
+from collections import OrderedDict
 
 from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_schemas,
@@ -15,10 +16,6 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_containers,
                                             get_directories_and_files)
 
-FACETS = OrderedDict([
-    # this follows the structure of:
-    # ('field_name', 'UI_display_string')
-    ('dataset_owner', 'Dataset Owner')])
 
 class DataCatalog510Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
@@ -27,6 +24,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IFacets)
     plugins.implements(plugins.IDatasetForm, inherit=False)
+    plugins.implements(plugins.IFacets)
 
     # IConfigurer
 
@@ -125,7 +123,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         return []
 
     def dataset_facets(self, facets_dict, package_type):
-        '''
-        Override core search fasets for datasets
-        '''
-        return FACETS
+        return OrderedDict([('dataset_owner', 'Dataset Owner'),
+                            ('country', 'Country'),
+                            ('initially_used', 'Project')])
+
