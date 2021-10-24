@@ -1,10 +1,10 @@
-datapub-css:
-  output: ckanext-data_catalog_510/%(version)s-style.css
-  contents:
-    - css/style.css
-    - css/*.css
-datapub-js:
-  output: ckanext-data_catalog_510/%(version)s-new.js
-  contents:
-    - js/main.js
-    - js/polyfills.js
+# datapub-css:
+#   output: ckanext-data_catalog_510/%(version)s-style.css
+#   contents:
+#     - css/style.css
+#     - css/*.css
+# datapub-js:
+#   output: ckanext-data_catalog_510/%(version)s-new.js
+#   contents:
+#     - js/main.js
+#     - js/polyfills.js

@@ -55,14 +55,14 @@
         {
             "field_name": "dataset_owner_email",
             "label": "Dataset Owner Email",
-            "form_placeholder": "joe@510.com",
+            "form_placeholder": "e.g. joe@510.com",
             "display_property": "dc:creator",
             "display_snippet": "email.html",
             "display_email_name_field": "author"
         },
         {
             "field_name": "dataset_version",
-            "label": "Dateset Version",
+            "label": "Dataset Version",
             "validators": "ignore_missing unicode package_version_validator",
             "form_placeholder": "1.0"
         },
@@ -73,8 +73,8 @@
             "help_text": "The List of countries"
         },
         {
-            "field_name": "initally_used",
-            "label": "Initally Used in Project",
+            "field_name": "initially_used",
+            "label": "Initially Used in Project",
             "validators": "ignore_missing unicode",
             "form_placeholder": "e.g Project Name"
         },
@@ -86,13 +86,13 @@
         },
         {
             "field_name": "data_quality",
-            "label": "Dateset Quality",
+            "label": "Dataset Quality",
             "validators": "ignore_missing unicode",
             "form_placeholder": "e.g Good"
         },
         {
             "field_name": "data_source",
-            "label": "Dateset Source",
+            "label": "Dataset Source",
             "validators": "ignore_missing unicode",
             "form_placeholder": "e.g Source of the Data"
         },
@@ -107,20 +107,6 @@
             "label": "Date Added",
             "validators": "ignore_missing unicode validate_date_yyyy_mm_dd",
             "form_placeholder": "e.g 2020-12-21"
-        },
-        {
-            "field_name": "maintainer",
-            "label": "Maintainer",
-            "form_placeholder": "Joe Bloggs",
-            "display_property": "dc:contributor"
-        },
-        {
-            "field_name": "maintainer_email",
-            "label": "Maintainer Email",
-            "form_placeholder": "joe@example.com",
-            "display_property": "dc:contributor",
-            "display_snippet": "email.html",
-            "display_email_name_field": "maintainer"
         }
     ],
     "resource_fields": []

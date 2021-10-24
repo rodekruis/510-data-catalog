@@ -1,6 +1,7 @@
 {% ckan_extends %}
 
 {% block form %}
-{% snippet 'datapub/snippets/resource_module.html', pkg_name=pkg_name, api_key=c.userobj.apikey, base_url=g.site_url,
+{% snippet 'datapub/snippets/resource_module.html', pkg_name=res.package_id, api_key=c.userobj.apikey,
+base_url=g.site_url,
 parent=super, type="edit", res=res.id %}
 {% endblock %}

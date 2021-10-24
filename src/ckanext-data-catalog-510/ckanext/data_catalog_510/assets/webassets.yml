@@ -1,6 +1,6 @@
 data_catalog_510-js:
   filter: rjsmin
-  output: ckanext-data_catalog_510/%(version)s-fetch-sql.js
+  output: ckanext-data_catalog_510/%(version)s-resource.js
   contents:
     - js/main.js
     - js/polyfills.js
