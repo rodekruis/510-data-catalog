@@ -4,6 +4,7 @@ from ckanext.data_catalog_510.\
      utils.validators import (validate_date_yyyy_mm_dd)
 from ckanext.data_catalog_510.\
      utils.helpers import (get_countries)
+from collections import OrderedDict
 
 from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_schemas,
@@ -18,6 +19,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IDatasetForm, inherit=False)
+    plugins.implements(plugins.IFacets)
 
     # IConfigurer
 
@@ -108,3 +110,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         # This plugin doesn't handle any special package types, it just
         # registers itself as the default (above).
         return []
+    def dataset_facets(self, facets_dict, package_type):
+        return OrderedDict([('dataset_owner', 'Dataset Owner'),
+		                    ('country', 'Country'),
+						    ('initially_used', 'Project')])
