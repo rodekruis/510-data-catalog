@@ -5,6 +5,9 @@ import ckan.model as model
 from ckanext.data_catalog_510.\
      controllers.database_handler import SQLHandler
 
+from ckanext.data_catalog_510.\
+     controllers.datalake_handler import DataLakeHandler
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -99,3 +102,19 @@ def get_tables_metadata(context, data_dict):
     db_obj = validate_db_connections_and_init(db_type)
     db_table_metadata = db_obj.fetch_metadata(db_type, db_name, schema, table)
     return db_table_metadata
+
+
+def get_containers(context, data_dict):
+    logic.check_access(u'package_create', context)
+    datalake_connection = DataLakeHandler()
+    datalake_connection.initialize_storage_account()
+    return datalake_connection.list_file_system()
+
+
+def get_directories_and_files(context, data_dict):
+    logic.check_access(u'package_create', context)
+    datalake_connection = DataLakeHandler()
+    datalake_connection.initialize_storage_account()
+    container = data_dict.get('container', '')
+    path = data_dict.get('path', '')
+    return datalake_connection.list_directory_contents(container, path)

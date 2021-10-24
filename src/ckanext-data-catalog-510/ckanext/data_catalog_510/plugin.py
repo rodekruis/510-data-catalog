@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from ckanext.data_catalog_510.\
@@ -9,14 +11,21 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_schemas,
                                             get_tables,
                                             get_tables_metadata,
-                                            get_all_dbs)
+                                            get_all_dbs,
+                                            get_containers,
+                                            get_directories_and_files)
 
+FACETS = OrderedDict([
+    # this follows the structure of:
+    # ('field_name', 'UI_display_string')
+    ('dataset_owner', 'Dataset Owner')])
 
 class DataCatalog510Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)
+    plugins.implements(plugins.IFacets)
     plugins.implements(plugins.IDatasetForm, inherit=False)
 
     # IConfigurer
@@ -40,7 +49,9 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_schemas': get_schemas,
             'get_tables': get_tables,
             'get_tables_metadata': get_tables_metadata,
-            'get_all_dbs': get_all_dbs
+            'get_all_dbs': get_all_dbs,
+            'get_containers': get_containers,
+            'get_directories_and_files': get_directories_and_files
         }
 
     # Helpers
@@ -66,6 +77,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
                                               'ignore_missing')],
                 'resource_type': [toolkit.get_validator(
                                               'ignore_missing')],
+                'datalake_data': [toolkit.get_validator(
+                                              'ignore_missing')]
                 })
         return schema
 
@@ -86,6 +99,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
                                               'ignore_missing')],
                 'resource_type': [toolkit.get_validator(
                                               'ignore_missing')],
+                'datalake_data': [toolkit.get_validator(
+                                              'ignore_missing')]
                 })
         return schema
 
@@ -108,3 +123,9 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         # This plugin doesn't handle any special package types, it just
         # registers itself as the default (above).
         return []
+
+    def dataset_facets(self, facets_dict, package_type):
+        '''
+        Override core search fasets for datasets
+        '''
+        return FACETS
