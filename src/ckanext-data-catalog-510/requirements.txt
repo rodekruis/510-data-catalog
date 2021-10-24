@@ -3,4 +3,4 @@ pymysql==1.0.2
 GeoAlchemy2==0.9.4
 azure-core==1.19.0
 azure-storage-blob==12.9.0
-azure-storage-file-datalake=12.5.0
+azure-storage-file-datalake==12.5.0
