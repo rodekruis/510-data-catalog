@@ -69,6 +69,27 @@
                 <td>{{ res.table_name }}</td>
             </tr>
             {% endif %}
+            {% if res.resource_type == 'datalake' %}
+                {% if res.datalake_data.container %}
+                    <tr>
+                        <th scope="row">{{ _('Datalake Container Name') }}</th>
+                        <td>{{ res.datalake_data.container }}</td>
+                    </tr>
+                {% endif %}
+                {% if res.datalake_data.file_path %}
+                    <tr>
+                        <th scope="row">{{ _('Datalake File Path') }}</th>
+                        <td>{{ res.datalake_data.file_path }}</td>
+                    </tr>
+                {% endif %}
+                {% if res.datalake_data.type %}
+                    <tr>
+                        <th scope="row">{{ _('Datalake Selected Resource Type') }}</th>
+                        <td>{{ res.datalake_data.type }}</td>
+                    </tr>
+                {% endif %}
+
+            {% endif %}
             {% if res.metadata and res.metadata.no_of_records %}
             <tr>
                 <th scope="row">{{ _('No of Records') }}</th>
