@@ -50,12 +50,14 @@
             "field_name": "dataset_owner",
             "label": "Dataset Owner",
             "form_placeholder": "Joe Bloggs",
+            "form_snippet": "owner_name.html",
             "display_property": "dc:creator"
         },
         {
             "field_name": "dataset_owner_email",
             "label": "Dataset Owner Email",
             "form_placeholder": "e.g. joe@510.com",
+            "form_snippet": "owner_email.html",
             "display_property": "dc:creator",
             "display_snippet": "email.html",
             "display_email_name_field": "author"

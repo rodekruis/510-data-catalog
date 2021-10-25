@@ -24,7 +24,8 @@ RUN apt-get update && \
     zlib1g-dev \
     git \
     libffi-dev \
-    wget
+    wget \
+    vim
 
 RUN apt-get install -y python3-venv \
     python3-dev \
@@ -51,5 +52,7 @@ RUN /usr/lib/ckan/datapusher/bin/pip install uwsgi
 COPY setup/ ${SRC_DIR}/datapusher/deployment/
 WORKDIR ${SRC_DIR}/datapusher
 EXPOSE 8800
-
+ENV LC_ALL="C"
+ENV LC_CTYPE="en_US.UTF-8"
+RUN dpkg-reconfigure locales
 CMD exec /usr/lib/ckan/datapusher/bin/uwsgi -i ${SRC_DIR}/datapusher/deployment/datapusher-uwsgi.ini

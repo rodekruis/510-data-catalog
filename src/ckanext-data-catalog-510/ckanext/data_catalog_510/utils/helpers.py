@@ -1,5 +1,7 @@
 
 import requests
+from ckan.lib.helpers import core_helper
+from ckan.common import c
 
 import logging
 log = logging.getLogger(__name__)
@@ -16,4 +18,16 @@ def get_countries():
             country_list.append({'name': country.get('name')})
         return country_list
     except Exception as e:
+        log.error(e)
         return []
+
+
+@core_helper
+def prefill_dataset_owner_details(data, call_type):
+    if data:
+        return data
+    else:
+        if c.userobj and call_type == 'name':
+            return c.userobj.name
+        if c.userobj and call_type == 'email':
+            return c.userobj.email
