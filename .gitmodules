@@ -16,3 +16,6 @@
 [submodule "src/ckanext-geoview"]
 	path = src/ckanext-geoview
 	url = https://github.com/ckan/ckanext-geoview.git
+[submodule "src/ckanext-harvest"]
+	path = src/ckanext-harvest
+	url = https://github.com/ckan/ckanext-harvest.git
