@@ -21,15 +21,16 @@
         <tbody>
             {%- block resource_last_updated -%}
             <tr>
-                <th scope="row">{{ _('Last updated') }}</th>
-                <td>{{ h.render_datetime(res.last_modified) or h.render_datetime(res.revision_timestamp) or
-                    h.render_datetime(res.created) or _('unknown') }}</td>
+                <th scope="row">{{ _('Date Last Edited') }}</th>
+                <td>{{ h.render_datetime(res.last_modified, '%Y-%m-%d') or h.render_datetime(res.revision_timestamp,
+                    '%Y-%m-%d') or
+                    h.render_datetime(res.created, '%Y-%m-%d') or _('unknown') }}</td>
             </tr>
             {%- endblock -%}
             {%- block resource_created -%}
             <tr>
                 <th scope="row">{{ _('Created') }}</th>
-                <td>{{ h.render_datetime(res.created) or _('unknown') }}</td>
+                <td>{{ h.render_datetime(res.created,'%Y-%m-%d') or _('unknown') }}</td>
             </tr>
             {%- endblock -%}
             {%- block resource_format -%}
@@ -70,24 +71,24 @@
             </tr>
             {% endif %}
             {% if res.resource_type == 'datalake' %}
-                {% if res.datalake_data.container %}
-                    <tr>
-                        <th scope="row">{{ _('Datalake Container Name') }}</th>
-                        <td>{{ res.datalake_data.container }}</td>
-                    </tr>
-                {% endif %}
-                {% if res.datalake_data.file_path %}
-                    <tr>
-                        <th scope="row">{{ _('Datalake File Path') }}</th>
-                        <td>{{ res.datalake_data.file_path }}</td>
-                    </tr>
-                {% endif %}
-                {% if res.datalake_data.type %}
-                    <tr>
-                        <th scope="row">{{ _('Datalake Selected Resource Type') }}</th>
-                        <td>{{ res.datalake_data.type }}</td>
-                    </tr>
-                {% endif %}
+            {% if res.datalake_data.container %}
+            <tr>
+                <th scope="row">{{ _('Datalake Container Name') }}</th>
+                <td>{{ res.datalake_data.container }}</td>
+            </tr>
+            {% endif %}
+            {% if res.datalake_data.file_path %}
+            <tr>
+                <th scope="row">{{ _('Datalake File Path') }}</th>
+                <td>{{ res.datalake_data.file_path }}</td>
+            </tr>
+            {% endif %}
+            {% if res.datalake_data.type %}
+            <tr>
+                <th scope="row">{{ _('Datalake Selected Resource Type') }}</th>
+                <td>{{ res.datalake_data.type }}</td>
+            </tr>
+            {% endif %}
 
             {% endif %}
             {% if res.metadata and res.metadata.no_of_records %}
