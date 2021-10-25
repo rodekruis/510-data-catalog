@@ -28,6 +28,6 @@ def prefill_dataset_owner_details(data, call_type):
         return data
     else:
         if c.userobj and call_type == 'name':
-            return c.userobj.name
+            return c.userobj.display_name
         if c.userobj and call_type == 'email':
             return c.userobj.email

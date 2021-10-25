@@ -10,3 +10,9 @@
 [submodule "src/ckanext-saml2auth"]
 	path = src/ckanext-saml2auth
 	url = https://github.com/keitaroinc/ckanext-saml2auth.git
+[submodule "src/ckanext-spatial"]
+	path = src/ckanext-spatial
+	url = https://github.com/ckan/ckanext-spatial.git
+[submodule "src/ckanext-geoview"]
+	path = src/ckanext-geoview
+	url = https://github.com/ckan/ckanext-geoview.git
