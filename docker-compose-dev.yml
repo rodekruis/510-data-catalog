@@ -5,6 +5,7 @@ services:
     container_name: ckan
     restart: always
     image: ${CKAN_SERVICE_IMAGE}
+    command: /bin/sh /usr/lib/ckan/scripts/start_ckan_development.sh
     env_file:
       - .env
     ports:
