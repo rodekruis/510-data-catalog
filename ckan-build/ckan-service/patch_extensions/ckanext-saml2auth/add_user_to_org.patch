@@ -27,7 +27,7 @@ index c20b611..a1097ce 100644
 -
 +        data_dict = {
 +            'id': config.get('ckan.default_org_for_new_user', '510'),
-+            'username': user_dict['username'],
++            'username': user_dict['name'],
 +            'role': config.get('ckan.default_role_for_new_user', 'editor')
 +        }
 +        add_user_to_member(data_dict)
@@ -40,7 +40,7 @@ index c20b611..a1097ce 100644
      user_dict = _create_user(user_dict)
 +    data_dict = {
 +            'id': config.get('ckan.default_org_for_new_user', '510'),
-+            'username': user_dict['username'],
++            'username': user_dict['name'],
 +            'role': config.get('ckan.default_role_for_new_user', 'editor')
 +        }
 +    add_user_to_member(data_dict)
