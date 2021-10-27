@@ -1,0 +1,37 @@
+diff --git a/ckanext/saml2auth/views/saml2auth.py b/ckanext/saml2auth/views/saml2auth.py
+index c20b611..bd66f54 100644
+--- a/ckanext/saml2auth/views/saml2auth.py
++++ b/ckanext/saml2auth/views/saml2auth.py
+@@ -109,6 +109,18 @@ def _create_user(user_dict):
+         base.abort(400, error_message)
+ 
+ 
++def add_user_to_member(data_dict):
++    context = {
++        u'ignore_auth': True,
++    }
++
++    try:
++        return toolkit.get_action(u'organization_member_create')(context, data_dict)
++    except toolkit.ValidationError as e:
++        error_message = (e.error_summary or e.message or e.error_dict)
++        base.abort(400, error_message)
++
++
+ def process_user(email, saml_id, full_name, saml_attributes):
+     u'''
+     Check if a CKAN-SAML user exists for the current SAML login, if not create
+@@ -167,7 +179,12 @@ def process_user(email, saml_id, full_name, saml_attributes):
+             plugin.before_saml2_user_update(user_dict, saml_attributes)
+ 
+         user_dict = _update_user(user_dict)
+-
++        data_dict = {
++            'id': config.get('ckan.default_org_for_new_user', '510'),
++            'username': user_dict['username'],
++            'role': config.get('ckan.default_role_for_new_user', 'editor')
++        }
++        add_user_to_member(data_dict)
+         return user_dict['name']
+ 
+     # This is the first time this SAML user has logged in, let's create a CKAN user

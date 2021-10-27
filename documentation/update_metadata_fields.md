@@ -1,12 +1,12 @@
+# Instructions
 
-Instructions
-============
-------------------------------------------------
-To Update the Meta Data in the project, you need to update the [dataset-schema.json](../src/ckanext-data-catalog-510/ckanext/data_catalog_510/dataset-schema.json)
+---
 
-The schema file consist of two items:-
+To Update the Meta Data Fields in the project, you need to update the [dataset-schema.json](../src/ckanext-data-catalog-510/ckanext/data_catalog_510/dataset-schema.json)
 
-#### `dataset_fields`, `resource_fields`
+The schema file sample:-
+
+#### `dataset_fields`
 
 ```json
 {
@@ -21,18 +21,6 @@ The schema file consist of two items:-
       "label": "URL",
       "preset": "dataset_slug"
     }
-  ],
-  "resource_fields": [
-    {
-      "field_name": "url",
-      "label": "URL",
-      "preset": "resource_url_upload"
-    },
-    {
-      "field_name": "name",
-      "label": "Name",
-      "form_placeholder": "gold_price.csv"
-    }
   ]
 }
 ```
@@ -45,3 +33,9 @@ Fields you exclude will not be shown to the end user, and will not
 be accepted when editing or updating this type of dataset.
 
 For more details on how to setup the fields please follow [ckanext-scheming](https://github.com/ckan/ckanext-scheming/)
+
+**Note:- The resource section is handled by [custom UI components](../src/ckanext-data-catalog-510/510-custom-ui/README.md), so the scheming section cannot be reused.**
+
+### Developer's Notes
+
+There are some items that are extended from the `ckanext-scheming` templates for desired results, please check those in [scheming templates directory](../src/ckanext-data-catalog-510/ckanext/data_catalog_510/templates/scheming)

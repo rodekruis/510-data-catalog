@@ -5,6 +5,7 @@ services:
     container_name: ckan
     restart: always
     image: ${CKAN_SERVICE_IMAGE}
+    command: /bin/sh /usr/lib/ckan/scripts/start_ckan_development.sh
     env_file:
       - .env
     ports:
@@ -12,6 +13,11 @@ services:
     volumes:
       - ./src:/usr/lib/ckan/venv/src/extensions/
       - ckan_storage:/tmp
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - db
     networks:
       main:
         aliases:
@@ -49,6 +55,11 @@ services:
       - pg_data_510:/var/lib/postgresql/data/510
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ckan"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       main:
         aliases:
