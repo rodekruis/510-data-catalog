@@ -16,6 +16,7 @@
       - Run `make` command
 - Build the Development Environment for 510 Data Catalog using the docker-compose by `docker-compose -f docker-compose-dev.yml build`.
 - Once the Build is done, run the project by `docker-compose -f docker-compose-dev.yml up`.
+    - If DB related issue comes while setting up the environment, please exec into container using `docker exec -it ckan bash` and then run `ckan db init`
 
 Once the project is up, you can browse the project using http://localhost:5000 or the `CKAN_SITE_URL` you used in `.env`
 

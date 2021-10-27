@@ -127,3 +127,10 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
                             ('country', 'Country'),
                             ('initially_used', 'Project')])
 
+    def group_facets(self, facets_dict, group_type, package_type):
+        return facets_dict
+
+    def organization_facets(self, facets_dict, organization_type,
+                            package_type):
+        return facets_dict
+
