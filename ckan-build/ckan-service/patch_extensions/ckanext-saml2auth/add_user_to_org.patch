@@ -1,15 +1,76 @@
+diff --git a/ckanext/saml2auth/helpers.py b/ckanext/saml2auth/helpers.py
+index 64d5f33..8dbeb65 100644
+--- a/ckanext/saml2auth/helpers.py
++++ b/ckanext/saml2auth/helpers.py
+@@ -51,6 +51,7 @@ def generate_password():
+ 
+ 
+ def is_default_login_enabled():
++    log.info(toolkit.config)
+     return toolkit.asbool(
+         toolkit.config.get('ckanext.saml2auth.enable_ckan_internal_login')
+     )
+diff --git a/ckanext/saml2auth/plugin.py b/ckanext/saml2auth/plugin.py
+index 83f703b..d4c2345 100644
+--- a/ckanext/saml2auth/plugin.py
++++ b/ckanext/saml2auth/plugin.py
+@@ -28,7 +28,6 @@ import ckan.plugins.toolkit as toolkit
+ from ckan.common import g
+ import ckan.lib.base as base
+ 
+-from ckanext.saml2auth.views.saml2auth import saml2auth
+ from ckanext.saml2auth.cache import get_subject_id, get_saml_session_info
+ from ckanext.saml2auth.spconfig import get_config as sp_config
+ from ckanext.saml2auth import helpers as h
+@@ -84,6 +83,7 @@ class Saml2AuthPlugin(plugins.SingletonPlugin):
+     # IBlueprint
+ 
+     def get_blueprint(self):
++        from ckanext.saml2auth.views.saml2auth import saml2auth
+         return [saml2auth]
+ 
+     # IConfigurer
+@@ -95,20 +95,20 @@ class Saml2AuthPlugin(plugins.SingletonPlugin):
+ 
+     # IAuthenticator
+ 
+-    def logout(self):
++    # def logout(self):
+ 
+-        response = _perform_slo()
++    #     response = _perform_slo()
+ 
+-        if response:
+-            domain = h.get_site_domain_for_cookie()
++    #     if response:
++    #         domain = h.get_site_domain_for_cookie()
+ 
+-            # Clear auth cookie in the browser
+-            response.set_cookie('auth_tkt', domain=domain, expires=0)
++    #         # Clear auth cookie in the browser
++    #         response.set_cookie('auth_tkt', domain=domain, expires=0)
+ 
+-            # Clear session cookie in the browser
+-            response.set_cookie('ckan', domain=domain, expires=0)
++    #         # Clear session cookie in the browser
++    #         response.set_cookie('ckan', domain=domain, expires=0)
+ 
+-        return response
++    #     return response
+ 
+ 
+ def _perform_slo():
 diff --git a/ckanext/saml2auth/views/saml2auth.py b/ckanext/saml2auth/views/saml2auth.py
-index c20b611..409c08d 100644
+index c20b611..a1097ce 100644
 --- a/ckanext/saml2auth/views/saml2auth.py
 +++ b/ckanext/saml2auth/views/saml2auth.py
-@@ -109,6 +109,18 @@ def _create_user(user_dict):
+@@ -109,6 +109,17 @@ def _create_user(user_dict):
          base.abort(400, error_message)
  
  
 +def add_user_to_member(data_dict):
-+    context = {
-+        u'ignore_auth': True,
-+    }
++    site_user = toolkit.get_action(u'get_site_user')({u'ignore_auth': True}, {})
++    context = {u'user': site_user[u'name'], u'ignore_auth': True}
 +
 +    try:
 +        return toolkit.get_action(u'organization_member_create')(context, data_dict)
@@ -21,7 +82,7 @@ index c20b611..409c08d 100644
  def process_user(email, saml_id, full_name, saml_attributes):
      u'''
      Check if a CKAN-SAML user exists for the current SAML login, if not create
-@@ -167,7 +179,12 @@ def process_user(email, saml_id, full_name, saml_attributes):
+@@ -167,7 +178,12 @@ def process_user(email, saml_id, full_name, saml_attributes):
              plugin.before_saml2_user_update(user_dict, saml_attributes)
  
          user_dict = _update_user(user_dict)
@@ -35,7 +96,7 @@ index c20b611..409c08d 100644
          return user_dict['name']
  
      # This is the first time this SAML user has logged in, let's create a CKAN user
-@@ -191,6 +208,12 @@ def process_user(email, saml_id, full_name, saml_attributes):
+@@ -191,6 +207,12 @@ def process_user(email, saml_id, full_name, saml_attributes):
          plugin.before_saml2_user_create(user_dict, saml_attributes)
  
      user_dict = _create_user(user_dict)
