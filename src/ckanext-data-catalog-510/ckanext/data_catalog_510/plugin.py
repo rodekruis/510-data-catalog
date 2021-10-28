@@ -58,60 +58,6 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_countries_list': get_countries
         }
 
-    def _modify_package_schema(self, schema):
-        # Add our custom_resource_text metadata field to the schema
-        schema['resources'].update({
-                'database_connection_type': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'database_connection': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'schema_name': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'table_name': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'metadata': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'geo_metadata': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'resource_type': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'datalake_data': [toolkit.get_validator(
-                                              'ignore_missing')]
-                })
-        return schema
-
-    def show_package_schema(self):
-        schema = super(DataCatalog510Plugin, self).show_package_schema()
-        schema['resources'].update({
-                'database_connection_type': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'database_connection': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'schema_name': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'table_name': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'metadata': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'geo_metadata': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'resource_type': [toolkit.get_validator(
-                                              'ignore_missing')],
-                'datalake_data': [toolkit.get_validator(
-                                              'ignore_missing')]
-                })
-        return schema
-
-    def create_package_schema(self):
-        schema = super(DataCatalog510Plugin, self).create_package_schema()
-        schema = self._modify_package_schema(schema)
-        return schema
-
-    def update_package_schema(self):
-        schema = super(DataCatalog510Plugin, self).update_package_schema()
-        schema = self._modify_package_schema(schema)
-        return schema
-
     def is_fallback(self):
         # Return True to register this plugin as the default handler for
         # package types not handled by any other IDatasetForm plugin.
