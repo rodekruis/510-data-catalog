@@ -59,4 +59,8 @@ This way you can implement your custom UI changes to the 510 Data Catalog Projec
 
 ### Tests
 
-CKAN tests are running on the Github [workflow](../.github/workflows/main.yml)
+- CKAN tests are running on the Github [workflow](../.github/workflows/main.yml)
+- To Get the tests result you can go to [Github Actions](https://github.com/rodekruis/510-data-catalog/actions) and click on the workflow with your commit message.
+- You will see a Job with `test` written, click on that.
+- Click on the stage `Run Tests`.
+- You will see how many tests are passed and failed.
