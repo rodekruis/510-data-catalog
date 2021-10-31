@@ -1,5 +1,7 @@
 
 import requests
+import datetime
+
 from ckan.lib.helpers import core_helper
 from ckan.common import c
 
@@ -31,3 +33,12 @@ def prefill_dataset_owner_details(data, call_type):
             return c.userobj.display_name
         if c.userobj and call_type == 'email':
             return c.userobj.email
+
+
+@core_helper
+def get_current_date(data):
+    format = "%Y-%m-%d"
+    if data:
+        return data
+    else:
+        return datetime.datetime.today().strftime(format)

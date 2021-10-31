@@ -118,3 +118,12 @@ def get_directories_and_files(context, data_dict):
     container = data_dict.get('container', '')
     path = data_dict.get('path', '')
     return datalake_connection.list_directory_contents(container, path)
+
+
+def get_no_of_files(context, data_dict):
+    logic.check_access(u'package_create', context)
+    datalake_connection = DataLakeHandler()
+    datalake_connection.initialize_storage_account()
+    container = data_dict.get('container', '')
+    path = data_dict.get('path', '')
+    return datalake_connection.get_no_of_files(container, path)

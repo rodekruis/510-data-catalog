@@ -32,13 +32,13 @@ So while developing if a new package is required that need to be added to [requi
 
 ### Custom UI
 
-The Custom UI is used to Resource Create and Resource Edit setup for the Databases, Data lake, and External links. This UI is built over `Angular 12`. Please follow the [documentation](./src/ckanext-data-catalog-510/510-custom-ui/README.md) for the usage and implementation of the UI.
+The Custom UI is used to Resource Create and Resource Edit setup for the Databases, Data lake, and External links. This UI is built over `Angular 12`. Please follow the [documentation](../src/ckanext-data-catalog-510/datapub-510-custom-ui/README.md) for the usage and implementation of the UI.
 The custom UI is based on the logic of [datapub extension](https://github.com/datopian/ckanext-datapub)
 
 Whenever you change something in the Custom UI you need to rebuild the artifacts, so to do that
 
 - Go to `src/ckanext-data-catalog-510/` directory
-- Run command `./sync.sh ./510-custom-ui`.
+- Run command `./sync.sh ./datapub-510-custom-ui`.
 - It will update the assets in `src/ckanext-data-catalog-510/ckanext/data_catalog_510/assets`. It will update both JS and CSS files
 - It is used by the file `src/ckanext-data-catalog-510/ckanext/data_catalog_510/templates/datapub/snippets/resource_module.html`
 
@@ -59,4 +59,8 @@ This way you can implement your custom UI changes to the 510 Data Catalog Projec
 
 ### Tests
 
-CKAN tests are running on the Github [workflow](../.github/workflows/main.yml)
+- CKAN tests are running on the Github [workflow](../.github/workflows/main.yml)
+- To Get the tests result you can go to [Github Actions](https://github.com/rodekruis/510-data-catalog/actions) and click on the workflow with your commit message.
+- You will see a Job with `test` written, click on that.
+- Click on the stage `Run Tests`.
+- You will see how many tests are passed and failed.

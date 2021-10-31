@@ -93,22 +93,11 @@
             "form_placeholder": "e.g Good"
         },
         {
-            "field_name": "data_source",
-            "label": "Dataset Source",
-            "validators": "ignore_missing unicode",
-            "form_placeholder": "e.g Source of the Data"
-        },
-        {
-            "field_name": "no_of_files",
-            "label": "No of Files",
-            "validators": "ignore_missing unicode",
-            "form_placeholder": "e.g 10"
-        },
-        {
             "field_name": "date_added",
             "label": "Date Added",
             "validators": "ignore_missing unicode validate_date_yyyy_mm_dd",
-            "form_placeholder": "e.g 2020-12-21"
+            "form_placeholder": "e.g 2020-12-21",
+            "form_snippet": "date_added.html"
         }
     ],
     "resource_fields": []

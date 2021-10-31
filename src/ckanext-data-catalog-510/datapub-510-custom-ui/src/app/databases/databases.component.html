@@ -1,0 +1,90 @@
+<form class="border border-light p-5" [formGroup]="databaseForm" (submit)="submit()">
+
+    <p class="h4 mb-4">Resource with Database</p>
+    <div class="form-select form-group control-order-by">
+        <label class="control-label" for="field-select_database_type">Select Database Type</label>
+        <select title="Database Type" formControlName="database_connection_type" #databaseType class="form-control"
+            (change)="selectDatabase(databaseType.value)">
+            <option selected value="">Select Database Type</option>
+            <option *ngFor='let databaseType of allDatabasesType' [value]="databaseType.name">{{databaseType?.title}}
+            </option>
+
+        </select>
+    </div>
+    <div class="form-select form-group control-order-by" *ngIf="dbConnections.length > 0">
+        <label class="control-label" for="field-select_database">Select Database</label>
+        <select formControlName="database_connection" #connection class="form-control"
+            (change)="selectSchema(connection.value)">
+            <option selected value="">Select Database</option>
+            <option *ngFor='let connection of dbConnections' [value]="connection.name">{{connection?.title}}
+            </option>
+
+        </select>
+    </div>
+    <div class="form-select form-group control-order-by" *ngIf="dbSchemas.length > 0">
+        <label class="control-label" for="field-select_schema">Select Schema</label>
+        <select formControlName="schema_name" #schema class="form-control" (change)="selectTable(schema.value)">
+            <option selected value="">Select Schema</option>
+            <option *ngFor='let schema of dbSchemas' [value]="schema">{{schema}}
+            </option>
+
+        </select>
+    </div>
+    <div class="form-select form-group control-order-by" *ngIf="tables.length > 0">
+        <label class="control-label" for="field-select_table">Select Table</label>
+        <select formControlName="table_name" #table class="form-control" (change)="selectMetaData(table.value)">
+            <option selected value="">Select Table</option>
+            <option *ngFor='let table of tables' [value]="table">{{table}}
+            </option>
+        </select>
+    </div>
+    <div class="form-select form-group control-order-by" *ngIf="metaData.no_of_records || metaData.no_of_attributes"
+        formGroupName="metadata">
+        <label class="control-label" for="field-no_of_records">No of Records</label>
+        <input type="text" formControlName="no_of_records" readonly class="form-control form-group"
+            placeholder="No of Attributes">
+        <label class="control-label" for="field-no_of_attributes">No of Attributes</label>
+        <input type="text" formControlName="no_of_attributes" readonly class="form-control form-group"
+            placeholder="No of Records">
+    </div>
+    <div class="form-select form-group control-order-by" *ngIf="tables.length > 0">
+        <input type="checkbox" [checked]="is_geo" (change)="is_geo = !is_geo" /> Is Data is GEO Data?
+    </div>
+    <div class="form-select form-group control-order-by" *ngIf="is_geo" formGroupName="geo_metadata">
+        <label class="control-label" for="field-spatial_resolution">Spatial Resolution</label>
+        <input type="text" formControlName="spatial_resolution" class="form-control form-group"
+            placeholder="Spatial Resolution">
+        <label class="control-label" for="field-temporal_resolution">Temporal Resolution</label>
+        <input type="text" formControlName="temporal_resolution" class="form-control form-group"
+            placeholder="Temporal Resolution">
+        <label class="control-label" for="field-spatial_extent">Spatial Extent</label>
+        <input type="text" formControlName="spatial_extent" class="form-control form-group"
+            placeholder="Spatial Extent">
+        <label class="control-label" for="field-temporal_extent">Temporal Extent</label>
+        <input type="text" formControlName="temporal_extent" class="form-control form-group"
+            placeholder="Temporal Extent">
+        <label class="control-label" for="field-spatial_reference_system">Spatial Reference System</label>
+        <input type="text" formControlName="spatial_reference_system" class="form-control form-group"
+            placeholder="Spatial Reference System">
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="field-name">Name</label>
+        <input type="text" formControlName="name" class="form-control form-group" placeholder="Name">
+        <app-validator *ngIf="f.name.invalid" [control]="f.name">
+        </app-validator>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="field-description">Description</label>
+        <textarea class="form-control rounded-0" formControlName="description" placeholder="Description"></textarea>
+    </div>
+    <app-validator *ngIf="f.description.invalid" [control]="f.description">
+    </app-validator>
+    <div class="form-group">
+        <label class="control-label" for="field-format">Format</label>
+        <input type="text" formControlName="format" class="form-control form-group" placeholder="Format">
+    </div>
+    <div lass="form-actions">
+        <button class="btn btn-primary" name="save" type="submit">Submit</button>
+    </div>
+
+</form>

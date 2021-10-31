@@ -64,3 +64,18 @@ class DataLakeHandler:
         except Exception as e:
             log.error(e)
             raise e
+
+    def get_no_of_files(self, container, user_path=None):
+        count = 0
+        try:
+            file_system_client = self.service_client.\
+                get_file_system_client(file_system=container)
+            paths = file_system_client.get_paths(path=user_path,
+                                                 recursive=True)
+            for data in paths:
+                if not data.is_directory:
+                    count += 1
+            return count
+        except Exception as e:
+            log.error(e)
+            raise e
