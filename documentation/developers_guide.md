@@ -32,7 +32,7 @@ So while developing if a new package is required that need to be added to [requi
 
 ### Custom UI
 
-The Custom UI is used to Resource Create and Resource Edit setup for the Databases, Data lake, and External links. This UI is built over `Angular 12`. Please follow the [documentation](./src/ckanext-data-catalog-510/datapub-510-custom-ui/README.md) for the usage and implementation of the UI.
+The Custom UI is used to Resource Create and Resource Edit setup for the Databases, Data lake, and External links. This UI is built over `Angular 12`. Please follow the [documentation](../src/ckanext-data-catalog-510/datapub-510-custom-ui/README.md) for the usage and implementation of the UI.
 The custom UI is based on the logic of [datapub extension](https://github.com/datopian/ckanext-datapub)
 
 Whenever you change something in the Custom UI you need to rebuild the artifacts, so to do that
