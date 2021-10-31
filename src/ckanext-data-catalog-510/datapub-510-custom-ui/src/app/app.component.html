@@ -1,0 +1,37 @@
+<div class="loader-position" *ngIf="commonService._showLoader | async">
+    <div class="loader">
+    </div>
+</div>
+<app-alert></app-alert>
+<div class="card-container">
+    <a class="card" [ngClass]="isLink == true ? 'active' : ''" (click)="!isDisabled && switchTab('link')">
+
+        <span>External Link</span>
+        <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+        </svg> </a>
+
+    <a class="card" [ngClass]="isDatabase == true ? 'active' : ''" (click)="!isDisabled && switchTab('database')">
+
+        <span>Databases</span>
+        <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+        </svg> </a>
+    <a class="card" [ngClass]="isDatalake == true ? 'active' : ''" (click)="!isDisabled && switchTab('datalake')">
+
+        <span>Datalake</span>
+        <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+        </svg> </a>
+</div>
+
+<div>
+    <app-link *ngIf="isLink == true" [pkg_name]="package_id" [type]="type" [resource]="resource"></app-link>
+</div>
+<div>
+    <app-databases *ngIf="isDatabase == true" [pkg_name]="package_id" [type]="type" [resource]="resource">
+    </app-databases>
+</div>
+<div>
+    <app-datalake *ngIf="isDatalake == true" [pkg_name]="package_id" [type]="type" [resource]="resource"></app-datalake>
+</div>

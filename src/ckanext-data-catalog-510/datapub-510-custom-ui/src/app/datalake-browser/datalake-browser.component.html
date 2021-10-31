@@ -1,0 +1,80 @@
+<p>*Double click to get data from Directory and Single Click to Select</p>
+<div class="tree-wrapper" *ngIf="pageType == 'container'">
+    <h1 *ngIf="containers.length <= 0"> No Containers Found</h1>
+    <div class="folder-wrap" *ngIf="containers.length > 0">
+        <div class="folder" *ngFor="let container of containers">
+            <div class="tile container" (dblclick)="getFiles(container.name, '')">
+                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 94.03"
+                    style="enable-background:new 0 0 122.88 94.03" xml:space="preserve">
+                    <style type="text/css">
+                        .st0 {
+                            fill-rule: evenodd;
+                            clip-rule: evenodd;
+                        }
+                    </style>
+                    <g>
+                        <path fill="#20639B" class="st0"
+                            d="M7.27,8.75h7.18V0h41.95v8.75h59.17v11.71l-108.3-5.2V8.75L7.27,8.75z M0,21.61h122.88l-9.07,66.7 c-0.42,3.11-2.59,5.72-5.73,5.72H12.73c-3.14,0-5.4-2.59-5.73-5.73L0,21.61L0,21.61z" />
+                    </g>
+                </svg>
+
+                <p class="name">{{container.name}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="tree-wrapper" *ngIf="pageType == 'files'">
+    <h1 *ngIf="files_and_directories.length <= 0"> No Files or Directory Found</h1>
+    <div class="folder-wrap">
+        <div class="folder">
+            <div class="tile"> <span (click)="goBack()">
+                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 133.97 122.88"
+                        style="enable-background:new 0 0 133.97 122.88; height: 50px" xml:space="preserve">
+                        <g>
+                            <path fill="#20639B"
+                                d="M87.13,0l-26.3,28.11l14.77,0v12.89l-62.58,0.67v-8.02l0,0h4.81c1.49,0,2.71-1.21,2.71-2.71V24.5h23.02v6.45 c0,1.49,1.21,2.71,2.71,2.71h10.06v-5.41h-7.35v-6.45c0-1.49-1.21-2.71-2.71-2.71H17.82c-1.5,0-2.71,1.21-2.71,2.71v6.45h-4.81 c-1.49,0-2.71,1.21-2.71,2.71V41.7c-0.99,0-4.95-0.33-6.19,0.33c-0.93,0.5-1.52,1.53-1.4,2.65l7.33,69.78 c0.24,2.3,1.23,4.42,2.77,5.96c1.53,1.52,3.56,2.47,5.92,2.47h99.76c2.34,0,4.34-0.94,5.84-2.44c1.52-1.52,2.51-3.63,2.82-5.89 l9.46-69.57c0.04-0.18,0.06-0.38,0.06-0.57c0-1.5-1.21-2.71-2.71-2.71h-4.94V30.95c0-1.49-1.21-2.71-2.71-2.71h-7.97v5.41h5.26 v6.88l-22.25,0.24V28.12h14.77L87.13,0L87.13,0L87.13,0z M75.6,47.11v0.04l23.07,0v-0.04h29.51l-9.08,66.72 c-0.15,1.11-0.6,2.11-1.28,2.78c-0.53,0.53-1.22,0.86-2.04,0.86H16.02c-0.84,0-1.57-0.34-2.11-0.88c-0.66-0.66-1.09-1.61-1.2-2.68 L5.7,47.11H75.6L75.6,47.11z" />
+                        </g>
+                    </svg>
+                </span>
+                <p>Back</p>
+            </div>
+        </div>
+        <div class="folder" *ngFor="let file of files_and_directories;let i=index">
+            <div class="tile" (click)="selectFile(file); activeFile=file"
+                [ngClass]="{'background': file === activeFile}" (dblclick)="getFiles(activeContainer, file.path)">
+                <span *ngIf="file.type == 'directory'">
+
+                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 94.03"
+                        style="enable-background:new 0 0 122.88 94.03; height: 50px;" xml:space="preserve">
+                        <style type="text/css">
+                            .st0 {
+                                fill-rule: evenodd;
+                                clip-rule: evenodd;
+                            }
+                        </style>
+                        <g>
+                            <path fill="#20639B" class="st0"
+                                d="M7.27,8.75h7.18V0h41.95v8.75h59.17v11.71l-108.3-5.2V8.75L7.27,8.75z M0,21.61h122.88l-9.07,66.7 c-0.42,3.11-2.59,5.72-5.73,5.72H12.73c-3.14,0-5.4-2.59-5.73-5.73L0,21.61L0,21.61z" />
+                        </g>
+                    </svg>
+                </span>
+                <span *ngIf="file.type == 'file'">
+                    <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90.48 122.88">
+                        <title>text-file</title>
+                        <path fill="#20639B"
+                            d="M35.27.78a3,3,0,0,1,2-.78,1.54,1.54,0,0,1,.47.05h46.2A6.59,6.59,0,0,1,88.56,2a6.52,6.52,0,0,1,1.92,4.64v109.7a6.57,6.57,0,0,1-6.56,6.56H6.67a6.57,6.57,0,0,1-6.56-6.56v-78A3.07,3.07,0,0,1,0,37.56a3.19,3.19,0,0,1,1-2.24L34.9,1a1.5,1.5,0,0,1,.26-.21ZM84.65,6.62a.5.5,0,0,0-.21-.47A.67.67,0,0,0,84,5.94H40.22V31.62a8.89,8.89,0,0,1-8.91,8.91H6.1v75.79a.58.58,0,0,0,.2.47.69.69,0,0,0,.47.21H84a.58.58,0,0,0,.47-.21.73.73,0,0,0,.21-.47V6.62Zm-62,94.73a2.64,2.64,0,0,1,0-5.28h28a2.64,2.64,0,0,1,0,5.28Zm0-17.75a2.64,2.64,0,0,1,0-5.28H65.46a2.64,2.64,0,0,1,0,5.28Zm0-17.76a2.64,2.64,0,0,1,0-5.28H72a2.64,2.64,0,0,1,0,5.28Zm11.7-34.22V10.11L10.11,34.64h21.2a3.16,3.16,0,0,0,2.13-.88,3.06,3.06,0,0,0,.89-2.14Z" />
+                    </svg>
+
+                </span>
+                <p class="name">{{file.name}}</p>
+            </div>
+        </div>
+    </div>
+    <div lass="form-actions" *ngIf="fileSelected">
+        <button class="btn btn-primary" name="save" type="submit" (click)="goToResourcePage()">Select</button>
+    </div>
+</div>
