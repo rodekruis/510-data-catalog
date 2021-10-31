@@ -93,7 +93,7 @@ export class DatalakeComponent implements OnInit {
     if (value.type != 'file') {
       this.no_of_files = value.no_of_files;
     }
-
+    this.datalakeForm.patchValue({ name: value.file_path.split('/').pop() });
     this.datalakeForm.patchValue({ datalake_data: value });
   }
   handleDraftPackage(id) {
