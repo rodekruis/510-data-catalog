@@ -14,7 +14,8 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_tables_metadata,
                                             get_all_dbs,
                                             get_containers,
-                                            get_directories_and_files)
+                                            get_directories_and_files,
+                                            get_no_of_files)
 
 
 class DataCatalog510Plugin(plugins.SingletonPlugin):
@@ -49,7 +50,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_tables_metadata': get_tables_metadata,
             'get_all_dbs': get_all_dbs,
             'get_containers': get_containers,
-            'get_directories_and_files': get_directories_and_files
+            'get_directories_and_files': get_directories_and_files,
+            'get_no_of_files': get_no_of_files
         }
 
     # Helpers
