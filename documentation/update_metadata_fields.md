@@ -34,7 +34,7 @@ be accepted when editing or updating this type of dataset.
 
 For more details on how to setup the fields please follow [ckanext-scheming](https://github.com/ckan/ckanext-scheming/)
 
-**Note:- The resource section is handled by [custom UI components](../src/ckanext-data-catalog-510/510-custom-ui/README.md), so the scheming section cannot be reused.**
+**Note:- The resource section is handled by [custom UI components](../src/ckanext-data-catalog-510/datapub-510-custom-ui/README.md), so the scheming section cannot be reused.**
 
 ### Developer's Notes
 
