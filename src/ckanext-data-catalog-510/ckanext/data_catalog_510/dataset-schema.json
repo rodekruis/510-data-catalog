@@ -89,8 +89,31 @@
         {
             "field_name": "data_quality",
             "label": "Dataset Quality",
-            "validators": "ignore_missing unicode",
-            "form_placeholder": "e.g Good"
+            "help_text": "Quality of the Data",
+            "help_inline": true,
+            "preset": "select",
+            "choices": [
+                {
+                    "value": "bad",
+                    "label": "Bad"
+                },
+                {
+                    "value": "poor",
+                    "label": "Poor"
+                },
+                {
+                    "value": "fair",
+                    "label": "Fair"
+                },
+                {
+                    "value": "good",
+                    "label": "Good"
+                },
+                {
+                    "value": "excellent",
+                    "label": "Excellent"
+                }
+            ]
         },
         {
             "field_name": "date_added",

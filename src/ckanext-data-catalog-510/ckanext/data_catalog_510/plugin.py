@@ -1,4 +1,4 @@
-from collections import OrderedDict
+ from collections import OrderedDict
 
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
@@ -26,7 +26,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IFacets)
     plugins.implements(plugins.IDatasetForm, inherit=False)
     plugins.implements(plugins.IFacets)
-
+    # For plugin interfaces 
+    # Please follow - https://docs.ckan.org/en/2.9/extensions/plugin-interfaces.html#plugin-interfaces-reference
     # IConfigurer
 
     def update_config(self, config_):
@@ -36,6 +37,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
                              'data_catalog_510')
         toolkit.add_resource('assets', 'ckanext-data_catalog_510')
 
+    # IValidators
     def get_validators(self):
         return {
             'validate_date_yyyy_mm_dd': validate_date_yyyy_mm_dd
@@ -54,7 +56,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_no_of_files': get_no_of_files
         }
 
-    # Helpers
+    # ITemplateHelpers
     def get_helpers(self):
         return {
             'get_countries_list': get_countries
