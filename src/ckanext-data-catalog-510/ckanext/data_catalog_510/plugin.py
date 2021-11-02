@@ -1,5 +1,3 @@
- from collections import OrderedDict
-
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from ckanext.data_catalog_510.\
