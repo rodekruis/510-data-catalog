@@ -91,6 +91,7 @@
             "label": "Dataset Quality",
             "help_text": "Quality of the Data",
             "help_inline": true,
+            "validators": "ignore_missing unicode",
             "preset": "select",
             "choices": [
                 {
