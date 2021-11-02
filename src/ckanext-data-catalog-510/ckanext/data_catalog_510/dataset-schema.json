@@ -42,7 +42,7 @@
         {
             "field_name": "url",
             "label": "Source",
-            "form_placeholder": "http://example.com/dataset.json",
+            "form_placeholder": "Organisation or website where the data is sourced from",
             "display_property": "foaf:homepage",
             "display_snippet": "link.html"
         },
