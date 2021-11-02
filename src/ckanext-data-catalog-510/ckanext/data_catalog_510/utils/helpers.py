@@ -3,7 +3,7 @@ import requests
 import datetime
 
 from ckan.lib.helpers import core_helper
-from ckan.common import c
+from ckan.common import c, config
 
 import logging
 log = logging.getLogger(__name__)
@@ -42,3 +42,12 @@ def get_current_date(data):
         return data
     else:
         return datetime.datetime.today().strftime(format)
+
+
+@core_helper
+def get_storage_explorer_link(container):
+    subscription_id = config.get('ckan.azure_subscription_id')
+    datalake_account_name = config.get('ckan.datalake_account_name')
+    resource_group_name = config.get('ckan.azure_resource_group_name')
+    storage_link = f"storageexplorer://v=1&accountid=/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Storage/storageAccounts/{datalake_account_name}&subscriptionid={subscription_id}&resourcetype=Azure.BlobContainer&resourcename={container}"
+    return storage_link
