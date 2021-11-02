@@ -39,7 +39,7 @@ Follow the above steps mentioned in the [local environment setup](#steps-to-run-
         ```
 	
 - **Dos2Unix**: Dos2Unix is a handy command-line utility to convert Windows text files (using CRLF line breaks) to Linux/UNIX text files (using LF line breaks).
-	- Download [Dos2Unix]https://waterlan.home.xs4all.nl/dos2unix/dos2unix-7.4.2-win64.zip) ZIP file and extract its contents.
+	- Download [Dos2Unix](https://waterlan.home.xs4all.nl/dos2unix/dos2unix-7.4.2-win64.zip) ZIP file and extract its contents.
 	- The zip contains a bin folder. Add the path up to the bin folder in your System's PATH environment variables to use the script in the terminal.
 	- To convert all files in a folder and its subfolders from CRLF to LF format, open a terminal in the folder and run one of the following:
 	
