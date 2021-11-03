@@ -4,6 +4,7 @@ import datetime
 
 from ckan.lib.helpers import core_helper
 from ckan.common import c, config
+from ckanext.data_catalog_510.controllers.database_handler import SQLHandler
 
 import logging
 log = logging.getLogger(__name__)
@@ -84,3 +85,13 @@ def get_storage_explorer_link(container):
         storage_link = f"storageexplorer://v=1&accountid=/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Storage/storageAccounts/{datalake_account_name}&subscriptionid={subscription_id}&resourcetype=Azure.BlobContainer&resourcename={container}"
         return storage_link
     return None
+
+
+@core_helper
+def get_db_string(res):
+    db_string = "Unknown String"
+    db_handler = SQLHandler()
+    if(res['database_connection_type']):
+        db_handler.db_type = res['database_connection_type']
+        db_string = db_handler.get_db_connection_string(res['database_connection'])
+    return db_string

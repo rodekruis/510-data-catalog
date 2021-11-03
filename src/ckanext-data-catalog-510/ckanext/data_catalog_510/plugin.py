@@ -3,7 +3,7 @@ import ckan.plugins.toolkit as toolkit
 from ckanext.data_catalog_510.\
      utils.validators import (validate_date_yyyy_mm_dd)
 from ckanext.data_catalog_510.\
-     utils.helpers import (get_countries)
+     utils.helpers import (get_countries, get_db_string)
 from collections import OrderedDict
 
 from ckanext.data_catalog_510.logic import (get_db_connections,
@@ -57,7 +57,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
     # ITemplateHelpers
     def get_helpers(self):
         return {
-            'get_countries_list': get_countries
+            'get_countries_list': get_countries,
+            'get_db_string': get_db_string
         }
 
     def is_fallback(self):
@@ -82,4 +83,3 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
     def organization_facets(self, facets_dict, organization_type,
                             package_type):
         return facets_dict
-
