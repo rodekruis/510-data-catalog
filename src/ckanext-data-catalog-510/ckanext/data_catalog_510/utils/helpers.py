@@ -23,6 +23,9 @@ def get_countries():
         country_list = []
         for country in results:
             country_list.append({'name': country.get('name')})
+        country_list.append({'name': 'Other'})
+        country_list = sorted(country_list,key= lambda x:x['name'])
+        country_list.insert(0,{'name': 'Global'})
         return country_list
     except Exception as e:
         log.error(e)
