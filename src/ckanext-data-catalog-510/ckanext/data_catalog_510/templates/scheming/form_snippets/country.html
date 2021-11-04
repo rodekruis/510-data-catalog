@@ -17,19 +17,9 @@
     {%- endif -%}
 {% endfor %}
 
-{% call form.select(
-    field.field_name,
-    id='field-' + field.field_name,
-    label=h.scheming_language_text(field.label),
-    options=options,
-    selected=data.get(field.field_name, field.get('default', 'notspecified')),
-    error=errors[field.field_name],
-    classes=['control-medium'],
-    attrs=field.form_attrs if 'form_attrs' in field else {
-      "data-module": "autocomplete"
-    },
-    is_required=h.scheming_field_required(field),
-    )
-%}
-    {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
-{% endcall %}
+
+{% set tag_attrs = {'data_module':'autocomplete','data-module-tags':'', 'data_module_source':
+    '/api/3/action/country_autocomplete?incomplete=?'} %}
+{{ form.select('Country', id='field_tags', label=_('Country'), placeholder=_('eg. Spain, India'),value=data.country,
+error=errors.tags, classes=['control-full'], attrs= tag_attrs)}}
+{%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
