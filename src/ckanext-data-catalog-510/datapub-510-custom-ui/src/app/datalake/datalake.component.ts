@@ -24,8 +24,6 @@ export class DatalakeComponent implements OnInit {
   };
   headers = {
     Accept: 'application/json',
-    Authorization:
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJlSS04UUxyYVR6eUtyZHJmQl9PNmlIdVlRYnhKdWN1S05JWWtFYkVLcXBGRkdSMng5NkpUVXRiLXh5UkVSUW9QQVhSOURVM1lobHhtbF9kMSIsImlhdCI6MTYzNTY4Mzc3MH0.zI18LG9oq3bL6cJaAkrv74N1Bx0t72cy8-Ih3GtWHns',
   };
   datalakeForm: FormGroup;
   @Input() pkg_name: any;
@@ -150,7 +148,7 @@ export class DatalakeComponent implements OnInit {
     this.commonService.showLoader = true;
     this.http
       .post<any>(this.base_url + api_url, data, {
-        headers: { Authorization: '' },
+        headers: this.headers,
       })
       .subscribe(
         (res) => {

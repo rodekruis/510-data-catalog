@@ -74,7 +74,12 @@
             {% if res.datalake_data.container %}
             <tr>
                 <th scope="row">{{ _('Datalake Container Name') }}</th>
+                {% if c.user %}
+                {% set storage_url = h.get_storage_explorer_link(res.datalake_data.container) %}
+                <td><a href="{{ storage_url }}" target="_blank">{{ res.datalake_data.container }}</a></td>
+                {% else %}
                 <td>{{ res.datalake_data.container }}</td>
+                {% endif %}
             </tr>
             {% endif %}
             {% if res.datalake_data.file_path %}

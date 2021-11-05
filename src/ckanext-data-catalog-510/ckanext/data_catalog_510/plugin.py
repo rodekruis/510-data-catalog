@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from ckanext.data_catalog_510.\
@@ -26,7 +24,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IFacets)
     plugins.implements(plugins.IDatasetForm, inherit=False)
     plugins.implements(plugins.IFacets)
-
+    # For plugin interfaces 
+    # Please follow - https://docs.ckan.org/en/2.9/extensions/plugin-interfaces.html#plugin-interfaces-reference
     # IConfigurer
 
     def update_config(self, config_):
@@ -36,6 +35,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
                              'data_catalog_510')
         toolkit.add_resource('assets', 'ckanext-data_catalog_510')
 
+    # IValidators
     def get_validators(self):
         return {
             'validate_date_yyyy_mm_dd': validate_date_yyyy_mm_dd
@@ -54,7 +54,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_no_of_files': get_no_of_files
         }
 
-    # Helpers
+    # ITemplateHelpers
     def get_helpers(self):
         return {
             'get_countries_list': get_countries
@@ -73,7 +73,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
     def dataset_facets(self, facets_dict, package_type):
         return OrderedDict([('dataset_owner', 'Dataset Owner'),
                             ('country', 'Country'),
-                            ('initially_used', 'Project')])
+                            ('initially_used', 'Project'),
+                            ('data_quality', 'Dataset Quality')])
 
     def group_facets(self, facets_dict, group_type, package_type):
         return facets_dict
