@@ -61,9 +61,15 @@
                 <td>{{ res.database_connection_type }}</td>
             </tr>
             {% endif %}
+            {% if res.resource_type == "database" %}
+            <tr>
+                <th scope="row">{{_('Database Host')}}</th>
+                <td>{{ h.get_db_string(res) }}</td>
+            </tr>
+            {% endif %}
             {% if res.database_connection %}
             <tr>
-                <th scope="row">{{ _('Database Connection Name') }}</th>
+                <th scope="row">{{ _('Database Name') }}</th>
                 <td>{{ res.database_connection }}</td>
             </tr>
             {% endif %}

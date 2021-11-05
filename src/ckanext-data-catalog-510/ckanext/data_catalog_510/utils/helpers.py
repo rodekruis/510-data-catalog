@@ -93,5 +93,5 @@ def get_db_string(res):
     db_handler = SQLHandler()
     if(res['database_connection_type']):
         db_handler.db_type = res['database_connection_type']
-        db_string = db_handler.get_db_connection_string(res['database_connection'])
+        db_string = db_handler.get_db_connection_string(res['database_connection']).split("//")[-1].split("/")[0].split("@")[-1]
     return db_string
