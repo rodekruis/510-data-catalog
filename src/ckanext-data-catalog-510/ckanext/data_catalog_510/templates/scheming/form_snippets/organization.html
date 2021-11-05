@@ -1,0 +1,19 @@
+{% ckan_extends %}
+{% block package_metadata_fields_visibility %}
+{{ super() }}
+<div>
+<p class='text-danger' id='public-visible-warning' data-module='public-visible-warning'>
+By putting visibility to public the dataset entry will become publicly available to anyone visiting this website.
+</p>
+<script>
+let visibility = document.querySelector("#field-private");
+visibility.onchange = function() {
+    if(visibility.value === "False"){
+        document.getElementById("public-visible-warning").style.display = 'block';
+    } else {
+        document.getElementById("public-visible-warning").style.display = 'none';
+    }
+}
+</script>
+</div>
+{% endblock %}
