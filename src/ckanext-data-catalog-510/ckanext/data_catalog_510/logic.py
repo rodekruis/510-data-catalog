@@ -1,6 +1,7 @@
 import ckan.logic as logic
 from ckan.common import g, config, _
 import ckan.model as model
+import ckan.plugins.toolkit as toolkit 
 
 from ckanext.data_catalog_510.\
      controllers.database_handler import SQLHandler
@@ -214,3 +215,9 @@ def get_no_of_files(context, data_dict):
     except Exception as e:
         log.error(e)
         raise e
+
+@toolkit.side_effect_free
+def country_autocomplete(context, data_dict):
+    from ckanext.data_catalog_510.utils.helpers import get_countries
+    search = data_dict.get('search')
+    return get_countries(search)
