@@ -71,8 +71,7 @@
         {
             "field_name": "country",
             "label": "Country",
-            "form_snippet": "country.html",
-            "preset":"multiple_select",
+            "form_snippet": "country.html",        
             "help_text": "The List of countries"
         },
         {

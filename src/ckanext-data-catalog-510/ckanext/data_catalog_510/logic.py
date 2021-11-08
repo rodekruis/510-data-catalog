@@ -219,5 +219,5 @@ def get_no_of_files(context, data_dict):
 @toolkit.side_effect_free
 def country_autocomplete(context, data_dict):
     from ckanext.data_catalog_510.utils.helpers import get_countries
-    log.info(data_dict)
-    return get_countries
+    search = data_dict.get('search')
+    return get_countries(search)
