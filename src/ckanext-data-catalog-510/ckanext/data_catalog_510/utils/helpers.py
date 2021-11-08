@@ -1,4 +1,3 @@
-
 import requests
 import datetime
 
@@ -9,7 +8,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-def get_countries():
+def get_countries(search):
     '''Helper used to fetch the country list by passing the limit as 400 as
     currently the no of countries are less than that.
     # TODO - Add a fallback if the API doesn't respond
@@ -22,10 +21,9 @@ def get_countries():
         results = response.json()['results']
         country_list = []
         for country in results:
-            country_list.append({'name': country.get('name')})
-        country_list.append({'name': 'Other'})
-        country_list = sorted(country_list,key= lambda x:x['name'])
-        country_list.insert(0,{'name': 'Global'})
+            country_list.append(country.get('name'))
+            country_list.append('Other')
+            country_list = list(filter(lambda k: search.lower() in k.lower(), country_list))
         return country_list
     except Exception as e:
         log.error(e)
