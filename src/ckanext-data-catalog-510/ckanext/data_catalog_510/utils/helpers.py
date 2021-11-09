@@ -89,7 +89,7 @@ def get_db_host(res):
         db_handler = SQLHandler()
         if(res['database_connection_type']):
             db_handler.db_type = res['database_connection_type']
-            host = db_handler.get_db_connection_string(res['database_connection']).split("//")[-1].split("/")[0].split("@")[-1]
+            host = db_handler.get_db_connection_string(res['database_connection']).split("@")[-1].split("/")[0]
         return host
     except Exception as e:
         log.error(e)
