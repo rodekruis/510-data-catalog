@@ -1,3 +1,9 @@
+/*
+* dataset-visibility-select
+* This JavaScript module is used in the Visibility field of Dataset Form page 
+* to display a warning if the dataset's visibility is set to Public.
+* It internally triggers the warning-display common module.
+*/
 this.ckan.module('dataset-visibility-select', function ($, _) {
     return {
         initialize: function() {
@@ -6,14 +12,14 @@ this.ckan.module('dataset-visibility-select', function ($, _) {
             this._onChange();
         },
         _onChange: function() {
-            let params = {};
+            let params_public = {};
             if ($("#field-private").find(":selected").text() === "Public") {
-                params['show'] = true;
+                params_public['show'] = true;
             } else {
-                params['show'] = false;
+                params_public['show'] = false;
             }
-            params['id'] = $('#public-visible-warning').attr('id');
-            this.sandbox.publish("change:showWarning", params);
+            params_public['id'] = $('#public-visible-warning').attr('id');
+            this.sandbox.publish("change:showWarning", params_public);
         }
     }
 });
