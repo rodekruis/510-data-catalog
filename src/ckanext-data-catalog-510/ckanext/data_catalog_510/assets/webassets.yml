@@ -4,7 +4,8 @@ data_catalog_510-js:
   contents:
     - js/main.js
     - js/polyfills.js
-    - js/dataset_visibility_module.js
+    - js/data_catalog_510-dataset-visibility.js
+    - js/data_catalog_510-common.js
 
   extra:
     preload:
