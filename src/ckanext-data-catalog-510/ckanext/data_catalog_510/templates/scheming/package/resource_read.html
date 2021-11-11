@@ -8,6 +8,15 @@
 ] -%}
 {%- set schema = h.scheming_get_dataset_schema(dataset_type) -%}
 
+{% block resource_read_url %}
+{% if res.database_connection %}
+{{ super() }}
+<div>
+<p>DB Connection String for <b>{{ res.database_connection_type }}</b> Database : {{ h.generate_sample_db_string(res) }} </p>
+</div>
+{% endif %}
+{% endblock %}
+
 {% block resource_additional_information_inner %}
 {% if res.datastore_active %}
 {% block resource_data_dictionary %}
@@ -52,9 +61,15 @@
                 <td>{{ res.database_connection_type }}</td>
             </tr>
             {% endif %}
+            {% if res.resource_type == "database" %}
+            <tr>
+                <th scope="row">{{_('Database Host')}}</th>
+                <td>{{ h.get_db_host(res) }}</td>
+            </tr>
+            {% endif %}
             {% if res.database_connection %}
             <tr>
-                <th scope="row">{{ _('Database Connection Name') }}</th>
+                <th scope="row">{{ _('Database Name') }}</th>
                 <td>{{ res.database_connection }}</td>
             </tr>
             {% endif %}
@@ -74,12 +89,7 @@
             {% if res.datalake_data.container %}
             <tr>
                 <th scope="row">{{ _('Datalake Container Name') }}</th>
-                {% if c.user %}
-                {% set storage_url = h.get_storage_explorer_link(res.datalake_data.container) %}
-                <td><a href="{{ storage_url }}" target="_blank">{{ res.datalake_data.container }}</a></td>
-                {% else %}
                 <td>{{ res.datalake_data.container }}</td>
-                {% endif %}
             </tr>
             {% endif %}
             {% if res.datalake_data.file_path %}
