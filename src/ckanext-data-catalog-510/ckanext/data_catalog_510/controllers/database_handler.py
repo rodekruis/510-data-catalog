@@ -1,8 +1,10 @@
+from sqlalchemy.sql.schema import Table
 from ckan.common import config, _
 import ckan.logic as logic
 
 import json
 from geoalchemy2 import Geometry
+import geopandas as gpd
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -135,22 +137,31 @@ class SQLHandler:
             self.db_type = db_type
             self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
+            con = engine.connect()
             query = f'Select Count(*) from {schema}.{table_name};'
             result = engine.execute(query)
             count = result.first()[0]
             inspector = inspect(engine)
             columns = inspector.get_columns(table_name, schema=schema)
+            log.info(columns)
             col_type_list = list(map(lambda column: column['type'], columns))
-            is_geo = False
-            for column_type in enumerate(col_type_list):
-                if 'geo' in str(column_type):
-                    is_geo = True
-
             cols_list = list(map(lambda column: column['name'], columns))
+            is_geo = False
+            geo_metadata = {}
+            for column_type in enumerate(col_type_list):
+                log.info(str(column_type))
+                if 'Geo' in str(column_type):
+                    is_geo = True
+                    geoData = gpd.read_postgis(f'SELECT * FROM {schema}.{table_name}', con=con, geom_col=cols_list[column_type[0]])
+                    geo_metadata['spatial_extent'] = str(geoData.total_bounds)
+                    geo_metadata['spatial_resolution'] = ''
+                    geo_metadata['spatial_reference_system'] = str(geoData.crs.to_epsg() if geoData.crs else None)
+                    break
             table_metadata = {
                 'no_of_records': count,
                 'no_of_attributes': len(cols_list),
-                'is_geo': is_geo
+                'is_geo': is_geo,
+                'geo_metadata': geo_metadata
             }
             return table_metadata
 

@@ -281,6 +281,7 @@ export class DatabasesComponent implements OnInit {
         (res) => {
           this.commonService.showLoader = false;
           this.metaData = res.result;
+          console.log(this.metaData)
           if (this.metaData?.is_geo == true) {
             this.is_geo = true;
           }
@@ -289,6 +290,11 @@ export class DatabasesComponent implements OnInit {
               no_of_records: this.metaData.no_of_records,
               no_of_attributes: this.metaData.no_of_attributes,
             },
+            geo_metadata: {
+              spatial_extent: this.metaData.geo_metadata.spatial_extent,
+              spatial_resolution: this.metaData.geo_metadata.spatial_resolution,
+              spatial_reference_system: this.metaData.geo_metadata.spatial_reference_system
+            }
           });
         },
         (error) => {
