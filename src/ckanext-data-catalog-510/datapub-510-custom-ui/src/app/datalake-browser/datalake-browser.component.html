@@ -21,10 +21,10 @@
                     <p class="name">..Back</p>
                 </div>
             </li>
-            <li class="list-item" *ngFor="let file of files_and_directories;let i=index" (click)="selectFile(file); activeFile=file" (dblclick)="getFiles(activeContainer, file.path)">
-                <div class="folder"
-                    [ngClass]="{'background': file === activeFile}">
+            <li class="list-item" [ngClass]="{'background': file === activeFile}" *ngFor="let file of files_and_directories;let i=index" (click)="selectFile(file); activeFile=file" (dblclick)="getFiles(activeContainer, file.path)">
+                <div class="folder">
                     <p class="name">{{file.name}}</p>
+                    <p class="type">{{file.type}}</p>
                 </div>
             </li>
         </ul>
