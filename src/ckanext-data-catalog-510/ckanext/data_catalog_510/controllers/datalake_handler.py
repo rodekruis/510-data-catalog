@@ -118,9 +118,9 @@ class DataLakeHandler:
                             with memfile.open() as dataset:
                                 geoData = rxr.open_rasterio(dataset, masked=True)
                                 geo_metadata['spatial_extent'] = str(geoData.rio.bounds())
-                                geo_metadata['spatial_resolution'] = str(geoData.rio.resolution())
+                                geo_metadata['spatial_resolution'] = str(geoData.rio.resolution()[0])
                                 geo_metadata['spatial_reference_system'] = str(geoData.rio.crs.to_epsg())
-                    elif endsWith(user_path, ['.geojson', '.shp']):
+                    elif endsWith(user_path, ['.geojson']):
                         geoFile = file_client.download_file()
                         with fiona.BytesCollection(bytes(geoFile.readall())) as fileBytes:
                             geoData = gpd.GeoDataFrame.from_features(fileBytes, crs=fileBytes.crs_wkt)

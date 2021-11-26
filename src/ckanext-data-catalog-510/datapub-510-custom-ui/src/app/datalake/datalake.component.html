@@ -26,7 +26,7 @@
             <div class="form-select form-group " *ngIf="resourceSelected">
                 <input type="checkbox" [checked]="is_geo" (change)="is_geo = !is_geo" /> Is Data is GEO Data?
             </div>
-             <div class="form-group" *ngIf="is_geo && list_of_files?.length">
+             <div class="form-group" *ngIf="is_geo">
                 <label class="control-label" for="field-spatial_extent">Base File (for Auto-fill)</label>
                 <select class="form-group mb-4" (change)="selectedBaseFilePath = $event.target.value">
                     <option hidden [value]="null" disabled selected>Choose file to generate spatial metadata from</option>
@@ -37,7 +37,7 @@
                 <button class="btn btn-primary" *ngIf="is_geo && list_of_files.length > 0" [disabled]="selectedBaseFilePath === null" (click)="getGeoMetadata()">Auto-fill Spatial Metadata</button>
             </div>
             <div class="form-select form-group control-order-by" *ngIf="is_geo" formGroupName="geo_metadata">
-                <label class="control-label" for="field-spatial_resolution">Spatial Resolution</label>
+                <label class="control-label" for="field-spatial_resolution">Cell Size</label>
                 <input type="text" formControlName="spatial_resolution" class="form-control form-group"
                     placeholder="Spatial Resolution">
                 <label class="control-label" for="field-temporal_resolution">Temporal Resolution</label>

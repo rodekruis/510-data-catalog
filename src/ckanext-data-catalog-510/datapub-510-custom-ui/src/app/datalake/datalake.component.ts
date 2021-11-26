@@ -35,7 +35,7 @@ export class DatalakeComponent implements OnInit {
   resourceData;
   resourceSelected;
   no_of_files;
-  list_of_files;
+  list_of_files = [];
   selectedBaseFilePath: string = null;
   is_geo;
   geo_metadata: any = {}
@@ -66,6 +66,7 @@ export class DatalakeComponent implements OnInit {
     if (this.type == 'edit') {
       this.getResource();
     }
+    this.selectedBaseFilePath = null
   }
 
   get f() {
@@ -115,7 +116,6 @@ export class DatalakeComponent implements OnInit {
     this.datalakeForm.patchValue({ datalake_data: value });
     console.log(value);
     this.getListOfFiles(value)
-    this.commonService.showLoader = true;
   }
 
   getListOfFiles(value) {
@@ -131,7 +131,6 @@ export class DatalakeComponent implements OnInit {
           headers: this.headers
         }).subscribe((res) => {
           if (res.result) {
-            this.commonService.showLoader = false;
             this.list_of_files = []
             for(let i = 0; i < res.result['directory_structure'].length; i++){
               if (res.result['directory_structure'][i]['type'] === "file") {
@@ -141,7 +140,6 @@ export class DatalakeComponent implements OnInit {
           }
         }, (error) => {
           this.alertService.error(error?.error?.error?.message);
-          this.commonService.showLoader = false;
         })
     }
     this.selectedBaseFilePath = null
@@ -151,7 +149,7 @@ export class DatalakeComponent implements OnInit {
     if (this.is_geo) {
       Swal.fire({
         title: "Auto-fill spatial metadata?",
-        text: "This may take a while...",
+        text: "To auto-fill, we will download the file to our servers. This process may take time. Please reconsider if the file is big.",
         showCancelButton: true,
         confirmButtonText: "Continue",
       }).then((result) => {
