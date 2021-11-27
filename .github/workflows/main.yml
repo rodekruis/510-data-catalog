@@ -45,8 +45,9 @@ jobs:
           g++ \
           libffi-dev \
           libxml2 \
-          libproj-dev \
-          libgdal-dev \
+          proj-dev \
+          geos-dev \
+          gdal-dev \
           unixodbc-dev \
           mariadb-dev \
           postgresql-dev
