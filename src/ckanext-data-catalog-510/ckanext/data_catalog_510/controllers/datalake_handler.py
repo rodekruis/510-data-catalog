@@ -9,6 +9,8 @@ NotFound = logic.NotFound
 NotAuthorized = logic.NotAuthorized
 ValidationError = logic.ValidationError
 
+ITEMS_PER_PAGE = 2
+
 
 class DataLakeHandler:
     def __init__(self):
@@ -31,7 +33,7 @@ class DataLakeHandler:
         except Exception as e:
             print(e)
 
-    def list_file_system(self):
+    def list_file_system(self,page_num):
         '''Get the File System/Containers List
         '''
         try:
@@ -40,7 +42,12 @@ class DataLakeHandler:
             containers = []
             for data in file_system:
                 containers.append({'name': data.name})
-            return containers
+            log.info(containers)
+            
+            start = (page_num - 1) * ITEMS_PER_PAGE
+            end = start + ITEMS_PER_PAGE
+            final_data = containers[start:end]
+            return final_data
         except Exception as e:
             log.error(e)
             raise e

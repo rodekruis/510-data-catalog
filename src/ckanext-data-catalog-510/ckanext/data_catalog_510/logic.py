@@ -165,7 +165,9 @@ def get_containers(context, data_dict):
     try:
         datalake_connection = DataLakeHandler()
         datalake_connection.initialize_storage_account()
-        return datalake_connection.list_file_system()
+        page_num = 1
+        # page_num = data_dict.get('page_num','')
+        return datalake_connection.list_file_system(page_num)
     except Exception as e:
         log.error(e)
         raise e
