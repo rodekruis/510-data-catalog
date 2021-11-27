@@ -114,7 +114,7 @@ export class DatalakeComponent implements OnInit {
     }
     this.datalakeForm.patchValue({ name: value.file_path.split('/').pop() });
     this.datalakeForm.patchValue({ datalake_data: value });
-    console.log(value);
+    // console.log(value);
     this.getListOfFiles(value)
   }
 
@@ -155,18 +155,18 @@ export class DatalakeComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
           let [container, ...path] = this.resourceSelected.split('/')
-          console.log(container, path.join('/'))
+          // console.log(container, path.join('/'))
           let data = {
             container: container,
             // 'path': path.join('/')
             path: this.selectedBaseFilePath
           }
-          console.log(data)
+          // console.log(data)
           this.commonService.showLoader = true;
           this.http.post<any>(this.base_url + this.API_LIST.get_geo_metadata, data, {})
             .subscribe((res) => {
               this.commonService.showLoader = false;
-              console.log(res.result)
+              // console.log(res.result)
               if (res.result) {
                 this.datalakeForm.patchValue({
                   geo_metadata: {

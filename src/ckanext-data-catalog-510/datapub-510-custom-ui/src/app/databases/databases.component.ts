@@ -281,7 +281,7 @@ export class DatabasesComponent implements OnInit {
         (res) => {
           this.commonService.showLoader = false;
           this.metaData = res.result;
-          console.log(this.metaData)
+          // console.log(this.metaData)
           if (this.metaData?.is_geo == true) {
             this.is_geo = true;
           }

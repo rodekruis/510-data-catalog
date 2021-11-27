@@ -143,16 +143,16 @@ class SQLHandler:
             count = result.first()[0]
             inspector = inspect(engine)
             columns = inspector.get_columns(table_name, schema=schema)
-            log.info(columns)
+            # log.info(columns)
             col_type_list = list(map(lambda column: column['type'], columns))
             cols_list = list(map(lambda column: column['name'], columns))
             is_geo = False
             geo_metadata = {}
             for column_type in enumerate(col_type_list):
-                log.info(str(column_type))
+                # log.info(str(column_type))
                 if 'Geo' in str(column_type):
                     is_geo = True
-                    log.info(cols_list[column_type[0]])
+                    # log.info(cols_list[column_type[0]])
                     geoData = gpd.read_postgis(f'SELECT * FROM {schema}.{table_name}', con=con, geom_col=cols_list[column_type[0]])
                     geo_metadata['spatial_extent'] = str(geoData.total_bounds)
                     geo_metadata['spatial_resolution'] = ''

@@ -110,7 +110,7 @@ class DataLakeHandler:
             file_client = self.service_client.get_file_client(file_system=container, file_path=user_path)
             if file_client.exists():
                 file_properties = file_client.get_file_properties()
-                log.info(file_properties)
+                # log.info(file_properties)
                 if file_properties.size < 100000000:
                     if endsWith(user_path, ['.tiff', '.tif']):
                         geoFile = file_client.download_file()
@@ -127,7 +127,7 @@ class DataLakeHandler:
                             geo_metadata['spatial_extent'] = str(list(geoData.total_bounds))
                             geo_metadata['spatial_resolution'] = ""
                             geo_metadata['spatial_reference_system'] = str(geoData.crs.to_epsg())
-                    log.info(geo_metadata)
+                    # log.info(geo_metadata)
                 else:
                     raise "Size too big"
         except Exception as e:

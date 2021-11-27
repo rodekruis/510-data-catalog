@@ -186,7 +186,7 @@ def get_directories_and_files(context, data_dict):
     try:
         datalake_connection = DataLakeHandler()
         datalake_connection.initialize_storage_account()
-        log.info(data_dict)
+        # log.info(data_dict)
         container = data_dict.get('container', '')
         path = data_dict.get('path', '')
         return datalake_connection.list_directory_contents(container, path)
