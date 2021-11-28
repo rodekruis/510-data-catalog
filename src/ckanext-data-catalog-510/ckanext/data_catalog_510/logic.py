@@ -163,11 +163,14 @@ def get_containers(context, data_dict):
     # Validate whether user has permission to create datasets or not
     logic.check_access(u'package_create', context)
     try:
+        log.info(data_dict)
+        count = data_dict.get('count','1')
         datalake_connection = DataLakeHandler()
         datalake_connection.initialize_storage_account()
-        page_num = 1
+        # page_num = 2
         # page_num = data_dict.get('page_num','')
-        return datalake_connection.list_file_system(page_num)
+
+        return datalake_connection.list_file_system(count)
     except Exception as e:
         log.error(e)
         raise e

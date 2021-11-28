@@ -9,7 +9,7 @@ NotFound = logic.NotFound
 NotAuthorized = logic.NotAuthorized
 ValidationError = logic.ValidationError
 
-ITEMS_PER_PAGE = 2
+ITEMS_PER_PAGE = 3
 
 
 class DataLakeHandler:
@@ -42,9 +42,8 @@ class DataLakeHandler:
             containers = []
             for data in file_system:
                 containers.append({'name': data.name})
-            log.info(containers)
-            
-            start = (page_num - 1) * ITEMS_PER_PAGE
+            log.info(containers)         
+            start = (int(page_num) - 1) * ITEMS_PER_PAGE
             end = start + ITEMS_PER_PAGE
             final_data = containers[start:end]
             return final_data

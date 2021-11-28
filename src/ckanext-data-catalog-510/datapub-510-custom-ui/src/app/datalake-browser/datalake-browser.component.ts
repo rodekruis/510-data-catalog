@@ -42,11 +42,38 @@ export class DatalakeBrowserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAllContainers();
+    // this.getAllContainers();
+    this.getPageContainers(1);
   }
 
   getAllContainers() {
     this.commonService.showLoader = true;
+    this.http
+      .post<any>(
+        this.base_url + this.API_LIST.get_containers,
+        {},
+        {
+          headers: this.headers,
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.commonService.showLoader = false;
+          this.pageType = 'container';
+          this.containers = res.result;
+        },
+        (error) => {
+          this.alertService.error(error?.error?.error?.message);
+          this.commonService.showLoader = false;
+        }
+      );
+  }
+
+  getPageContainers(count) {
+    this.commonService.showLoader = true;
+    let data = {
+      count,
+    };
     this.http
       .post<any>(
         this.base_url + this.API_LIST.get_containers,
@@ -142,5 +169,6 @@ export class DatalakeBrowserComponent implements OnInit {
           this.commonService.showLoader = false;
         }
       );
-  }
+  }  
 }
+
