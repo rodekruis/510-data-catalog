@@ -140,7 +140,6 @@ class SQLHandler:
             else:
                 query = f'Select Count(*) from {schema}.{table_name};'
             
-            log.info(query)
             result = engine.execute(query)
             count = result.first()[0]
             inspector = inspect(engine)
