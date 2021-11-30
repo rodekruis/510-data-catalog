@@ -86,7 +86,7 @@ export class DatalakeComponent implements OnInit {
         (res) => {
           this.commonService.showLoader = false;
           this.resourceData = res.result;
-          if(this.resourceData?.geo_metadata){
+          if (this.resourceData?.geo_metadata) {
             this.is_geo = true;
           }
           this.datalakeForm.patchValue({
@@ -119,29 +119,25 @@ export class DatalakeComponent implements OnInit {
   }
 
   getListOfFiles(value) {
-    if (this.no_of_files == 1) {
-      this.list_of_files.push(value.file_path)
-    } else {
-      this.http.post<any>(this.API_LIST.get_directories_and_files,
-        {
-          container: value.container,
-          path: value.file_path
-        },
-        {
-          headers: this.headers
-        }).subscribe((res) => {
-          if (res.result) {
-            this.list_of_files = []
-            for(let i = 0; i < res.result['directory_structure'].length; i++){
-              if (res.result['directory_structure'][i]['type'] === "file") {
-                this.list_of_files.push(res.result['directory_structure'][i]['path'])
-              }
+    this.http.post<any>(this.API_LIST.get_directories_and_files,
+      {
+        container: value.container,
+        path: value.file_path
+      },
+      {
+        headers: this.headers
+      }).subscribe((res) => {
+        if (res.result) {
+          this.list_of_files = []
+          for (let i = 0; i < res.result['directory_structure'].length; i++) {
+            if (res.result['directory_structure'][i]['type'] === "file") {
+              this.list_of_files.push(res.result['directory_structure'][i]['path'])
             }
           }
-        }, (error) => {
-          this.alertService.error(error?.error?.error?.message);
-        })
-    }
+        }
+      }, (error) => {
+        this.alertService.error(error?.error?.error?.message);
+      })
     this.selectedBaseFilePath = null
   }
 

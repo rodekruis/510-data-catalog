@@ -137,7 +137,6 @@ class SQLHandler:
             self.db_type = db_type
             self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
-            con = engine.connect()
             if db_type == 'mysql':
                 query = f'Select Count(*) from `{schema}`.{table_name};'
             else:
@@ -152,16 +151,18 @@ class SQLHandler:
             cols_list = list(map(lambda column: column['name'], columns))
             is_geo = False
             geo_metadata = {}
-            for column_type in enumerate(col_type_list):
-                # log.info(str(column_type))
-                if 'Geo' in str(column_type):
-                    is_geo = True
-                    # log.info(cols_list[column_type[0]])
-                    geoData = gpd.read_postgis(f'SELECT {cols_list[column_type[0]]} FROM {schema}.{table_name}', con=con, geom_col=cols_list[column_type[0]])
-                    geo_metadata['spatial_extent'] = str(geoData.total_bounds)
-                    geo_metadata['spatial_resolution'] = ''
-                    geo_metadata['spatial_reference_system'] = str(geoData.crs.to_epsg() if geoData.crs else None)
-                    break
+            if db_type == 'postgres':
+                con = engine.connect()
+                for column_type in enumerate(col_type_list):
+                    # log.info(str(column_type))
+                    if 'Geo' in str(column_type):
+                        is_geo = True
+                        # log.info(cols_list[column_type[0]])
+                        geoData = gpd.read_postgis(f'SELECT {cols_list[column_type[0]]} FROM {schema}.{table_name}', con=con, geom_col=cols_list[column_type[0]])
+                        geo_metadata['spatial_extent'] = str(geoData.total_bounds)
+                        geo_metadata['spatial_resolution'] = ''
+                        geo_metadata['spatial_reference_system'] = str(geoData.crs.to_epsg() if geoData.crs else None)
+                        break
             table_metadata = {
                 'no_of_records': count,
                 'no_of_attributes': len(cols_list),
