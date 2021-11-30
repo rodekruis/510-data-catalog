@@ -138,7 +138,11 @@ class SQLHandler:
             self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
             con = engine.connect()
-            query = f'Select Count(*) from {schema}.{table_name};'
+            if db_type == 'mysql':
+                query = f'Select Count(*) from `{schema}`.{table_name};'
+            else:
+                query = f'Select Count(*) from {schema}.{table_name};'
+            
             result = engine.execute(query)
             count = result.first()[0]
             inspector = inspect(engine)
