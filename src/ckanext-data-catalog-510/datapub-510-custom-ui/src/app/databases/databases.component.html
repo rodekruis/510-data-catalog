@@ -51,7 +51,7 @@
         <input type="checkbox" [checked]="is_geo" (change)="is_geo = !is_geo" /> Is Data is GEO Data?
     </div>
     <div class="form-select form-group control-order-by" *ngIf="is_geo" formGroupName="geo_metadata">
-        <label class="control-label" for="field-spatial_resolution">Spatial Resolution</label>
+        <label class="control-label" for="field-spatial_resolution">Cell Size</label>
         <input type="text" formControlName="spatial_resolution" class="form-control form-group"
             placeholder="Spatial Resolution">
         <label class="control-label" for="field-temporal_resolution">Temporal Resolution</label>

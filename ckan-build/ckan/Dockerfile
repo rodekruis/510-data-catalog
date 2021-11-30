@@ -26,8 +26,12 @@ RUN apt-get -q -y update \
         libpq-dev \
         libxml2-dev \
         libxslt-dev \
+        libproj-dev \
         libgeos-dev \
+        libspatialindex-dev \
+        libudunits2-dev \
         libssl-dev \
+        libgdal-dev \
         libffi-dev \
         postgresql-client \
         build-essential \

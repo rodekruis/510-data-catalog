@@ -130,7 +130,7 @@
             {% if res.geo_metadata %}
             {% if res.geo_metadata.spatial_resolution %}
             <tr>
-                <th scope="row">{{ _('Spatial Resolution') }}</th>
+                <th scope="row">{{ _('Cell Size') }}</th>
                 <td>{{ res.geo_metadata.spatial_resolution }}</td>
             </tr>
             {% endif %}
@@ -142,7 +142,7 @@
             {% endif %}
             {% if res.geo_metadata.spatial_extent %}
             <tr>
-                <th scope="row">{{ _('Spatial Extent') }}</th>
+                <th scope="row">{{ _('Spatial Extent') }} (x-min, y-min, x-max, y-max)</th>
                 <td>{{ res.geo_metadata.spatial_extent }}</td>
             </tr>
             {% endif %}
