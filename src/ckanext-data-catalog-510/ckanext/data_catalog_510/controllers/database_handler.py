@@ -11,6 +11,7 @@ from sqlalchemy.exc import SQLAlchemyError
 import logging
 log = logging.getLogger(__name__)
 EXCLUDE_SCHEMAS = ['information_schema']
+DATABASE_FORMAT = "Database Table"
 
 ValidationError = logic.ValidationError
 NotFound = logic.NotFound
@@ -167,7 +168,8 @@ class SQLHandler:
                 'no_of_records': count,
                 'no_of_attributes': len(cols_list),
                 'is_geo': is_geo,
-                'geo_metadata': geo_metadata
+                'geo_metadata': geo_metadata,
+                'format': DATABASE_FORMAT
             }
             return table_metadata
 
