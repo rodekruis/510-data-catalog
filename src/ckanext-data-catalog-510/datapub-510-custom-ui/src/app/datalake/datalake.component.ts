@@ -114,6 +114,7 @@ export class DatalakeComponent implements OnInit {
     }
     this.datalakeForm.patchValue({ name: value.file_path.split('/').pop() });
     this.datalakeForm.patchValue({ datalake_data: value });
+    this.datalakeForm.patchValue({ format: value.format })
     // console.log(value);
     this.getListOfFiles(value)
   }
