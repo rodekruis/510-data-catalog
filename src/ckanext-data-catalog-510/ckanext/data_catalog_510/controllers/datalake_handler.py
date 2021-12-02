@@ -2,9 +2,9 @@ from azure.storage.filedatalake import DataLakeServiceClient
 from ckan.common import config, _
 import ckan.logic as logic
 from ckanext.data_catalog_510.utils.utilities import endsWith
+from ckanext.data_catalog_510.utils.helpers import get_file_format
 import rioxarray as rxr
 import geopandas as gpd
-from io import BytesIO
 import fiona
 from rasterio.io import MemoryFile
 
@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 NotFound = logic.NotFound
 NotAuthorized = logic.NotAuthorized
 ValidationError = logic.ValidationError
-
+GEO_METADATA_AUTOFILL_SIZE_LIMIT = 100000000
 
 class DataLakeHandler:
     def __init__(self):
@@ -72,12 +72,20 @@ class DataLakeHandler:
                     prev_path = ""
             for path in paths:
                 path_type = 'file'
+                path_format = get_file_format(path.name)
                 if path.is_directory:
                     # Change path type to 'directory' when it is directory.
                     path_type = 'directory'
+                    if path.name:
+                        directory_paths = file_system_client.get_paths(path=path.name, recursive=False)
+                        for file_path in directory_paths:
+                            if not file_path.is_directory:
+                                path_format = get_file_format(file_path.name)
+                                break
                 directory_structure.append({'path': path.name,
                                             'type': path_type,
-                                            'name': path.name.split('/')[-1]})
+                                            'name': path.name.split('/')[-1],
+                                            'format': path_format})
             return {'container': container,
                     'directory_structure': directory_structure,
                     'prev_path': prev_path
@@ -111,7 +119,7 @@ class DataLakeHandler:
             if file_client.exists():
                 file_properties = file_client.get_file_properties()
                 # log.info(file_properties)
-                if file_properties.size < 100000000:
+                if file_properties.size < GEO_METADATA_AUTOFILL_SIZE_LIMIT:
                     if endsWith(user_path, ['.tiff', '.tif']):
                         geoFile = file_client.download_file()
                         with MemoryFile(geoFile.readall()) as memfile:
@@ -135,5 +143,4 @@ class DataLakeHandler:
             raise e
         finally:
             return geo_metadata
-
-
+            
