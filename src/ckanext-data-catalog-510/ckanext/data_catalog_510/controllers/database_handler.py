@@ -155,15 +155,26 @@ class SQLHandler:
             if db_type == 'postgres':
                 con = engine.connect()
                 for column_type in enumerate(col_type_list):
-                    # log.info(str(column_type))
+                    log.info(str(column_type))
+                    sql_query = None
+                    geom_col = None
                     if 'Geo' in str(column_type):
-                        is_geo = True
                         # log.info(cols_list[column_type[0]])
-                        geoData = gpd.read_postgis(f'SELECT {cols_list[column_type[0]]} FROM {schema}.{table_name}', con=con, geom_col=cols_list[column_type[0]])
-                        geo_metadata['spatial_extent'] = str(geoData.total_bounds)
+                        geom_col = cols_list[column_type[0]]
+                        sql_query = f'SELECT {geom_col} FROM {schema}.{table_name}'
                         geo_metadata['spatial_resolution'] = ''
+                    elif 'Rast' in str(column_type):
+                        geom_col = "geom"
+                        sql_query = f'SELECT x, y, val, geom FROM (SELECT dp.* FROM {schema}.{table_name}, LATERAL ST_PixelAsCentroids(rast, 1) as dp) geodata'
+                        geo_metadata['spatial_resolution'] = str(engine.execute(f'SELECT ST_PixelWidth(rast), ST_PixelHeight(rast) from {schema}.{table_name}').first())
+
+                    if sql_query:
+                        is_geo = True
+                        geoData = gpd.read_postgis(sql_query, con=con, geom_col=geom_col)
+                        geo_metadata['spatial_extent'] = str(geoData.total_bounds)
                         geo_metadata['spatial_reference_system'] = str(geoData.crs.to_epsg() if geoData.crs else None)
                         break
+                        
             table_metadata = {
                 'no_of_records': count,
                 'no_of_attributes': len(cols_list),
