@@ -34,17 +34,4 @@
         By putting visibility to public, the dataset entry will become publicly available to anyone visiting this website.
       </div>
   {% endblock %} 
-
-  <br>
-  {% block package_metadata_fields_security %}
-    <div class="control-group form-group control-medium">
-      <label for="field-security" class="control-label">{{ _('Security Classification') }}</label>
-      <div class="controls">
-        <select id="field-private" name="security-class" class="form-control" data-module="dataset-security-select">
-          {% for option in [('True', _('High')), ('False', _('Normal')),('False', _('Low'))] %}
-          <option value="{{ option[0] }}" {% if option[0] == data.private|trim %}selected="selected"{% endif %}>{{ option[1] }}</option>
-          {% endfor %}
-        </select>
-      </div>
-  {% endblock %}
   </div>
