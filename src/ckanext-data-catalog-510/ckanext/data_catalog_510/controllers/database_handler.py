@@ -3,14 +3,14 @@ from ckan.common import config, _
 import ckan.logic as logic
 
 import json
-from geoalchemy2 import Geometry
-import geopandas as gpd
+from geoalchemy2 import Geometry    
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.exc import SQLAlchemyError
 
 import logging
 log = logging.getLogger(__name__)
 EXCLUDE_SCHEMAS = ['information_schema']
+DATABASE_FORMAT = "Database Table"
 
 ValidationError = logic.ValidationError
 NotFound = logic.NotFound
@@ -159,22 +159,39 @@ class SQLHandler:
             is_geo = False
             geo_metadata = {}
             if db_type == 'postgres':
-                con = engine.connect()
                 for column_type in enumerate(col_type_list):
-                    # log.info(str(column_type))
-                    if 'Geo' in str(column_type):
+                    log.info(str(column_type))
+                    if 'Geo' in str(column_type) or 'Rast' in str(column_type):
                         is_geo = True
-                        # log.info(cols_list[column_type[0]])
-                        geoData = gpd.read_postgis(f'SELECT {cols_list[column_type[0]]} FROM {schema}.{table_name}', con=con, geom_col=cols_list[column_type[0]])
-                        geo_metadata['spatial_extent'] = str(geoData.total_bounds)
-                        geo_metadata['spatial_resolution'] = ''
-                        geo_metadata['spatial_reference_system'] = str(geoData.crs.to_epsg() if geoData.crs else None)
-                        break
+                        geom_col = "geom"
+                        spatial_ext = ""
+                        spatial_ref_sys = ""
+                        spatial_res = ""
+                        if 'Rast' in str(column_type):
+                            geom_col = "rast"
+                            spatial_res = engine.execute(f'SELECT ST_PixelWidth({geom_col}), ST_PixelHeight({geom_col}) from {schema}.{table_name}').first()
+                            if spatial_res:
+                                spatial_res = spatial_res[0]
+                                
+                        spatial_ref_sys = engine.execute(f'SELECT ST_SRID({geom_col}) FROM {schema}.{table_name}').first()
+                        if spatial_ref_sys:
+                            spatial_ref_sys = spatial_ref_sys[0]
+                        json_string = engine.execute(f'SELECT ST_AsGeoJSON(ST_Envelope(ST_Union(ST_Envelope({geom_col})))) FROM {schema}.{table_name}').first()
+                        if json_string:
+                            json_dict = json.loads(json_string[0])
+                            X = [pos[0] for pos in json_dict['coordinates'][0]]
+                            Y = [pos[1] for pos in json_dict['coordinates'][0]]
+                            spatial_ext = (min(X), min(Y), max(X), max(Y))
+                        geo_metadata['spatial_extent'] = str(spatial_ext)
+                        geo_metadata['spatial_resolution'] = str(spatial_res)
+                        geo_metadata['spatial_reference_system'] = str(spatial_ref_sys)
+                        
             table_metadata = {
                 'no_of_records': count,
                 'no_of_attributes': len(cols_list),
                 'is_geo': is_geo,
-                'geo_metadata': geo_metadata
+                'geo_metadata': geo_metadata,
+                'format': DATABASE_FORMAT
             }
             return table_metadata
 
