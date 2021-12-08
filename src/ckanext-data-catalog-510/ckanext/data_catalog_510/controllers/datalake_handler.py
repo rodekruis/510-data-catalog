@@ -33,7 +33,7 @@ class DataLakeHandler:
         except Exception as e:
             print(e)
 
-    def list_file_system(self,page_num):
+    def list_file_system(self, page_num):
         '''Get the File System/Containers List
         '''
         try:
@@ -42,25 +42,23 @@ class DataLakeHandler:
             containers = []
             for data in file_system:
                 containers.append({'name': data.name})
-            log.info(containers)         
-            start = (int(page_num) - 1) * ITEMS_PER_PAGE
-            end = start + ITEMS_PER_PAGE
-            final_data = containers[start:end]
-            return final_data
+            return containers
         except Exception as e:
             log.error(e)
             raise e
 
-    def list_directory_contents(self, container, user_path=None):
+    def list_directory_contents(self, container, user_path=None, page_num=None, records_per_page=None):
         '''Fetch the content of container or path
         '''
         # List of directories and their path will be stored.
+        # log.info({"container": container, "path": user_path, "page_num": page_num, "records": records_per_page})
         directory_structure = []
+        total_records = 0
         try:
             file_system_client = self.service_client.\
                 get_file_system_client(file_system=container)
-            paths = file_system_client.get_paths(path=user_path,
-                                                 recursive=False)
+            paths = list(file_system_client.get_paths(path=user_path, recursive=False))
+            total_records = len(paths)
             # Logic for previous path
             if not user_path or user_path == '':
                 prev_path = "container"
@@ -70,6 +68,13 @@ class DataLakeHandler:
                     prev_path = prev_path_list[0]
                 else:
                     prev_path = ""
+            
+            if page_num and records_per_page:
+                page_num -= 1
+                start_index = page_num * records_per_page
+                end_index = page_num * records_per_page + records_per_page
+                end_index = end_index if end_index < total_records else total_records
+                paths = paths[start_index: end_index]
             for path in paths:
                 path_type = 'file'
                 if path.is_directory:
@@ -78,10 +83,12 @@ class DataLakeHandler:
                 directory_structure.append({'path': path.name,
                                             'type': path_type,
                                             'name': path.name.split('/')[-1]})
-            return {'container': container,
-                    'directory_structure': directory_structure,
-                    'prev_path': prev_path
-                    }
+            return {
+                'container': container,
+                'directory_structure': directory_structure,
+                'prev_path': prev_path,
+                'total_records': total_records
+                }
         except Exception as e:
             log.error(e)
             raise e

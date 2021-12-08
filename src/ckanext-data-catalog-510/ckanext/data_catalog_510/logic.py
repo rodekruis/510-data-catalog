@@ -192,7 +192,9 @@ def get_directories_and_files(context, data_dict):
         datalake_connection.initialize_storage_account()
         container = data_dict.get('container', '')
         path = data_dict.get('path', '')
-        return datalake_connection.list_directory_contents(container, path)
+        page_num = data_dict.get('page_num', '')
+        records_per_page = data_dict.get('records_per_page', '')
+        return datalake_connection.list_directory_contents(container, path, page_num, records_per_page)
     except Exception as e:
         log.error(e)
         raise e

@@ -1,0 +1,35 @@
+.pagination {
+  display: inline-block;
+}
+
+.center {
+  text-align: center;
+}
+
+.pagination ul {
+    list-style-type: none;
+}
+
+.pagination li {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  border-radius: 5px;
+}
+
+.total-pages {
+  padding: 8px
+}
+
+.pagination li.active {
+  background-color: #ff5733;
+  border-radius: 5px;
+  color: white;
+}
+
+.pagination li:hover:not(.active) {
+  background-color: #ddd;
+}

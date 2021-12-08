@@ -28,8 +28,12 @@ export class DatalakeBrowserComponent implements OnInit {
   activeFile;
   prev_path;
   activeContainer;
+  currentDirectory = null;
+  records_per_page: number = 5;
   selectedFileDetails: any = {};
   no_of_files: any = 0;
+  totalRecords = 0;
+  recordsOptions: number[] = [5, 10, 15]
   @Input() pkg_name: any;
   @Input() type: any;
   @Input() resource: any;
@@ -60,6 +64,7 @@ export class DatalakeBrowserComponent implements OnInit {
         (res) => {
           this.commonService.showLoader = false;
           this.pageType = 'container';
+          this.currentDirectory = null;
           this.containers = res.result;
         },
         (error) => {
@@ -109,6 +114,7 @@ export class DatalakeBrowserComponent implements OnInit {
   goToResourcePage() {
     this.selectedDatalakeResource.emit(this.selectedFileDetails);
   }
+
   cancel() {
     this.fileSelected = false;
     this.selectedFileDetails = {};
@@ -118,7 +124,7 @@ export class DatalakeBrowserComponent implements OnInit {
     if (this.prev_path == 'container') {
       this.getAllContainers();
     } else {
-      this.getFiles(this.activeContainer, this.prev_path);
+      this.getFiles(this.activeContainer, this.prev_path, 1, this.records_per_page);
     }
   }
   getNoOfFiles(container, path) {
@@ -141,13 +147,16 @@ export class DatalakeBrowserComponent implements OnInit {
       );
   }
 
-  getFiles(container, path) {
+  getFiles(container, path, page_num, records_per_page) {
     this.fileSelected = false;
     this.pageType = 'files';
     this.commonService.showLoader = true;
+    this.currentDirectory = '';
     let data = {
-      container,
-      path,
+      container: container,
+      path: path,
+      page_num: page_num,
+      records_per_page: parseInt(records_per_page)
     };
     this.http
       .post<any>(this.base_url + this.API_LIST.get_directories_and_file, data, {
@@ -158,17 +167,49 @@ export class DatalakeBrowserComponent implements OnInit {
           this.commonService.showLoader = false;
           if (res.result) {
             this.files_and_directories = res.result.directory_structure;
+            this.prev_path = res.result.prev_path;
+            this.activeContainer = res.result.container;
+            this.currentDirectory = path;
+            this.totalRecords = res.result.total_records;
           } else {
             this.files_and_directories = [];
           }
-          this.prev_path = res.result.prev_path;
-          this.activeContainer = res.result.container;
         },
         (error) => {
           this.alertService.error(error?.error?.error?.message);
           this.commonService.showLoader = false;
         }
       );
-  }  
+  } 
+  
+  getPages(page_num) {
+    this.fileSelected = false;
+      this.pageType = 'files';
+      this.commonService.showLoader = true;
+      let data = {
+        container: this.activeContainer,
+        path: this.currentDirectory,
+        page_num: page_num,
+        records_per_page: this.records_per_page
+      };
+      this.http
+        .post<any>(this.base_url + this.API_LIST.get_directories_and_file, data, {
+          headers: this.headers,
+        })
+        .subscribe(
+          (res) => {
+            this.commonService.showLoader = false;
+            if (res.result) {
+              this.files_and_directories = res.result.directory_structure;
+            } else {
+              this.files_and_directories = [];
+            }
+          },
+          (error) => {
+            this.alertService.error(error?.error?.error?.message);
+            this.commonService.showLoader = false;
+          }
+        );
+    }
 }
 
