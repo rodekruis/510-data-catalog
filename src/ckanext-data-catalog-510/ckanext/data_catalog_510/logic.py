@@ -69,7 +69,7 @@ def get_db_connections(context, data_dict):
         db_connections = []
         db_type = data_dict.get('db_type', '')
         db_obj = validate_db_connections_and_init(db_type)
-        db_connections = db_obj.get_databases(db_type)
+        db_connections = db_obj.get_databases(db_type)        
         return db_connections
     except Exception as e:
         log.error(e)
