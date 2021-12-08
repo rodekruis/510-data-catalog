@@ -116,3 +116,23 @@ def generate_sample_db_string(res):
     else:
         db_string = "Unknown DB String"
     return db_string
+
+
+@core_helper
+def get_file_format(file_path: str):
+    '''
+    Helper used to detect format of a file located at the path provided.
+    :param file_path: Path of the file.
+
+    :rtype string
+    '''
+    extension = os.path.splitext(file_path)[1][1:]
+    with open(os.path.join(HERE, 'mimetypes.json'), 'r') as format_list_file:
+        format_list = json.load(format_list_file)
+        if extension: 
+            if extension in format_list:
+                return format_list[extension]
+            else:
+                return extension.upper()
+        else:
+            return None
