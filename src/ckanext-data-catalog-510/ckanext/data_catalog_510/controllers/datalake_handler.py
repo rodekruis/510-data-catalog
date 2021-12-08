@@ -1,6 +1,12 @@
 from azure.storage.filedatalake import DataLakeServiceClient
 from ckan.common import config, _
 import ckan.logic as logic
+from ckanext.data_catalog_510.utils.utilities import endsWith
+from ckanext.data_catalog_510.utils.helpers import get_file_format
+import rioxarray as rxr
+import geopandas as gpd
+import fiona
+from rasterio.io import MemoryFile
 
 import logging
 log = logging.getLogger(__name__)
@@ -8,9 +14,7 @@ log = logging.getLogger(__name__)
 NotFound = logic.NotFound
 NotAuthorized = logic.NotAuthorized
 ValidationError = logic.ValidationError
-
-ITEMS_PER_PAGE = 3
-
+GEO_METADATA_AUTOFILL_SIZE_LIMIT = 100000000
 
 class DataLakeHandler:
     def __init__(self):
@@ -77,18 +81,25 @@ class DataLakeHandler:
                 paths = paths[start_index: end_index]
             for path in paths:
                 path_type = 'file'
+                path_format = get_file_format(path.name)
                 if path.is_directory:
                     # Change path type to 'directory' when it is directory.
                     path_type = 'directory'
+                    if path.name:
+                        directory_paths = file_system_client.get_paths(path=path.name, recursive=False)
+                        for file_path in directory_paths:
+                            if not file_path.is_directory:
+                                path_format = get_file_format(file_path.name)
+                                break
                 directory_structure.append({'path': path.name,
                                             'type': path_type,
-                                            'name': path.name.split('/')[-1]})
-            return {
-                'container': container,
-                'directory_structure': directory_structure,
-                'prev_path': prev_path,
-                'total_records': total_records
-                }
+                                            'name': path.name.split('/')[-1],
+                                            'format': path_format})
+            return {'container': container,
+                    'directory_structure': directory_structure,
+                    'prev_path': prev_path,
+                    'total_records': total_records
+                    }
         except Exception as e:
             log.error(e)
             raise e
@@ -110,3 +121,36 @@ class DataLakeHandler:
         except Exception as e:
             log.error(e)
             raise e
+    
+    def get_geo_metadata(self, container, user_path=None):
+        geo_metadata = {}
+        try:
+            file_client = self.service_client.get_file_client(file_system=container, file_path=user_path)
+            if file_client.exists():
+                file_properties = file_client.get_file_properties()
+                # log.info(file_properties)
+                if file_properties.size < GEO_METADATA_AUTOFILL_SIZE_LIMIT:
+                    if endsWith(user_path, ['.tiff', '.tif']):
+                        geoFile = file_client.download_file()
+                        with MemoryFile(geoFile.readall()) as memfile:
+                            with memfile.open() as dataset:
+                                geoData = rxr.open_rasterio(dataset, masked=True)
+                                geo_metadata['spatial_extent'] = str(geoData.rio.bounds())
+                                geo_metadata['spatial_resolution'] = str(geoData.rio.resolution()[0])
+                                geo_metadata['spatial_reference_system'] = str(geoData.rio.crs.to_epsg())
+                    elif endsWith(user_path, ['.geojson']):
+                        geoFile = file_client.download_file()
+                        with fiona.BytesCollection(bytes(geoFile.readall())) as fileBytes:
+                            geoData = gpd.GeoDataFrame.from_features(fileBytes, crs=fileBytes.crs_wkt)
+                            geo_metadata['spatial_extent'] = str(list(geoData.total_bounds))
+                            geo_metadata['spatial_resolution'] = ""
+                            geo_metadata['spatial_reference_system'] = str(geoData.crs.to_epsg())
+                    # log.info(geo_metadata)
+                else:
+                    raise "Size too big"
+        except Exception as e:
+            log.error(e)
+            raise e
+        finally:
+            return geo_metadata
+            

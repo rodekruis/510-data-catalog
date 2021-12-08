@@ -23,6 +23,38 @@
             </app-validator>
         </div>
         <div class="form-group">
+            <div class="form-select form-group " *ngIf="resourceSelected">
+                <input type="checkbox" [checked]="is_geo" (change)="is_geo = !is_geo" /> Is Data is GEO Data?
+            </div>
+             <div class="form-group" *ngIf="is_geo">
+                <label class="control-label" for="field-spatial_extent">Base File (for Auto-fill)</label>
+                <select class="form-group mb-4" (change)="selectedBaseFilePath = $event.target.value">
+                    <option hidden [value]="null" disabled selected>Choose file to generate spatial metadata from</option>
+                    <option *ngFor="let file of list_of_files" [value]="file">{{file}}</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" *ngIf="is_geo && list_of_files.length > 0" [disabled]="selectedBaseFilePath === null" (click)="getGeoMetadata()">Auto-fill Spatial Metadata</button>
+            </div>
+            <div class="form-select form-group control-order-by" *ngIf="is_geo" formGroupName="geo_metadata">
+                <label class="control-label" for="field-spatial_resolution">Cell Size</label>
+                <input type="text" formControlName="spatial_resolution" class="form-control form-group"
+                    placeholder="Spatial Resolution">
+                <label class="control-label" for="field-temporal_resolution">Temporal Resolution</label>
+                <input type="text" formControlName="temporal_resolution" class="form-control form-group"
+                    placeholder="Temporal Resolution">
+                <label class="control-label" for="field-spatial_extent">Spatial Extent</label>
+                <input type="text" formControlName="spatial_extent" class="form-control form-group"
+                    placeholder="Spatial Extent">
+                <label class="control-label" for="field-temporal_extent">Temporal Extent</label>
+                <input type="text" formControlName="temporal_extent" class="form-control form-group"
+                    placeholder="Temporal Extent">
+                <label class="control-label" for="field-spatial_reference_system">Spatial Reference System</label>
+                <input type="text" formControlName="spatial_reference_system" class="form-control form-group"
+                    placeholder="Spatial Reference System">
+            </div>
+        </div>
+        <div class="form-group">
             <label class="control-label" for="field-description">Description</label>
             <textarea class="form-control rounded-0" formControlName="description" placeholder="Description"></textarea>
         </div>
@@ -36,7 +68,7 @@
             <label class="control-label" for="field-format">No of Files</label>
             <input type="text" [value]="no_of_files" readonly class="form-control mb-4" placeholder="No of Files">
         </div>
-        <div lass="form-actions">
+        <div class="form-actions">
             <button class="btn btn-primary" name="save" type="submit">Submit</button>
         </div>
     </div>

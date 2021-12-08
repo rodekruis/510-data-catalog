@@ -14,6 +14,7 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_containers,
                                             get_directories_and_files,
                                             get_no_of_files,
+                                            get_geo_metadata,
                                             country_autocomplete)
 
 
@@ -53,7 +54,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_containers': get_containers,
             'get_directories_and_files': get_directories_and_files,
             'get_no_of_files': get_no_of_files,
-            'country_autocomplete':country_autocomplete
+            'get_geo_metadata': get_geo_metadata,
+            'country_autocomplete': country_autocomplete
         }
 
     # ITemplateHelpers

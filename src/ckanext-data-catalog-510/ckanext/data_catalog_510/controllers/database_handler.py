@@ -1,3 +1,4 @@
+from sqlalchemy.sql.schema import Table
 from ckan.common import config, _
 import ckan.logic as logic
 
@@ -9,6 +10,7 @@ from sqlalchemy.exc import SQLAlchemyError
 import logging
 log = logging.getLogger(__name__)
 EXCLUDE_SCHEMAS = ['information_schema']
+DATABASE_FORMAT = "Database Table"
 
 ValidationError = logic.ValidationError
 NotFound = logic.NotFound
@@ -135,22 +137,54 @@ class SQLHandler:
             self.db_type = db_type
             self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
-            query = f'Select Count(*) from {schema}.{table_name};'
+            if db_type == 'mysql':
+                query = f'Select Count(*) from `{schema}`.{table_name};'
+            else:
+                query = f'Select Count(*) from {schema}.{table_name};'
+            
             result = engine.execute(query)
             count = result.first()[0]
             inspector = inspect(engine)
             columns = inspector.get_columns(table_name, schema=schema)
+            # log.info(columns)
             col_type_list = list(map(lambda column: column['type'], columns))
-            is_geo = False
-            for column_type in enumerate(col_type_list):
-                if 'geo' in str(column_type):
-                    is_geo = True
-
             cols_list = list(map(lambda column: column['name'], columns))
+            is_geo = False
+            geo_metadata = {}
+            if db_type == 'postgres':
+                for column_type in enumerate(col_type_list):
+                    log.info(str(column_type))
+                    if 'Geo' in str(column_type) or 'Rast' in str(column_type):
+                        is_geo = True
+                        geom_col = "geom"
+                        spatial_ext = ""
+                        spatial_ref_sys = ""
+                        spatial_res = ""
+                        if 'Rast' in str(column_type):
+                            geom_col = "rast"
+                            spatial_res = engine.execute(f'SELECT ST_PixelWidth({geom_col}), ST_PixelHeight({geom_col}) from {schema}.{table_name}').first()
+                            if spatial_res:
+                                spatial_res = spatial_res[0]
+                                
+                        spatial_ref_sys = engine.execute(f'SELECT ST_SRID({geom_col}) FROM {schema}.{table_name}').first()
+                        if spatial_ref_sys:
+                            spatial_ref_sys = spatial_ref_sys[0]
+                        json_string = engine.execute(f'SELECT ST_AsGeoJSON(ST_Envelope(ST_Union(ST_Envelope({geom_col})))) FROM {schema}.{table_name}').first()
+                        if json_string:
+                            json_dict = json.loads(json_string[0])
+                            X = [pos[0] for pos in json_dict['coordinates'][0]]
+                            Y = [pos[1] for pos in json_dict['coordinates'][0]]
+                            spatial_ext = (min(X), min(Y), max(X), max(Y))
+                        geo_metadata['spatial_extent'] = str(spatial_ext)
+                        geo_metadata['spatial_resolution'] = str(spatial_res)
+                        geo_metadata['spatial_reference_system'] = str(spatial_ref_sys)
+                        
             table_metadata = {
                 'no_of_records': count,
                 'no_of_attributes': len(cols_list),
-                'is_geo': is_geo
+                'is_geo': is_geo,
+                'geo_metadata': geo_metadata,
+                'format': DATABASE_FORMAT
             }
             return table_metadata
 

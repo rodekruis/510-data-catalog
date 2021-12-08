@@ -109,6 +109,7 @@ export class DatalakeBrowserComponent implements OnInit {
       name: file?.name,
       type: file?.type,
       no_of_files: this.no_of_files,
+      format: file?.format
     };
   }
   goToResourcePage() {

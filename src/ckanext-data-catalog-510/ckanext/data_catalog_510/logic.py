@@ -190,6 +190,7 @@ def get_directories_and_files(context, data_dict):
     try:
         datalake_connection = DataLakeHandler()
         datalake_connection.initialize_storage_account()
+        # log.info(data_dict)
         container = data_dict.get('container', '')
         path = data_dict.get('path', '')
         page_num = data_dict.get('page_num', '')
@@ -221,6 +222,20 @@ def get_no_of_files(context, data_dict):
     except Exception as e:
         log.error(e)
         raise e
+    
+
+def get_geo_metadata(context, data_dict):
+    logic.check_access(u'package_create', context)
+    try:
+        datalake_connection = DataLakeHandler()
+        datalake_connection.initialize_storage_account()
+        container = data_dict.get('container', '')
+        path = data_dict.get('path', '')
+        return datalake_connection.get_geo_metadata(container, path)
+    except Exception as e:
+        log.error(e)
+        raise e
+
 
 @toolkit.side_effect_free
 def country_autocomplete(context, data_dict):
