@@ -69,6 +69,26 @@
             "form_placeholder": "1.0"
         },
         {
+            "field_name": "security_classification",
+            "label": "Security Classification",
+            "help_inline": true,
+            "preset": "select",
+            "choices": [
+                {
+                    "value": "low",
+                    "label": "Low"
+                },
+                {
+                    "value": "normal",
+                    "label": "Normal"
+                },
+                {
+                    "value": "high",
+                    "label": "High"
+                }
+            ]
+        },
+        {
             "field_name": "country",
             "label": "Country",
             "form_snippet": "country.html",        
