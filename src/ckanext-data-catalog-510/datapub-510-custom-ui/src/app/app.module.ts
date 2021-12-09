@@ -12,6 +12,7 @@ import { DatalakeComponent } from './datalake/datalake.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonCustomModule } from './common/common.module';
 import { DatalakeBrowserComponent } from './datalake-browser/datalake-browser.component';
+import { PaginationComponent } from './common/components/pagination/pagination-component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { DatalakeBrowserComponent } from './datalake-browser/datalake-browser.co
     DatabasesComponent,
     DatalakeComponent,
     DatalakeBrowserComponent,
+    PaginationComponent
   ],
   imports: [
     BrowserModule,

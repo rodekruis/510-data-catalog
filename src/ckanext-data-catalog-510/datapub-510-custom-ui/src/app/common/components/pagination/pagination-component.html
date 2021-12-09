@@ -1,0 +1,19 @@
+<div class="center">
+  <div class="pagination">
+    <ul>
+      <li (click)="onClickPage(1)">{{'<<'}}</li>
+      <li (click)="onClickPage(activePage - 1)">{{'<'}}</li>
+      <li *ngIf="displayPages[0] > 1">{{'...'}}</li>
+      <li 
+        [ngClass]="{'active': activePage === page}"
+        *ngFor="let page of displayPages"
+        (click)="onClickPage(page)">
+        {{ page }}
+      </li>
+      <li  *ngIf="displayPages[displayPages.length - 1] != pages.length">{{'...'}}</li>
+      <li (click)="onClickPage(activePage + 1)">{{'>'}}</li>
+      <li (click)="onClickPage(pages.length)">{{'>>'}}</li>
+    </ul>
+    <p class="total-pages"><strong>Total pages:</strong> {{pages.length}}</p>
+  </div>
+</div>

@@ -3,7 +3,7 @@
     <h1 *ngIf="containers.length <= 0"> No Containers Found</h1>
     <div class="folder-wrap" *ngIf="containers.length > 0">
         <ul class="list">
-            <li class="list-item" *ngFor="let container of containers" (dblclick)="getFiles(container.name, '')">
+            <li class="list-item" *ngFor="let container of containers" (dblclick)="getFiles(container.name, '', 1, records_per_page)">
                 <div class="folder">
                     <p class="name">{{container.name}}</p>
                 </div>
@@ -21,7 +21,7 @@
                     <p class="name">..Back</p>
                 </div>
             </li>
-            <li class="list-item" [ngClass]="{'background': file === activeFile}" *ngFor="let file of files_and_directories;let i=index" (click)="selectFile(file); activeFile=file" (dblclick)="getFiles(activeContainer, file.path)">
+            <li class="list-item" [ngClass]="{'background': file === activeFile}" *ngFor="let file of files_and_directories;let i=index" (click)="selectFile(file); activeFile=file" (dblclick)="getFiles(activeContainer, file.path, 1, records_per_page)">
                 <div class="folder">
                     <p class="name">{{file.name}}</p>
                     <p class="type">{{file.type}}</p>
@@ -31,5 +31,17 @@
     </div>
     <div lass="form-actions" *ngIf="fileSelected">
         <button class="btn btn-primary" name="save" type="submit" (click)="goToResourcePage()">Select</button>
+    </div>
+    <div *ngIf="totalRecords > 0">
+        <app-pagination
+        [totalRecords]="totalRecords"
+        [recordsPerPage]="records_per_page"
+        (onPageChange)="getPages($event)"></app-pagination>
+        <div class="record-label">
+            <strong>Records Per Page: </strong>
+            <select [(ngModel)]="records_per_page">
+                <option *ngFor="let option of recordsOptions" [ngValue]="option">{{option}}</option>
+            </select>
+        </div>
     </div>
 </div>
