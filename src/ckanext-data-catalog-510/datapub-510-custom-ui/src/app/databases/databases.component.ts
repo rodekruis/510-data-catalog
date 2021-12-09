@@ -31,7 +31,7 @@ export class DatabasesComponent implements OnInit {
   databaseForm: FormGroup;
   allDatabasesType: Array<{ name: ''; title: '' }> = [];
   selectedDBType: string = '';
-  dbConnections: Array<{ name: ''; title: '' }> = [];
+  dbConnections: Array<{ name: ''; title: '';db_name:'' }> = [];
   selectedConnection: string = '';
   dbSchemas: Array<[]> = [];
   selectedSchema: string = '';
