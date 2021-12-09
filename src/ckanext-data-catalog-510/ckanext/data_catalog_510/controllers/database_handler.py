@@ -39,8 +39,13 @@ class SQLHandler:
         if db_type == 'azuresql':
             db_connections = config.get('ckan.azuresql_db_connections', '')
         db_connections = json.loads(db_connections)
+        if db_type == 'azuresql':
+            db_connections = [dict(item, **{'db_name':item['url'].split('/')[-1].split('?')[0]}) for item in db_connections]
+        else:  
+            db_connections = [dict(item, **{'db_name':item['url'].split('/')[-1]}) for item in db_connections]
         if not return_url:
             [db.pop('url', None) for db in db_connections]
+        log.info(db_connections)
         return db_connections
 
     def get_db_connection_string(self, db_name):
@@ -53,7 +58,8 @@ class SQLHandler:
         :rtype: string
         '''
         db_connections = self.get_databases(self.db_type, return_url=True)
-        filtered = [db['url'] for db in db_connections if db['name'] == db_name]
+        log.info(db_name)
+        filtered = [db['url'] for db in db_connections if db['db_name'] == db_name]
         if bool(filtered):
             return filtered[0]
         else:
@@ -69,9 +75,10 @@ class SQLHandler:
         '''
         try:
             self.db_type = db_type
+            log.info(db_name)
             self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
-            inspector = inspect(engine)
+            inspector = inspect(engine)            
             schemas = inspector.get_schema_names()
             schemas = [x for x in schemas if x not in EXCLUDE_SCHEMAS]
             if bool(schemas):
