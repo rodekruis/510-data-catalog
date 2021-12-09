@@ -46,8 +46,8 @@ export class DatalakeBrowserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.getAllContainers();
-    this.getPageContainers(1);
+    this.getAllContainers();
+    // this.getPageContainers(1);
   }
 
   getAllContainers() {
