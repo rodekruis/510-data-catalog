@@ -3,7 +3,7 @@ from ckan.common import config, _
 import ckan.logic as logic
 
 import json
-from geoalchemy2 import Geometry    
+from geoalchemy2 import Geometry
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.exc import SQLAlchemyError
 
