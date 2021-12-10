@@ -55,35 +55,38 @@ class TestDatabasesConnectionAction:
 
     def test_get_db_connections_postgres(self):
         '''Test for validating postgres connection type'''
-        expected_res = [{'name': 'test', 'title': 'Test'}]
+        expected_res = [{'name': 'test', 'title': 'Test','db_name':'ckan'}]
         get_dbs = helpers.call_action(
             "get_db_connections",
             {},
             db_type="postgres",
         )
         # Validating the connection action response
+        # log.info(get_dbs)
         assert expected_res == get_dbs
 
     def test_get_db_connections_mysql(self):
         '''Test for validating mysql connection type'''
-        expected_res = [{'name': 'test', 'title': 'Test'}]
+        expected_res = [{'name': 'test', 'title': 'Test','db_name':'test'}]
         get_dbs = helpers.call_action(
             "get_db_connections",
             {},
             db_type="mysql",
         )
         # Validating the connection action response
+        # log.info(get_dbs)
         assert expected_res == get_dbs
 
     def test_get_db_connections_azuresql(self):
         '''Test for validating azuresql connection type'''
-        expected_res = [{'name': 'test', 'title': 'Test'}]
+        expected_res = [{'name': 'test', 'title': 'Test','db_name':'db'}]
         get_dbs = helpers.call_action(
             "get_db_connections",
             {},
             db_type="azuresql",
         )
         # Validating the connection action response
+        # log.info(get_dbs)
         assert expected_res == get_dbs
 
     
