@@ -47,6 +47,12 @@ li.list-item {
   justify-content: space-between;
 }
 
+.records-page label {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
 li.list-item:first-child {
   border-bottom: 1px solid #ddd;
 }

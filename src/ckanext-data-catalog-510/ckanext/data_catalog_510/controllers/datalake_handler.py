@@ -2,9 +2,9 @@ from azure.storage.filedatalake import DataLakeServiceClient
 from ckan.common import config, _
 import ckan.logic as logic
 from ckanext.data_catalog_510.utils.utilities import endsWith
+from ckanext.data_catalog_510.utils.helpers import get_file_format
 import rioxarray as rxr
 import geopandas as gpd
-from io import BytesIO
 import fiona
 from rasterio.io import MemoryFile
 
@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 NotFound = logic.NotFound
 NotAuthorized = logic.NotAuthorized
 ValidationError = logic.ValidationError
-
+GEO_METADATA_AUTOFILL_SIZE_LIMIT = 100000000
 
 class DataLakeHandler:
     def __init__(self):
@@ -37,7 +37,7 @@ class DataLakeHandler:
         except Exception as e:
             print(e)
 
-    def list_file_system(self):
+    def list_file_system(self, page_num):
         '''Get the File System/Containers List
         '''
         try:
@@ -51,16 +51,18 @@ class DataLakeHandler:
             log.error(e)
             raise e
 
-    def list_directory_contents(self, container, user_path=None):
+    def list_directory_contents(self, container, user_path=None, page_num=None, records_per_page=None):
         '''Fetch the content of container or path
         '''
         # List of directories and their path will be stored.
+        # log.info({"container": container, "path": user_path, "page_num": page_num, "records": records_per_page})
         directory_structure = []
+        total_records = 0
         try:
             file_system_client = self.service_client.\
                 get_file_system_client(file_system=container)
-            paths = file_system_client.get_paths(path=user_path,
-                                                 recursive=False)
+            paths = list(file_system_client.get_paths(path=user_path, recursive=False))
+            total_records = len(paths)
             # Logic for previous path
             if not user_path or user_path == '':
                 prev_path = "container"
@@ -70,17 +72,33 @@ class DataLakeHandler:
                     prev_path = prev_path_list[0]
                 else:
                     prev_path = ""
+            
+            if page_num and records_per_page:
+                page_num -= 1
+                start_index = page_num * records_per_page
+                end_index = page_num * records_per_page + records_per_page
+                end_index = end_index if end_index < total_records else total_records
+                paths = paths[start_index: end_index]
             for path in paths:
                 path_type = 'file'
+                path_format = get_file_format(path.name)
                 if path.is_directory:
                     # Change path type to 'directory' when it is directory.
                     path_type = 'directory'
+                    if path.name:
+                        directory_paths = file_system_client.get_paths(path=path.name, recursive=False)
+                        for file_path in directory_paths:
+                            if not file_path.is_directory:
+                                path_format = get_file_format(file_path.name)
+                                break
                 directory_structure.append({'path': path.name,
                                             'type': path_type,
-                                            'name': path.name.split('/')[-1]})
+                                            'name': path.name.split('/')[-1],
+                                            'format': path_format})
             return {'container': container,
                     'directory_structure': directory_structure,
-                    'prev_path': prev_path
+                    'prev_path': prev_path,
+                    'total_records': total_records
                     }
         except Exception as e:
             log.error(e)
@@ -111,7 +129,7 @@ class DataLakeHandler:
             if file_client.exists():
                 file_properties = file_client.get_file_properties()
                 # log.info(file_properties)
-                if file_properties.size < 100000000:
+                if file_properties.size < GEO_METADATA_AUTOFILL_SIZE_LIMIT:
                     if endsWith(user_path, ['.tiff', '.tif']):
                         geoFile = file_client.download_file()
                         with MemoryFile(geoFile.readall()) as memfile:
@@ -135,5 +153,4 @@ class DataLakeHandler:
             raise e
         finally:
             return geo_metadata
-
-
+            
