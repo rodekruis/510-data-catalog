@@ -39,10 +39,10 @@ class SQLHandler:
         if db_type == 'azuresql':
             db_connections = config.get('ckan.azuresql_db_connections', '')
         db_connections = json.loads(db_connections)
-        if db_type == 'azuresql':
-            db_connections = [dict(item, **{'db_name':item['url'].split('/')[-1].split('?')[0]}) for item in db_connections]
-        else:  
-            db_connections = [dict(item, **{'db_name':item['url'].split('/')[-1]}) for item in db_connections]
+        # if db_type == 'azuresql':
+        #     db_connections = [dict(item, **{'db_name':item['url'].split('/')[-1].split('?')[0]}) for item in db_connections]
+        # else:  
+        #     db_connections = [dict(item, **{'db_name':item['url'].split('/')[-1]}) for item in db_connections]
         if not return_url:
             [db.pop('url', None) for db in db_connections]
         log.info(db_connections)
@@ -59,7 +59,8 @@ class SQLHandler:
         '''
         db_connections = self.get_databases(self.db_type, return_url=True)
         log.info(db_name)
-        filtered = [db['url'] for db in db_connections if db['db_name'] == db_name]
+        filtered = [db['url'] for db in db_connections if db['name'] == db_name]
+        # filtered = [db['url'] for db in db_connections if db['db_name'] == db_name]
         if bool(filtered):
             return filtered[0]
         else:
