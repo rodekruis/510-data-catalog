@@ -62,6 +62,7 @@ class TestDatabasesConnectionAction:
             db_type="postgres",
         )
         # Validating the connection action response
+        # log.info(get_dbs)
         assert expected_res == get_dbs
 
     def test_get_db_connections_mysql(self):
@@ -73,6 +74,7 @@ class TestDatabasesConnectionAction:
             db_type="mysql",
         )
         # Validating the connection action response
+        # log.info(get_dbs)
         assert expected_res == get_dbs
 
     def test_get_db_connections_azuresql(self):
@@ -84,6 +86,7 @@ class TestDatabasesConnectionAction:
             db_type="azuresql",
         )
         # Validating the connection action response
+        # log.info(get_dbs)
         assert expected_res == get_dbs
 
     
