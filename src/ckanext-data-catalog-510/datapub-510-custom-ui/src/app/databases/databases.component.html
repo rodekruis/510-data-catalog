@@ -16,7 +16,7 @@
         <select formControlName="database_connection" #connection class="form-control"
             (change)="selectSchema(connection.value)">
             <option selected value="">Select Database</option>
-            <option *ngFor='let connection of dbConnections' [value]="connection.name">{{connection?.title}}
+            <option *ngFor='let connection of dbConnections' [value]="connection.name">{{connection?.name}}
             </option>
 
         </select>
