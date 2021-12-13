@@ -10,7 +10,6 @@ from ckanext.data_catalog_510.controllers.database_handler import SQLHandler
 
 log = logging.getLogger(__name__)
 HERE = os.path.dirname(__file__)
-CC_EMAIL = "bottow@redcross.nl".replace('.', '@@')
 
 def get_countries(search):
     log.info(HERE)
@@ -147,13 +146,15 @@ def get_request_data_mailTo(package, res):
 
     :rtype string
     '''
-    log.info(package)
-    # Make sure '.' is replaced with '@@' in all email addresses to prevent spam.
-    toEmail = package.get("dataset_owner_email").replace(".", "@@")
-    subject = f"510 Data Catalog: Please give me access to {res.get('name')}".replace(" ", "%20")
-    resource_url = config.get('ckan_site_url') + '/dataset/' + package.get('dataset_name') + '/resource/' + res.get('id')
-    body = f"Dear data owner,%0A%0AI found \'{res.get('name')}\' part of \'{package.get('dataset_name')}\' in the 510 Data Catalog. You can find the entry here: {resource_url}%0A%0ACould you please give me access to the data?%0A%0AThanks in advance,%0A%0A".replace(" ", "%20")
-    return f'mailto:{toEmail}?cc={CC_EMAIL}&subject={subject}&body={body}'
+    with open(os.path.join(HERE, 'request_data_mail.json'), 'r') as email_template:
+        email_template = json.load(email_template)
+        # Make sure '.' is replaced with '@@' in all email addresses to prevent spam.
+        toEmail = package.get("dataset_owner_email").replace('.', '@@')
+        ccEmail = email_template.get('cc').replace('.', '@@')
+        resource_url = config.get('ckan_site_url') + '/dataset/' + package.get('dataset_name') + '/resource/' + res.get('id')
+        subject = email_template.get('subject').format(res.get('name')).replace(" ", "%20")
+        body = email_template.get('body').format(res.get('name'), package.get('dataset_name'), resource_url).replace(" ", "%20")
+        return f'mailto:{toEmail}?cc={ccEmail}&subject={subject}&body={body}'
 
 @core_helper
 def check_security_classification(package):
