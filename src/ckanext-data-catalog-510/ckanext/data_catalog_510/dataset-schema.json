@@ -72,7 +72,11 @@
             "field_name": "security_classification",
             "label": "Security Classification",
             "help_inline": true,
-            "preset": "select",
+            "form_snippet": "security_classification.html",
+            "form_attrs": {
+                "data-module": "security-classification-select"
+            },
+            "required": true,
             "choices": [
                 {
                     "value": "low",
