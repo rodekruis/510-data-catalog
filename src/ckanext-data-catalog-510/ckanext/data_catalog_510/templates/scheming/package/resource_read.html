@@ -10,10 +10,8 @@
 
 {% block resource_actions_inner %}
 {{ super() }}
-{% if h.check_security_classification(package) == 2 %}
 {% set mailtoUrl = h.get_request_data_mailTo(package, res)|string %}
 <li><button data-module="request-data-btn" id="request-data-btn" data-mailto="{{mailtoUrl}}" class="btn btn-primary">Request Data</button></li>
-{% endif %}
 {% endblock %}
 
 {% block resource_read_url %}

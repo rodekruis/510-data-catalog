@@ -1,5 +1,5 @@
 {
     "cc": "bottow@redcross.nl",
     "subject": "510 Data Catalog: Please give me access to {}",
-    "body": "Dear data owner,%0A%0AI found '{}' part of '{}' in the 510 Data Catalog. You can find the entry here: {}%0A%0ACould you please give me access to the data?%0A%0AThanks in advance,%0A%0A"
+    "body": "Dear data owner,\n\nI found '{}' part of '{}' in the 510 Data Catalog. You can find the entry here: {}\n\nCould you please give me access to the data?\n\nThanks in advance,\n\n"
 }
