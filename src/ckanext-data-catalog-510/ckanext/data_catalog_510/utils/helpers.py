@@ -151,9 +151,9 @@ def get_request_data_mailTo(package, res):
         # Make sure '.' is replaced with '@@' in all email addresses to prevent spam.
         toEmail = package.get("dataset_owner_email").replace('.', '@@')
         ccEmail = email_template.get('cc').replace('.', '@@')
-        resource_url = config.get('ckan_site_url') + '/dataset/' + package.get('dataset_name') + '/resource/' + res.get('id')
+        resource_url = config.get('ckan_site_url') + '/dataset/' + package.get('name') + '/resource/' + res.get('id')
         subject = email_template.get('subject').format(res.get('name')).replace(" ", "%20")
-        body = email_template.get('body').format(res.get('name'), package.get('dataset_name'), resource_url).replace(" ", "%20").replace("\n", "%0A")
+        body = email_template.get('body').format(res.get('name'), package.get('name'), resource_url).replace(" ", "%20").replace("\n", "%0A")
         return f'mailto:{toEmail}?cc={ccEmail}&subject={subject}&body={body}'
 
 @core_helper
