@@ -136,3 +136,37 @@ def get_file_format(file_path: str):
                 return extension.upper()
         else:
             return None
+
+
+@core_helper
+def get_request_data_mailTo(package, res):
+    '''
+    Helper used to generate mailto string for data request of high security resources.
+    :param file_path: Path of the file.
+
+    :rtype string
+    '''
+    with open(os.path.join(HERE, 'request_data_mail.json'), 'r') as email_template:
+        email_template = json.load(email_template)
+        # Make sure '.' is replaced with '@@' in all email addresses to prevent spam.
+        toEmail = package.get("dataset_owner_email").replace('.', '@@')
+        ccEmail = email_template.get('cc').replace('.', '@@')
+        resource_url = config.get('ckan_site_url') + '/dataset/' + package.get('name') + '/resource/' + res.get('id')
+        subject = email_template.get('subject').format(res.get('name')).replace(" ", "%20")
+        body = email_template.get('body').format(res.get('name'), package.get('name'), resource_url).replace(" ", "%20").replace("\n", "%0A")
+        return f'mailto:{toEmail}?cc={ccEmail}&subject={subject}&body={body}'
+
+@core_helper
+def check_security_classification(package):
+    '''
+    Helper used to check security classification of dataset.
+    :param file_path: Path of the file.
+
+    :rtype string
+    '''
+    if package.get('security_classification') == 'high':
+        return 2
+    elif package.get('security_classification') == 'normal':
+        return 1
+    else:
+        return 0

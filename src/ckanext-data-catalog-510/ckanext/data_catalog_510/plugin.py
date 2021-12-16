@@ -3,7 +3,7 @@ import ckan.plugins.toolkit as toolkit
 from ckanext.data_catalog_510.\
      utils.validators import (validate_date_yyyy_mm_dd)
 from ckanext.data_catalog_510.\
-     utils.helpers import (get_countries, get_db_host, generate_sample_db_string)
+     utils.helpers import (get_countries, get_db_host, generate_sample_db_string, get_request_data_mailTo, check_security_classification)
 from collections import OrderedDict
 
 from ckanext.data_catalog_510.logic import (get_db_connections,
@@ -63,7 +63,9 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         return {
             'get_countries_list': get_countries,
             'get_db_string': get_db_host,
-            'generate_sample_db_string': generate_sample_db_string
+            'generate_sample_db_string': generate_sample_db_string,
+            'get_request_data_mailTo': get_request_data_mailTo,
+            'check_security_classification': check_security_classification
         }
 
     def is_fallback(self):
@@ -80,7 +82,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         return OrderedDict([('dataset_owner', 'Dataset Owner'),
                             ('country', 'Country'),
                             ('initially_used', 'Project'),
-                            ('data_quality', 'Dataset Quality')])
+                            ('data_quality', 'Dataset Quality'),
+                            ('security_classification', 'Dataset Sensitivity')])
 
     def group_facets(self, facets_dict, group_type, package_type):
         return facets_dict
