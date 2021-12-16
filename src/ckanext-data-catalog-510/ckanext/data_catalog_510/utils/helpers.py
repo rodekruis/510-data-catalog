@@ -170,3 +170,24 @@ def check_security_classification(package):
         return 1
     else:
         return 0
+
+@core_helper
+def get_bbox_from_coords(location):
+    coords = {}
+    location_parsed = location.replace(" ", "%20").replace(",", "%2C")
+    url = 'https://nominatim.openstreetmap.org/search/' + location_parsed + '?format=json'
+    response = requests.get(url).json()
+    if response:
+        bbox = response[0].get('boundingbox')
+        coords = {
+            "type": "Polygon",
+            "coordinates":
+            [[
+                [bbox[3], bbox[0]],
+                [bbox[3], bbox[1]],
+                [bbox[2], bbox[1]],
+                [bbox[2], bbox[0]],
+                [bbox[3], bbox[0]]
+            ]]
+        }
+    return coords
