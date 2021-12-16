@@ -1,7 +1,9 @@
 import ckan.logic as logic
 from ckan.common import g, config, _
 import ckan.model as model
-import ckan.plugins.toolkit as toolkit 
+import ckan.plugins.toolkit as toolkit
+# from ckanext.data_catalog_510.utils.helpers import get_file_format
+
 
 from ckanext.data_catalog_510.\
      controllers.database_handler import SQLHandler
@@ -242,3 +244,17 @@ def country_autocomplete(context, data_dict):
     from ckanext.data_catalog_510.utils.helpers import get_countries
     search = data_dict.get('search')
     return get_countries(search)
+
+# def resource_preview():
+#     from ckanext.data_catalog_510.utils.helpers import check_security_classification
+#     result = check_security_classification(package)
+    
+def check_user_access(context):
+    ''' 
+    To check the users access
+    '''
+    user_access = context.get('user_auth_obj')
+    log.info(user_access)
+    return user_access
+
+

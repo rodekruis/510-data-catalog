@@ -3,7 +3,7 @@ import ckan.plugins.toolkit as toolkit
 from ckanext.data_catalog_510.\
      utils.validators import (validate_date_yyyy_mm_dd)
 from ckanext.data_catalog_510.\
-     utils.helpers import (get_countries, get_db_host, generate_sample_db_string, get_request_data_mailTo, check_security_classification)
+     utils.helpers import (get_countries, get_db_host, generate_sample_db_string, get_request_data_mailTo, check_security_classification, check_sec_class)
 from collections import OrderedDict
 
 from ckanext.data_catalog_510.logic import (get_db_connections,
@@ -15,7 +15,8 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_directories_and_files,
                                             get_no_of_files,
                                             get_geo_metadata,
-                                            country_autocomplete)
+                                            country_autocomplete,
+                                            check_user_access)
 
 
 class DataCatalog510Plugin(plugins.SingletonPlugin):
@@ -55,7 +56,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_directories_and_files': get_directories_and_files,
             'get_no_of_files': get_no_of_files,
             'get_geo_metadata': get_geo_metadata,
-            'country_autocomplete': country_autocomplete
+            'country_autocomplete': country_autocomplete,
+            'check_user_access':check_user_access
         }
 
     # ITemplateHelpers
@@ -65,7 +67,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_db_string': get_db_host,
             'generate_sample_db_string': generate_sample_db_string,
             'get_request_data_mailTo': get_request_data_mailTo,
-            'check_security_classification': check_security_classification
+            'check_security_classification': check_security_classification,
+            'check_sec_class':check_sec_class
         }
 
     def is_fallback(self):
