@@ -82,7 +82,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         return OrderedDict([('dataset_owner', 'Dataset Owner'),
                             ('country', 'Country'),
                             ('initially_used', 'Project'),
-                            ('data_quality', 'Dataset Quality')])
+                            ('data_quality', 'Dataset Quality'),
+                            ('security_classification', 'Dataset Sensitivity')])
 
     def group_facets(self, facets_dict, group_type, package_type):
         return facets_dict
