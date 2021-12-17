@@ -1,9 +1,8 @@
 import ckan.logic as logic
 from ckan.common import g, config, _
 import ckan.model as model
-import ckan.plugins.toolkit as toolkit
-# from ckanext.data_catalog_510.utils.helpers import get_file_format
-
+import ckan.plugins.toolkit as toolkit 
+from ckanext.data_catalog_510.utils.helpers import get_file_format
 
 from ckanext.data_catalog_510.\
      controllers.database_handler import SQLHandler
@@ -165,7 +164,6 @@ def get_containers(context, data_dict):
     # Validate whether user has permission to create datasets or not
     logic.check_access(u'package_create', context)
     try:
-        # log.info(data_dict)
         count = data_dict.get('count','1')
         datalake_connection = DataLakeHandler()
         datalake_connection.initialize_storage_account()
@@ -192,7 +190,6 @@ def get_directories_and_files(context, data_dict):
     try:
         datalake_connection = DataLakeHandler()
         datalake_connection.initialize_storage_account()
-        # log.info(data_dict)
         container = data_dict.get('container', '')
         path = data_dict.get('path', '')
         page_num = data_dict.get('page_num', '')
@@ -245,16 +242,15 @@ def country_autocomplete(context, data_dict):
     search = data_dict.get('search')
     return get_countries(search)
 
-# def resource_preview():
-#     from ckanext.data_catalog_510.utils.helpers import check_security_classification
-#     result = check_security_classification(package)
-    
-def check_user_access(context):
-    ''' 
-    To check the users access
-    '''
-    user_access = context.get('user_auth_obj')
-    log.info(user_access)
-    return user_access
+def check_user_access(context,data_dict):
+    log.info(context)
+    user_access = context.get('auth_user_obj')
+    if user_access is not None:
+        log.info('user Logged in')
+        return True
+    else:
+        log.info('user not Logged in')
+        return False
+
 
 

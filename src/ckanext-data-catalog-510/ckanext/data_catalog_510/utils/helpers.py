@@ -7,7 +7,7 @@ import logging
 from ckan.lib.helpers import core_helper
 from ckan.common import c, config
 from ckanext.data_catalog_510.controllers.database_handler import SQLHandler
-from ckanext.data_catalog_510.logic import check_user_access
+# from ckanext.data_catalog_510.logic import check_user_access
 log = logging.getLogger(__name__)
 HERE = os.path.dirname(__file__)
 
@@ -181,9 +181,9 @@ def check_sec_class(sec_class):
 
     :rtype string
     '''
+    # check_user_access(context)
     log.info('*************')
     log.info(sec_class)
-    log.info(check_user_access()) 
     return sec_class
 
 

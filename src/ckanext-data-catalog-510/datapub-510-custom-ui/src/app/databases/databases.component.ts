@@ -19,6 +19,7 @@ export class DatabasesComponent implements OnInit {
     get_schemas: '/api/3/action/get_schemas',
     get_tables: '/api/3/action/get_tables',
     get_table_metadata: '/api/3/action/get_tables_metadata',
+    check_user_access: '/api/3/action/check_user_access',
     resource_create: '/api/3/action/resource_create',
     resource_patch: '/api/3/action/resource_patch',
     resource_show: '/api/3/action/resource_show',
@@ -47,6 +48,7 @@ export class DatabasesComponent implements OnInit {
     private http: HttpClient,
     private alertService: AlertService
   ) {
+    console.log('***Hello*****');
     this.base_url = environment.base_url;
     this.databaseForm = new FormGroup({
       database_connection_type: new FormControl(
@@ -75,6 +77,7 @@ export class DatabasesComponent implements OnInit {
 
   ngOnInit() {
     this.getAllDatabasesType();
+    this.userAccess();
   }
 
   get f() {
@@ -199,6 +202,25 @@ export class DatabasesComponent implements OnInit {
           if (this.type == 'edit') {
             this.selectTable(this.resource_data.schema_name);
           }
+        },
+        (error) => {
+          this.alertService.error(error?.error?.error?.message);
+          this.commonService.showLoader = false;
+        }
+      );
+  }
+  userAccess() {
+    console.log('#####Hello World#######');
+    this.commonService.showLoader = true;
+    // this.selectedConnection = db_name;
+    this.http
+      .post<any>(this.base_url + this.API_LIST.check_user_access, {
+        headers: this.headers,
+      })
+      .subscribe(
+        (res) => {
+          console.log(res);
+          // this.commonService.showLoader = false;
         },
         (error) => {
           this.alertService.error(error?.error?.error?.message);
