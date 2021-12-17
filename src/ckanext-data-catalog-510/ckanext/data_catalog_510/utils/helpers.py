@@ -173,6 +173,7 @@ def check_security_classification(package):
     else:
         return 0
 
+security_class = 'low'
 @core_helper
 def check_sec_class(sec_class):
     '''
@@ -182,9 +183,17 @@ def check_sec_class(sec_class):
     :rtype string
     '''
     # check_user_access(context)
+    security_class = sec_class
     log.info('*************')
     log.info(sec_class)
     return sec_class
+
+def get_sec_class():
+    log.info('$$$$$$$')
+    log.info(security_class)
+    return security_class
+
+
 
 
 

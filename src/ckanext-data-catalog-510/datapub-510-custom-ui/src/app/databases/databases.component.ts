@@ -19,7 +19,7 @@ export class DatabasesComponent implements OnInit {
     get_schemas: '/api/3/action/get_schemas',
     get_tables: '/api/3/action/get_tables',
     get_table_metadata: '/api/3/action/get_tables_metadata',
-    check_user_access: '/api/3/action/check_user_access',
+    data_preview: '/api/3/action/data_preview',
     resource_create: '/api/3/action/resource_create',
     resource_patch: '/api/3/action/resource_patch',
     resource_show: '/api/3/action/resource_show',
@@ -214,7 +214,7 @@ export class DatabasesComponent implements OnInit {
     this.commonService.showLoader = true;
     // this.selectedConnection = db_name;
     this.http
-      .post<any>(this.base_url + this.API_LIST.check_user_access, {
+      .post<any>(this.base_url + this.API_LIST.data_preview, {
         headers: this.headers,
       })
       .subscribe(

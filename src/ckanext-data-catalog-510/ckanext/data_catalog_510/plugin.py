@@ -16,7 +16,7 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_no_of_files,
                                             get_geo_metadata,
                                             country_autocomplete,
-                                            check_user_access)
+                                            data_preview)
 
 
 class DataCatalog510Plugin(plugins.SingletonPlugin):
@@ -57,7 +57,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_no_of_files': get_no_of_files,
             'get_geo_metadata': get_geo_metadata,
             'country_autocomplete': country_autocomplete,
-            'check_user_access':check_user_access
+            'data_preview':data_preview,
         }
 
     # ITemplateHelpers
