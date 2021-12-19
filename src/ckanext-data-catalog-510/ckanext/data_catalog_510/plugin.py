@@ -15,6 +15,8 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_directories_and_files,
                                             get_no_of_files,
                                             get_geo_metadata,
+                                            package_ext_spatial_patch,
+                                            extended_package_search,
                                             country_autocomplete)
 
 
@@ -57,7 +59,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
             'get_no_of_files': get_no_of_files,
             'get_geo_metadata': get_geo_metadata,
             'country_autocomplete': country_autocomplete,
-            
+            'package_ext_spatial_patch': package_ext_spatial_patch,
+            'package_search': extended_package_search
         }
 
     # ITemplateHelpers

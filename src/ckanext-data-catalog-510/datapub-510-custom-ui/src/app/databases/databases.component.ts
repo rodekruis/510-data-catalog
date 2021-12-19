@@ -24,6 +24,7 @@ export class DatabasesComponent implements OnInit {
     resource_show: '/api/3/action/resource_show',
     package_show: '/api/3/action/package_show',
     package_patch: '/api/3/action/package_patch',
+    package_ext_spatial_patch: '/api/3/action/package_ext_spatial_patch'
   };
   headers = {
     Accept: 'application/json',
@@ -307,6 +308,20 @@ export class DatabasesComponent implements OnInit {
       );
   }
 
+  addSpatialExtra(id) {
+    let data = {
+      id,
+      spatial_extent: this.databaseForm.get('geo_metadata').get('spatial_extent').value
+    }
+    console.log(data)
+    this.http.post<any>(this.base_url + this.API_LIST.package_ext_spatial_patch, data, {headers:this.headers})
+    .subscribe((res) => {
+      console.log(res.result)
+    }, (error) => {
+      this.alertService.error(error?.error?.error?.message);
+    })
+  }
+
   handleDraftPackage(id) {
     let data = {
       id,
@@ -363,6 +378,9 @@ export class DatabasesComponent implements OnInit {
       data['id'] = this.resource;
     }
     this.handleDraftPackage(this.pkg_name);
+    if(this.is_geo) {
+      this.addSpatialExtra(this.pkg_name);
+    }
     this.commonService.showLoader = true;
     this.http.post<any>(this.base_url + api_url, data, {}).subscribe(
       (res) => {
