@@ -12,8 +12,14 @@
 {{ super() }}
 {% set mailtoUrl = h.get_request_data_mailTo(package, res)|string %}
 <li><button data-module="request-data-btn" id="request-data-btn" data-mailto="{{mailtoUrl}}" class="btn btn-primary">Request Data</button></li>
-{% set sec_class = h.check_sec_class(package.security_classification)|string %}
-<li><button  data-mailto="{{sec_class}}" class="btn btn-primary">Sec_Class</button></li>
+{% endblock %}
+
+{% block data_preview %}
+{% if h.is_data_access(package.security_classification) %}
+{{ super() }}
+{% else %}
+<p> You do not have access to view this preview. </p>
+{% endif %}
 {% endblock %}
 
 

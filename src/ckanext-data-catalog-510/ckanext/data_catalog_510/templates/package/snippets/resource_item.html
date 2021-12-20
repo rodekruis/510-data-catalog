@@ -1,4 +1,4 @@
-<!-- {% extends "package/snippets/resource_item.html" %} -->
+{% ckan_extends %}
 {#
   Renders a single resource with icons and view links.
 
@@ -44,7 +44,7 @@
       <li>Sample_List item</li>
       <li>
         <a href="{{ url }}">
-          {% if not is_activity_archive and res.has_views %}
+          {% if not is_activity_archive and res.has_views and h.is_data_access(pkg) %}
             <i class="fa fa-bar-chart-o"></i>
             {{ _('Preview') }}
           {% else %}

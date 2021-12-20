@@ -158,40 +158,19 @@ def get_request_data_mailTo(package, res):
         body = email_template.get('body').format(res.get('name'), package.get('name'), resource_url).replace(" ", "%20").replace("\n", "%0A")
         return f'mailto:{toEmail}?cc={ccEmail}&subject={subject}&body={body}'
 
+
 @core_helper
-def check_security_classification(package):
+def is_data_access(sec_class):
     '''
-    Helper used to check security classification of dataset.
+    Helper used to check access level of user based on security classification.
     :param file_path: Path of the file.
 
     :rtype string
     '''
-    if package.get('security_classification') == 'high':
-        return 2
-    elif package.get('security_classification') == 'normal':
-        return 1
+    if sec_class == 'low' or (sec_class == 'normal'):
+        return True
     else:
-        return 0
-
-security_class = 'low'
-@core_helper
-def check_sec_class(sec_class):
-    '''
-    Helper used to check security classification of dataset.
-    :param file_path: Path of the file.
-
-    :rtype string
-    '''
-    # check_user_access(context)
-    security_class = sec_class
-    log.info('*************')
-    log.info(sec_class)
-    return sec_class
-
-def get_sec_class():
-    log.info('$$$$$$$')
-    log.info(security_class)
-    return security_class
+        return False
 
 
 
