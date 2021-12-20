@@ -83,7 +83,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
                             ('country', 'Country'),
                             ('initially_used', 'Project'),
                             ('data_quality', 'Dataset Quality'),
-                            ('security_classification', 'Dataset Sensitivity')])
+                            ('security_classification', 'Security Classification')])
 
     def group_facets(self, facets_dict, group_type, package_type):
         return facets_dict
