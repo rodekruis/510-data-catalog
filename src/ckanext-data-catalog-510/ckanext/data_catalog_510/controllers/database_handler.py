@@ -7,6 +7,8 @@ from geoalchemy2 import Geometry
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.exc import SQLAlchemyError
 
+from ckanext.data_catalog_510.utils.helpers import generate_sample_db_string
+
 import logging
 log = logging.getLogger(__name__)
 EXCLUDE_SCHEMAS = ['information_schema']

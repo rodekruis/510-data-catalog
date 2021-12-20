@@ -1,10 +1,11 @@
 <form class="border border-light p-5" [formGroup]="databaseForm" (submit)="submit()">
 
     <p class="h4 mb-4">Resource with Database</p>
+    <app-login [db_type]="db_type" (loginResult)="onDbLogin($event)"></app-login>
     <div class="form-select form-group control-order-by">
         <label class="control-label" for="field-select_database_type">Select Database Type</label>
         <select title="Database Type" formControlName="database_connection_type" #databaseType class="form-control"
-            (change)="selectDatabase(databaseType.value)">
+            (change)="loginToDb(databaseType.value)">
             <option selected value="">Select Database Type</option>
             <option *ngFor='let databaseType of allDatabasesType' [value]="databaseType.name">{{databaseType?.title}}
             </option>

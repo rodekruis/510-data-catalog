@@ -39,6 +39,7 @@ export class DatabasesComponent implements OnInit {
   metaData: any = {};
   is_geo: boolean = false;
   resource_data: any;
+  dbLogin: boolean;
   @Input() pkg_name: any;
   @Input() type: any;
   @Input() resource: any;
@@ -48,6 +49,7 @@ export class DatabasesComponent implements OnInit {
     private alertService: AlertService
   ) {
     this.base_url = environment.base_url;
+    this.dbLogin = false;
     this.databaseForm = new FormGroup({
       database_connection_type: new FormControl(
         '',
@@ -145,6 +147,20 @@ export class DatabasesComponent implements OnInit {
         }
       );
   }
+
+  loginToDB(db_type) {
+    this.selectedDBType = db_type;
+    this.dbLogin = true;
+  }
+
+  onDbLogin(isLoggedIn) {
+    if(isLoggedIn === true) {
+      this.selectDatabase(this.selectedDBType);
+    } else {
+      this.alertService.error("Invalid credentials.");
+    }
+  }
+
   selectDatabase(db_type) {
     if (db_type == '') {
       return;
@@ -154,6 +170,7 @@ export class DatabasesComponent implements OnInit {
     let data = {
       db_type,
     };
+    this.dbLogin = true
     this.http
       .post<any>(
         this.base_url + this.API_LIST.get_databases_connections,
