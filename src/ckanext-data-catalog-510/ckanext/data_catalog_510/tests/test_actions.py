@@ -79,7 +79,7 @@ class TestDatabasesConnectionAction:
 
     def test_get_db_connections_azuresql(self):
         '''Test for validating azuresql connection type'''
-        expected_res = [{'name': 'test', 'title': 'Test'}]
+        expected_res = [{'name': '', 'title': 'Test'}]
         get_dbs = helpers.call_action(
             "get_db_connections",
             {},
