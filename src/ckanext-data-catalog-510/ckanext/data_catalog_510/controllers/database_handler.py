@@ -40,12 +40,12 @@ class SQLHandler:
             db_connections = config.get('ckan.azuresql_db_connections', '')
         db_connections = json.loads(db_connections)
         # to get the db_name from connection string
-        if db_type == 'azuresql':
-            for item in db_connections:
-                item['name'] = item['url'].split('/')[-1].split('?')[0]
-        else:  
-            for item in db_connections:
-                item['name'] = item['url'].split('/')[-1]
+        # if db_type == 'azuresql':
+        #     for item in db_connections:
+        #         item['name'] = item['url'].split('/')[-1].split('?')[0]
+        # else:  
+        #     for item in db_connections:
+        #         item['name'] = item['url'].split('/')[-1]
         if not return_url:
             [db.pop('url', None) for db in db_connections]
         return db_connections
