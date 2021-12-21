@@ -146,8 +146,6 @@ def get_request_data_mailTo(package, res):
 
     :rtype string
     '''
-    # log.info(package)
-    # log.info(res)
     with open(os.path.join(HERE, 'request_data_mail.json'), 'r') as email_template:
         email_template = json.load(email_template)
         # Make sure '.' is replaced with '@@' in all email addresses to prevent spam.
@@ -195,10 +193,3 @@ def is_preview_access(pkg, userobj=None):
         if sec_class == 'normal':
             return True
     return False
-
-
-
-
-
-
-
