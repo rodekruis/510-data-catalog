@@ -7,12 +7,12 @@ import logging
 from ckan.lib.helpers import core_helper
 from ckan.common import c, config
 from ckanext.data_catalog_510.controllers.database_handler import SQLHandler
-
+# from ckanext.data_catalog_510.logic import check_user_access
 log = logging.getLogger(__name__)
 HERE = os.path.dirname(__file__)
 
 def get_countries(search):
-    log.info(HERE)
+    # log.info(HERE)
     with open(os.path.join(HERE, 'country.json'),'r') as f:
         license_data = json.load(f)
         license_data = list(map(lambda x:x['name'],license_data))
@@ -129,7 +129,7 @@ def get_file_format(file_path: str):
     extension = os.path.splitext(file_path)[1][1:]
     with open(os.path.join(HERE, 'mimetypes.json'), 'r') as format_list_file:
         format_list = json.load(format_list_file)
-        if extension: 
+        if extension:
             if extension in format_list:
                 return format_list[extension]
             else:
@@ -156,17 +156,40 @@ def get_request_data_mailTo(package, res):
         body = email_template.get('body').format(res.get('name'), package.get('name'), resource_url).replace(" ", "%20").replace("\n", "%0A")
         return f'mailto:{toEmail}?cc={ccEmail}&subject={subject}&body={body}'
 
+
 @core_helper
-def check_security_classification(package):
+def set_data_access(package):
     '''
-    Helper used to check security classification of dataset.
+    Helper used to set access level of user based on security classification.
     :param file_path: Path of the file.
 
-    :rtype string
+    :rtype dict
     '''
-    if package.get('security_classification') == 'high':
-        return 2
-    elif package.get('security_classification') == 'normal':
-        return 1
+    sec_class = package.get('security_classification')
+    if 'private' not in package:
+        package['private'] = True
+    if sec_class == 'high' or sec_class == 'normal':
+        if package['private'] is not True:
+            package['private'] = True
     else:
-        return 0
+        if package['private'] is not False:
+            package['private'] = False
+    return package
+
+
+@core_helper
+def is_preview_access(pkg, userobj=None):
+    '''
+    Helper used to check preview access of user based on security classification.
+    :param file_path: Path of the file.
+
+    :rtype bool
+    '''
+    sec_class = pkg.get('security_classification')
+    if sec_class == 'low':
+        return True
+    elif userobj:
+        # if sec_class == 'normal' or (sec_class == 'high' and userobj.name == pkg.get('dataset_owner')):
+        if sec_class == 'normal':
+            return True
+    return False

@@ -2,6 +2,7 @@ import ckan.logic as logic
 from ckan.common import g, config, _
 import ckan.model as model
 import ckan.plugins.toolkit as toolkit 
+from ckanext.data_catalog_510.utils.helpers import get_file_format, set_data_access
 
 from ckanext.data_catalog_510.\
      controllers.database_handler import SQLHandler
@@ -163,7 +164,6 @@ def get_containers(context, data_dict):
     # Validate whether user has permission to create datasets or not
     logic.check_access(u'package_create', context)
     try:
-        # log.info(data_dict)
         count = data_dict.get('count','1')
         datalake_connection = DataLakeHandler()
         datalake_connection.initialize_storage_account()
@@ -190,7 +190,6 @@ def get_directories_and_files(context, data_dict):
     try:
         datalake_connection = DataLakeHandler()
         datalake_connection.initialize_storage_account()
-        # log.info(data_dict)
         container = data_dict.get('container', '')
         path = data_dict.get('path', '')
         page_num = data_dict.get('page_num', '')
@@ -242,3 +241,24 @@ def country_autocomplete(context, data_dict):
     from ckanext.data_catalog_510.utils.helpers import get_countries
     search = data_dict.get('search')
     return get_countries(search)
+
+
+@toolkit.side_effect_free
+def extended_package_patch(context, data_dict):
+    package = set_data_access(data_dict)
+    package = logic.action.patch.package_patch(context, data_dict)
+    return package
+
+
+@toolkit.side_effect_free
+def extended_package_create(context, data_dict):
+    package = set_data_access(data_dict)
+    package = logic.action.create.package_create(context, data_dict)
+    return package
+
+
+@toolkit.side_effect_free
+def extended_package_update(context, data_dict):
+    package = set_data_access(data_dict)
+    package = logic.action.update.package_update(context, data_dict)
+    return package
