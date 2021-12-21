@@ -4,7 +4,6 @@ data_catalog_510-js:
   contents:
     - js/main.js
     - js/polyfills.js
-    - js/data_catalog_510-dataset-visibility.js
     - js/data_catalog_510-common.js
     - js/data_catalog_510-security-classification.js
     - js/data_catalog_510-request-btn.js

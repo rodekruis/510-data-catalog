@@ -206,6 +206,7 @@ export class DatabasesComponent implements OnInit {
         }
       );
   }
+  
   selectTable(schema) {
     this.selectedSchema = schema;
     if (schema == '') {

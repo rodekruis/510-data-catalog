@@ -14,6 +14,15 @@
 <li><button data-module="request-data-btn" id="request-data-btn" data-mailto="{{mailtoUrl}}" class="btn btn-primary">Request Data</button></li>
 {% endblock %}
 
+{% block data_preview %}
+{% if h.is_preview_access(package, c.userobj) %}
+{{ super() }}
+{% else %}
+<p> <strong>Note: </strong>For 'High' security classification, data preview is not available.</p>
+{% endif %}
+{% endblock %}
+
+
 {% block resource_read_url %}
 {% if res.database_connection %}
 {{ super() }}
