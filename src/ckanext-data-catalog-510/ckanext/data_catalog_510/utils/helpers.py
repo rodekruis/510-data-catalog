@@ -129,7 +129,7 @@ def get_file_format(file_path: str):
     extension = os.path.splitext(file_path)[1][1:]
     with open(os.path.join(HERE, 'mimetypes.json'), 'r') as format_list_file:
         format_list = json.load(format_list_file)
-        if extension: 
+        if extension:
             if extension in format_list:
                 return format_list[extension]
             else:
@@ -160,17 +160,41 @@ def get_request_data_mailTo(package, res):
 
 
 @core_helper
-def is_data_access(sec_class):
+def set_data_access(package):
     '''
-    Helper used to check access level of user based on security classification.
+    Helper used to set access level of user based on security classification.
     :param file_path: Path of the file.
 
-    :rtype string
+    :rtype dict
     '''
-    if sec_class == 'low' or (sec_class == 'normal'):
-        return True
+    sec_class = package.get('security_classification')
+    if 'private' not in package:
+        package['private'] = True
+    if sec_class == 'high' or sec_class == 'normal':
+        if package['private'] is not True:
+            package['private'] = True
     else:
-        return False
+        if package['private'] is not False:
+            package['private'] = False
+    return package
+
+
+@core_helper
+def is_preview_access(pkg, userobj=None):
+    '''
+    Helper used to check preview access of user based on security classification.
+    :param file_path: Path of the file.
+
+    :rtype bool
+    '''
+    sec_class = pkg.get('security_classification')
+    if sec_class == 'low':
+        return True
+    elif userobj:
+        # if sec_class == 'normal' or (sec_class == 'high' and userobj.name == pkg.get('dataset_owner')):
+        if sec_class == 'normal':
+            return True
+    return False
 
 
 

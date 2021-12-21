@@ -1,0 +1,16 @@
+{% ckan_extends %}
+
+{% block package_description %}
+    {% if pkg.security_classification == 'high' %}
+    <span class="dataset-private label label-inverse pull-right">
+        <i class="fa fa-lock"></i>
+        {{ _('High') }}
+    </span>
+    {% endif %}
+    {% if pkg.security_classification == 'normal' %}
+    <span class="dataset-private label label-inverse pull-right">
+        <i class="fa fa-unlock"></i>
+        {{ _('Normal') }}
+    </span>
+    {% endif %}
+{% endblock %}

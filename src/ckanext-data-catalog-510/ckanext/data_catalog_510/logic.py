@@ -2,7 +2,7 @@ import ckan.logic as logic
 from ckan.common import g, config, _
 import ckan.model as model
 import ckan.plugins.toolkit as toolkit 
-from ckanext.data_catalog_510.utils.helpers import get_file_format, get_sec_class
+from ckanext.data_catalog_510.utils.helpers import get_file_format, set_data_access
 
 from ckanext.data_catalog_510.\
      controllers.database_handler import SQLHandler
@@ -242,27 +242,23 @@ def country_autocomplete(context, data_dict):
     search = data_dict.get('search')
     return get_countries(search)
 
-def check_user_access(context):
-    log.info(context)
-    user_access = context.get('auth_user_obj')
-    if user_access is not None:
-        log.info('user Logged in')
-        return True
-    else:
-        log.info('user not Logged in')
-        return False
-    
-def data_preview(context,data_dict):
-    log.info(context)
-    is_user_logged_in = check_user_access(context)
-    security_class = get_sec_class()
-    log.info(is_user_logged_in)
-    log.info('###########')
-    log.info(security_class)
-    return 'Success'
+
+@toolkit.side_effect_free
+def extended_package_patch(context, data_dict):
+    package = set_data_access(data_dict)
+    package = logic.action.patch.package_patch(context, data_dict)
+    return package
 
 
+@toolkit.side_effect_free
+def extended_package_create(context, data_dict):
+    package = set_data_access(data_dict)
+    package = logic.action.create.package_create(context, data_dict)
+    return package
 
 
-
-
+@toolkit.side_effect_free
+def extended_package_update(context, data_dict):
+    package = set_data_access(data_dict)
+    package = logic.action.update.package_update(context, data_dict)
+    return package

@@ -41,10 +41,9 @@
     </a>
     <ul class="dropdown-menu">
       {% block resource_item_explore_links %}
-      <li>Sample_List item</li>
       <li>
         <a href="{{ url }}">
-          {% if not is_activity_archive and res.has_views and h.is_data_access(pkg) %}
+          {% if not is_activity_archive and res.has_views and h.is_preview_access(pkg, c.userobj) %}
             <i class="fa fa-bar-chart-o"></i>
             {{ _('Preview') }}
           {% else %}

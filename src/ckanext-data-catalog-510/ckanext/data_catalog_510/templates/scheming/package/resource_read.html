@@ -15,10 +15,10 @@
 {% endblock %}
 
 {% block data_preview %}
-{% if h.is_data_access(package.security_classification) %}
+{% if h.is_preview_access(package, c.userobj) %}
 {{ super() }}
 {% else %}
-<p> You do not have access to view this preview. </p>
+<p> <strong>Note: </strong>For 'High' security classification, data preview is not available.</p>
 {% endif %}
 {% endblock %}
 
