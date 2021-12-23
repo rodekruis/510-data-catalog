@@ -135,7 +135,7 @@ class DataLakeHandler:
                         with MemoryFile(geoFile.readall()) as memfile:
                             with memfile.open() as dataset:
                                 geoData = rxr.open_rasterio(dataset, masked=True)
-                                geo_metadata['spatial_extent'] = str(geoData.rio.bounds())
+                                geo_metadata['spatial_extent'] = str(list(geoData.rio.bounds()))
                                 geo_metadata['spatial_resolution'] = str(geoData.rio.resolution()[0])
                                 geo_metadata['spatial_reference_system'] = str(geoData.rio.crs.to_epsg())
                     elif endsWith(user_path, ['.geojson']):

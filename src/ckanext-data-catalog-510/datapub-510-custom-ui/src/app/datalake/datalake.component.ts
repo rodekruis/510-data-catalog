@@ -22,8 +22,10 @@ export class DatalakeComponent implements OnInit {
     resource_show: '/api/3/action/resource_show',
     package_show: '/api/3/action/package_show',
     package_patch: '/api/3/action/package_patch',
+    package_ext_spatial_patch: '/api/3/action/package_ext_spatial_patch',
     get_geo_metadata: '/api/3/action/get_geo_metadata',
-    get_directories_and_files: '/api/3/action/get_directories_and_files'
+    get_directories_and_files: '/api/3/action/get_directories_and_files',
+    
   };
   headers = {
     Accept: 'application/json',
@@ -182,6 +184,20 @@ export class DatalakeComponent implements OnInit {
     }
   }
 
+  addSpatialExtra(id) {
+    let data = {
+      id,
+      spatial_extent: this.datalakeForm.get('geo_metadata').get('spatial_extent').value
+    }
+    console.log(data)
+    this.http.post<any>(this.base_url + this.API_LIST.package_ext_spatial_patch, data, {headers:this.headers})
+    .subscribe((res) => {
+      console.log(res.result)
+    }, (error) => {
+      this.alertService.error(error?.error?.error?.message);
+    })
+  }
+
   handleDraftPackage(id) {
     let data = {
       id,
@@ -238,13 +254,19 @@ export class DatalakeComponent implements OnInit {
       data['id'] = this.resource;
     }
     this.handleDraftPackage(this.pkg_name);
+    if(this.is_geo) {
+      this.addSpatialExtra(this.pkg_name);
+    }
     this.commonService.showLoader = true;
     this.http
       .post<any>(this.base_url + api_url, data, {
         headers: this.headers,
       })
       .subscribe(
-        (res) => {
+        async (res) => {
+          // if('spatial_extent' in this.datalakeForm.get('geo_metadata')) {
+          // await this.addSpatialExtra(this.pkg_name);
+          // }
           this.commonService.showLoader = false;
           let message;
           if (this.type == 'edit') {
