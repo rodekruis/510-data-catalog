@@ -16,7 +16,10 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_no_of_files,
                                             get_geo_metadata,
                                             country_autocomplete,
-                                            check_db_credentials)
+                                            check_db_credentials,
+                                            extended_package_patch,
+                                            extended_package_create,
+                                            extended_package_update)
 
 
 class DataCatalog510Plugin(plugins.SingletonPlugin):
@@ -57,7 +60,10 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_no_of_files': get_no_of_files,
             'get_geo_metadata': get_geo_metadata,
             'country_autocomplete': country_autocomplete,
-            'check_db_credentials': check_db_credentials
+            'check_db_credentials': check_db_credentials,
+            'package_patch': extended_package_patch,
+            'package_update': extended_package_update,
+            'package_create': extended_package_create
         }
 
     # ITemplateHelpers
@@ -83,7 +89,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         return OrderedDict([('dataset_owner', 'Dataset Owner'),
                             ('country', 'Country'),
                             ('initially_used', 'Project'),
-                            ('data_quality', 'Dataset Quality')])
+                            ('data_quality', 'Dataset Quality'),
+                            ('security_classification', 'Security Classification')])
 
     def group_facets(self, facets_dict, group_type, package_type):
         return facets_dict

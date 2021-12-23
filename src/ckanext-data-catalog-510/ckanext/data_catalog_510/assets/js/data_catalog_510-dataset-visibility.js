@@ -3,6 +3,7 @@
 * This JavaScript module is used in the Visibility field of Dataset Form page 
 * to display a warning if the dataset's visibility is set to Public.
 * It internally triggers the warning-display common module.
+* Note: This module has become obsolete since field-private has been removed in favour of field-security_classification.
 */
 this.ckan.module('dataset-visibility-select', function ($, _) {
     return {
@@ -23,3 +24,20 @@ this.ckan.module('dataset-visibility-select', function ($, _) {
         }
     }
 });
+
+/* 
+Snippet code for field-private (from organization.html):
+
+<div class="control-group form-group control-medium">
+      <label for="field-private" class="control-label">{{ _('Visibility') }}</label>
+      <div class="controls">
+        <select id="field-private" name="private" class="form-control" data-module="dataset-visibility-select">
+          {% for option in [('True', _('Private')), ('False', _('Public'))] %}
+          <option value="{{ option[0] }}" {% if option[0] == data.private|trim %}selected="selected"{% endif %}>{{ option[1] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="alert alert-danger" id='public-visible-warning' data-module="warning-display">
+        By putting visibility to public, the dataset entry will become publicly available to anyone visiting this website.
+      </div>
+*/
