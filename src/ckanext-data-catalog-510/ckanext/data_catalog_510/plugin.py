@@ -3,7 +3,7 @@ import ckan.plugins.toolkit as toolkit
 from ckanext.data_catalog_510.\
      utils.validators import (validate_date_yyyy_mm_dd)
 from ckanext.data_catalog_510.\
-     utils.helpers import (get_countries, get_db_host, generate_sample_db_string, get_request_data_mailTo, check_security_classification, get_bbox_from_coords)
+     utils.helpers import (get_countries, get_db_host, generate_sample_db_string, get_request_data_mailTo, get_bbox_from_coords)
 from collections import OrderedDict
 
 from ckanext.data_catalog_510.logic import (get_db_connections,
@@ -17,7 +17,12 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_geo_metadata,
                                             package_ext_spatial_patch,
                                             extended_package_search,
-                                            country_autocomplete)
+                                            country_autocomplete,
+                                            country_autocomplete,
+                                            extended_package_patch,
+                                            extended_package_create,
+                                            extended_package_update)
+                                            # data_preview)
 
 
 class DataCatalog510Plugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
@@ -61,6 +66,9 @@ class DataCatalog510Plugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
             'country_autocomplete': country_autocomplete,
             'package_ext_spatial_patch': package_ext_spatial_patch,
             # 'package_search': extended_package_search
+            'package_patch': extended_package_patch,
+            'package_update': extended_package_update,
+            'package_create': extended_package_create
         }
 
     # ITemplateHelpers
@@ -117,7 +125,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
         return OrderedDict([('dataset_owner', 'Dataset Owner'),
                             ('country', 'Country'),
                             ('initially_used', 'Project'),
-                            ('data_quality', 'Dataset Quality')])
+                            ('data_quality', 'Dataset Quality'),
+                            ('security_classification', 'Security Classification')])
 
     def group_facets(self, facets_dict, group_type, package_type):
         return facets_dict
