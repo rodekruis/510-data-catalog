@@ -25,14 +25,13 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             # data_preview)
 
 
-class DataCatalog510Plugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
+class DataCatalog510Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IFacets)
     plugins.implements(plugins.IDatasetForm, inherit=False)
-    # plugins.implements(plugins.IPackageController, inherit=False)
     plugins.implements(plugins.IFacets)
     # For plugin interfaces 
     # Please follow - https://docs.ckan.org/en/2.9/extensions/plugin-interfaces.html#plugin-interfaces-reference
@@ -90,35 +89,6 @@ class DataCatalog510Plugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
         # This plugin doesn't handle any special package types, it just
         # registers itself as the default (above).
         return []
-    
-    def _modify_package_schema(self, schema):
-        # Add our spatial metadata field to the schema, this one will use
-        # convert_to_extras instead of convert_to_tags.
-        schema.update({
-                'spatial': [toolkit.get_validator('ignore_missing'), toolkit.get_converter('convert_to_extras')]
-        })
-        print(schema)
-        return schema
-    
-    def show_package_schema(self):
-        schema = super(DataCatalog510Plugin, self).show_package_schema()
-
-        # Add our spatial field to the dataset schema.
-        schema.update({
-            'spatial': [toolkit.get_validator('ignore_missing'), toolkit.get_converter('convert_from_extras')]
-            })
-
-        return schema
-
-    def create_package_schema(self):
-        schema = super(DataCatalog510Plugin, self).create_package_schema()
-        schema = self._modify_package_schema(schema)
-        return schema
-
-    def update_package_schema(self):
-        schema = super(DataCatalog510Plugin, self).update_package_schema()
-        schema = self._modify_package_schema(schema)
-        return schema
 
     def dataset_facets(self, facets_dict, package_type):
         return OrderedDict([('dataset_owner', 'Dataset Owner'),
@@ -133,24 +103,3 @@ class DataCatalog510Plugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
     def organization_facets(self, facets_dict, organization_type,
                             package_type):
         return facets_dict
-    
-    # IPackageController
-    # def before_search(self, search_params):
-    #     print("Before search", search_params)
-    #     query = search_params.get('q')
-    #     if query and 'location' in query:
-    #         location = query.replace(" ", "").split(':')[-1]
-    #         coords = get_bbox_from_coords(location)
-    #         if coords:
-    #             search_params['extras']['ext_bbox'] = coords
-    #     return search_params
-    
-    # def after_search(self, search_results, search_params):
-    #     print(search_results)
-    #     return search_results
-    
-    # def before_view(self, pkg_dict):
-    #     return pkg_dict
-    
-    # def before_index(self, pkg_dict):
-    #     return pkg_dict
