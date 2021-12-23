@@ -110,11 +110,11 @@ class SQLHandler:
         '''
         try:
             self.db_type = db_type
-            if db_type != 'azuresql':
-                if username and password:
+            if username and password:
+                try:
                     self.db_uri = self.get_user_db_connection_string(db_type, db_name, username, password)
-                else:
-                    raise NotFound(_('No User found in Database {}'.format(username)))
+                except Exception as e:
+                    raise NotFound(_('No User {} found in Database'.format(username)))
             else:
                 self.db_uri = self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
@@ -147,11 +147,11 @@ class SQLHandler:
         '''
         try:
             self.db_type = db_type
-            if db_type != 'azuresql':
-                if username and password:
+            if username and password:
+                try:
                     self.db_uri = self.get_user_db_connection_string(db_type, db_name, username, password)
-                else:
-                    raise NotFound(_('No User found in Database {}'.format(username)))
+                except Exception as e:
+                    raise NotFound(_('No User {} found in Database'.format(username)))
             else:
                 self.db_uri = self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
@@ -188,11 +188,11 @@ class SQLHandler:
         '''
         try:
             self.db_type = db_type
-            if db_type != 'azuresql':
-                if username and password:
+            if username and password:
+                try:
                     self.db_uri = self.get_user_db_connection_string(db_type, db_name, username, password)
-                else:
-                    raise NotFound(_('No User found in Database {}'.format(username)))
+                except Exception as e:
+                    raise NotFound(_('No User {} found in Database'.format(username)))
             else:
                 self.db_uri = self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)

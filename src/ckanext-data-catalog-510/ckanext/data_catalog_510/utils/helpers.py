@@ -11,6 +11,7 @@ from ckanext.data_catalog_510.controllers.database_handler import SQLHandler
 log = logging.getLogger(__name__)
 HERE = os.path.dirname(__file__)
 
+
 def get_countries(search):
     # log.info(HERE)
     with open(os.path.join(HERE, 'country.json'),'r') as f:
@@ -18,6 +19,7 @@ def get_countries(search):
         license_data = list(map(lambda x:x['name'],license_data))
         country_list = list(filter(lambda k: search.lower() in k.lower(), license_data))
     return country_list
+
 
 @core_helper
 def prefill_dataset_owner_details(data, call_type):
@@ -85,12 +87,8 @@ def get_db_host(database_connection_type, database_connection):
     :rtype string
     '''
     try:
-        host = "Unknown Host"
         db_handler = SQLHandler()
-        if(database_connection_type):
-            db_handler.db_type = database_connection_type
-            host = db_handler.get_db_connection_string(database_connection).split("@")[-1].split("/")[0]
-        return host
+        return db_handler.get_db_host(database_connection_type, database_connection)
     except Exception as e:
         log.error(e)
         raise e
@@ -106,17 +104,6 @@ def generate_sample_db_string(database_connection_type, database_connection):
     '''
     db_handler = SQLHandler()
     return db_handler.get_base_db_connection_string(database_connection_type, database_connection)
-    # host = get_db_host(database_connection_type, database_connection)
-    # db_string = "Unknown DB String"
-    # if database_connection_type == 'postgres':
-    #     db_string = f"postgres://<username>:<password>@{host}/{database_connection}"
-    # elif database_connection_type == 'mysql':
-    #     db_string = f"mysql+pymysql://<username>:<password>@{host}/{database_connection}"
-    # elif database_connection_type == 'azuresql':
-    #     db_string = f"mssql+pyodbc://<username>:<password>@{host}/{database_connection}?driver=ODBC+Driver+17+for+SQL+Server"
-    # else:
-    #     db_string = "Unknown DB String"
-    # return db_string
 
 
 @core_helper
