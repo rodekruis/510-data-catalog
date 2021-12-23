@@ -159,16 +159,20 @@ export class DatabasesComponent implements OnInit {
     if(this.selectedDBType && this.selectedDBType !== 'azuresql') {
       loginStatus = await this.openDbLogin(db_name, this.selectedDBType);
     }
+    if(!loginStatus) {
+      this.clearSelects('connections');
+    }
     this.clearSelects('schema');
     if(loginStatus || this.selectedDBType === 'azuresql') {
       this.selectSchema(db_name);
     }
   }
 
-  openDbLogin(db_name, db_type) {
+  async openDbLogin(db_name, db_type) {
     console.log(db_name);
     this.token = null;
-    return Swal.fire({
+    let status = false;
+    status = await Swal.fire({
       title: 'Login to Database',
       html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
       <input type="password" id="password" class="swal2-input" placeholder="Password">`,
@@ -183,16 +187,21 @@ export class DatabasesComponent implements OnInit {
         return { username: login, password: password }
       }
     }).then(async (result) => {
-      let token = btoa(result.value.username + ':' + result.value.password)
-      let isLoggedIn: boolean = await this.checkDbLogin(db_name, db_type, token);
-      console.log(isLoggedIn);
-      if(isLoggedIn) {
-        this.token = token
-        return Swal.fire('Success!', 'Your credentials have been validated.', 'success').then((result) => { return true; });
+      if(result.value) {
+        let token = btoa(result.value.username + ':' + result.value.password)
+        let isLoggedIn: boolean = await this.checkDbLogin(db_name, db_type, token);
+        console.log(isLoggedIn);
+        if(isLoggedIn) {
+          this.token = token
+          return Swal.fire('Success!', 'Your credentials have been validated.', 'success').then((result) => { return true; });
+        } else {
+          return Swal.fire('Invalid!', 'Your credentials are invalid.', 'error').then((result) => { return false; });
+        }
       } else {
-        return Swal.fire('Invalid!', 'Your credentials are invalid.', 'error').then((result) => { return false; });
+        return false;
       }
     })
+    return status;
   }
 
   checkDbLogin(db_name, db_type, token) {
@@ -324,7 +333,7 @@ export class DatabasesComponent implements OnInit {
         (res) => {
           this.commonService.showLoader = false;
           this.resource_data = res?.result;
-          if (this.resource_data.geo_metadata) {
+          if (Object.values(this.resource_data.geo_metadata).some(value => value !== null || value !== '')) {
             this.is_geo = true;
           }
           if (this.type == 'edit') {
