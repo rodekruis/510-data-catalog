@@ -78,7 +78,6 @@ class DataCatalog510Plugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
             'get_db_string': get_db_host,
             'generate_sample_db_string': generate_sample_db_string,
             'get_request_data_mailTo': get_request_data_mailTo,
-            'check_security_classification': check_security_classification,
             'get_bbox_from_coords': get_bbox_from_coords
         }
 
