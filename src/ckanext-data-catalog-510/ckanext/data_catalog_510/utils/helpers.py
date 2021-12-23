@@ -7,7 +7,7 @@ import logging
 from ckan.lib.helpers import core_helper
 from ckan.common import c, config
 from ckanext.data_catalog_510.controllers.database_handler import SQLHandler
-# from ckanext.data_catalog_510.logic import check_user_access
+
 log = logging.getLogger(__name__)
 HERE = os.path.dirname(__file__)
 
@@ -77,7 +77,7 @@ def get_storage_explorer_link(container):
 
 
 @core_helper
-def get_db_host(res):
+def get_db_host(database_connection_type, database_connection):
     '''
     Helper used to extract Database hostname from the internal connection string.
     :param res: The resource metadata that is injected into the template HTML.
@@ -87,9 +87,9 @@ def get_db_host(res):
     try:
         host = "Unknown Host"
         db_handler = SQLHandler()
-        if(res['database_connection_type']):
-            db_handler.db_type = res['database_connection_type']
-            host = db_handler.get_db_connection_string(res['database_connection']).split("@")[-1].split("/")[0]
+        if(database_connection_type):
+            db_handler.db_type = database_connection_type
+            host = db_handler.get_db_connection_string(database_connection).split("@")[-1].split("/")[0]
         return host
     except Exception as e:
         log.error(e)
@@ -97,25 +97,26 @@ def get_db_host(res):
 
 
 @core_helper
-def generate_sample_db_string(res):
+def generate_sample_db_string(database_connection_type, database_connection):
     '''
     Helper used to generate sample DB connection string for the provided resource, if retrieved from database.
     :param res: The resource metadata that is injected into the template HTML.
 
     :rtype string
     '''
-
-    host = get_db_host(res)
-    db_string = "Unknown DB String"
-    if res['database_connection_type'] == 'postgres':
-        db_string = f"postgres://<username>:<password>@{host}/{res['database_connection']}"
-    elif res['database_connection_type'] == 'mysql':
-        db_string = f"mysql+pymysql://<username>:<password>@{host}/{res['database_connection']}"
-    elif res['database_connection_type'] == 'azuresql':
-        db_string = f"mssql+pyodbc://<username>:<password>@{host}/{res['database_connection']}?driver=ODBC+Driver+17+for+SQL+Server"
-    else:
-        db_string = "Unknown DB String"
-    return db_string
+    db_handler = SQLHandler()
+    return db_handler.get_base_db_connection_string(database_connection_type, database_connection)
+    # host = get_db_host(database_connection_type, database_connection)
+    # db_string = "Unknown DB String"
+    # if database_connection_type == 'postgres':
+    #     db_string = f"postgres://<username>:<password>@{host}/{database_connection}"
+    # elif database_connection_type == 'mysql':
+    #     db_string = f"mysql+pymysql://<username>:<password>@{host}/{database_connection}"
+    # elif database_connection_type == 'azuresql':
+    #     db_string = f"mssql+pyodbc://<username>:<password>@{host}/{database_connection}?driver=ODBC+Driver+17+for+SQL+Server"
+    # else:
+    #     db_string = "Unknown DB String"
+    # return db_string
 
 
 @core_helper
@@ -171,10 +172,3 @@ def is_data_access(sec_class):
         return True
     else:
         return False
-
-
-
-
-
-
-

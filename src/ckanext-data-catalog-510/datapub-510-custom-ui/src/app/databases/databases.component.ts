@@ -24,6 +24,7 @@ export class DatabasesComponent implements OnInit {
     resource_show: '/api/3/action/resource_show',
     package_show: '/api/3/action/package_show',
     package_patch: '/api/3/action/package_patch',
+    check_db_credentials: '/api/3/action/check_db_credentials',
   };
   headers = {
     Accept: 'application/json',
@@ -40,6 +41,7 @@ export class DatabasesComponent implements OnInit {
   is_geo: boolean = false;
   resource_data: any;
   dbLogin: boolean;
+  token: string = null;
   @Input() pkg_name: any;
   @Input() type: any;
   @Input() resource: any;
@@ -82,11 +84,13 @@ export class DatabasesComponent implements OnInit {
   get f() {
     return this.databaseForm.controls;
   }
+
   clearSelects(type) {
     if (type == 'database_type') {
       this.dbConnections = [];
       this.dbSchemas = [];
       this.tables = [];
+      this.token = null;
       this.databaseForm.patchValue({
         database_connection: '',
         schema_name: '',
@@ -100,6 +104,7 @@ export class DatabasesComponent implements OnInit {
     if (type == 'connections') {
       this.dbSchemas = [];
       this.tables = [];
+      this.token = null;
       this.databaseForm.patchValue({
         database_connection: '',
         schema_name: '',
@@ -122,6 +127,7 @@ export class DatabasesComponent implements OnInit {
       });
     }
   }
+
   getAllDatabasesType() {
     this.commonService.showLoader = true;
     this.http
@@ -148,17 +154,66 @@ export class DatabasesComponent implements OnInit {
       );
   }
 
-  loginToDB(db_type) {
-    this.selectedDBType = db_type;
-    this.dbLogin = true;
+  async loginToDB(db_name) {
+    let loginStatus = false;
+    if(this.selectedDBType && this.selectedDBType !== 'azuresql') {
+      loginStatus = await this.openDbLogin(db_name, this.selectedDBType);
+    }
+    this.clearSelects('schema');
+    if(loginStatus || this.selectedDBType === 'azuresql') {
+      this.selectSchema(db_name);
+    }
   }
 
-  onDbLogin(isLoggedIn) {
-    if(isLoggedIn === true) {
-      this.selectDatabase(this.selectedDBType);
-    } else {
-      this.alertService.error("Invalid credentials.");
+  openDbLogin(db_name, db_type) {
+    console.log(db_name);
+    this.token = null;
+    return Swal.fire({
+      title: 'Login to Database',
+      html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
+      <input type="password" id="password" class="swal2-input" placeholder="Password">`,
+      confirmButtonText: 'Sign in',
+      focusConfirm: false,
+      preConfirm: () => {
+        const login = (Swal.getPopup().querySelector('#login') as HTMLInputElement).value;
+        const password = (Swal.getPopup().querySelector('#password') as HTMLInputElement).value;
+        if (!login || !password) {
+          Swal.showValidationMessage(`Please enter login and password`)
+        }
+        return { username: login, password: password }
+      }
+    }).then(async (result) => {
+      let token = btoa(result.value.username + ':' + result.value.password)
+      let isLoggedIn: boolean = await this.checkDbLogin(db_name, db_type, token);
+      console.log(isLoggedIn);
+      if(isLoggedIn) {
+        this.token = token
+        return Swal.fire('Success!', 'Your credentials have been validated.', 'success').then((result) => { return true; });
+      } else {
+        return Swal.fire('Invalid!', 'Your credentials are invalid.', 'error').then((result) => { return false; });
+      }
+    })
+  }
+
+  checkDbLogin(db_name, db_type, token) {
+    let data = {
+      db_name: db_name,
+      db_type: db_type,
+      token: token,
     }
+
+    return this.http
+    .post<any>(this.base_url + this.API_LIST.check_db_credentials, data, { headers: this.headers })
+    .toPromise()
+    .then((res) => {
+      if(res.result) {
+        return res.result;
+      }
+    })
+    .catch((error) => {
+      this.alertService.error(error?.error?.error?.message);
+      return false;
+    })
   }
 
   selectDatabase(db_type) {
@@ -166,11 +221,9 @@ export class DatabasesComponent implements OnInit {
       return;
     }
     this.commonService.showLoader = true;
-    this.selectedDBType = db_type;
     let data = {
       db_type,
     };
-    this.dbLogin = true
     this.http
       .post<any>(
         this.base_url + this.API_LIST.get_databases_connections,
@@ -183,6 +236,7 @@ export class DatabasesComponent implements OnInit {
         (res) => {
           this.commonService.showLoader = false;
           this.dbConnections = res.result;
+          this.selectedDBType = db_type;
           this.clearSelects('connections');
           if (this.type == 'edit') {
             this.selectSchema(this.resource_data.database_connection);
@@ -194,6 +248,7 @@ export class DatabasesComponent implements OnInit {
         }
       );
   }
+
   selectSchema(db_name) {
     if (db_name == '') {
       return;
@@ -203,6 +258,7 @@ export class DatabasesComponent implements OnInit {
     let data = {
       db_type: this.selectedDBType,
       db_name,
+      token: this.token
     };
     this.http
       .post<any>(this.base_url + this.API_LIST.get_schemas, data, {
@@ -223,6 +279,7 @@ export class DatabasesComponent implements OnInit {
         }
       );
   }
+
   selectTable(schema) {
     this.selectedSchema = schema;
     if (schema == '') {
@@ -234,6 +291,7 @@ export class DatabasesComponent implements OnInit {
       db_type: this.selectedDBType,
       db_name: this.selectedConnection,
       schema,
+      token: this.token
     };
     this.http
       .post<any>(this.base_url + this.API_LIST.get_tables, data, {
@@ -252,6 +310,7 @@ export class DatabasesComponent implements OnInit {
         }
       );
   }
+
   getResource() {
     this.http
       .post<any>(
@@ -278,6 +337,7 @@ export class DatabasesComponent implements OnInit {
         }
       );
   }
+
   selectMetaData(table) {
     if (table == '') {
       return;
@@ -289,6 +349,7 @@ export class DatabasesComponent implements OnInit {
       db_name: this.selectedConnection,
       schema: this.selectedSchema,
       table,
+      token: this.token,
     };
     this.http
       .post<any>(this.base_url + this.API_LIST.get_table_metadata, data, {
