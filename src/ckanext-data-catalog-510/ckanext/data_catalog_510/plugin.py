@@ -60,7 +60,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
             'get_geo_metadata': get_geo_metadata,
             'country_autocomplete': country_autocomplete,
             'package_ext_spatial_patch': package_ext_spatial_patch,
-            'package_search': extended_package_search
+            # 'package_search': extended_package_search
         }
 
     # ITemplateHelpers
