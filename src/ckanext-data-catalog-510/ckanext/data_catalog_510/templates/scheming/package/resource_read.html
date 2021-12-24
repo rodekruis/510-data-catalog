@@ -27,7 +27,7 @@
 {% if res.database_connection %}
 {{ super() }}
 <div>
-<p>DB Connection String for <b>{{ res.database_connection_type }}</b> Database : {{ h.generate_sample_db_string(res) }} </p>
+<p>DB Connection String for <b>{{ res.database_connection_type }}</b> Database : {{ h.generate_sample_db_string(res.database_connection_type, res.database_connection) }} </p>
 </div>
 {% endif %}
 {% endblock %}
@@ -79,7 +79,7 @@
             {% if res.resource_type == "database" %}
             <tr>
                 <th scope="row">{{_('Database Host')}}</th>
-                <td>{{ h.get_db_host(res) }}</td>
+                <td>{{ h.get_db_host(res.database_connection_type, res.database_connection) }}</td>
             </tr>
             {% endif %}
             {% if res.database_connection %}

@@ -19,10 +19,10 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             extended_package_search,
                                             country_autocomplete,
                                             country_autocomplete,
+                                            check_db_credentials,
                                             extended_package_patch,
                                             extended_package_create,
                                             extended_package_update)
-                                            # data_preview)
 
 
 class DataCatalog510Plugin(plugins.SingletonPlugin):
@@ -63,6 +63,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_no_of_files': get_no_of_files,
             'get_geo_metadata': get_geo_metadata,
             'country_autocomplete': country_autocomplete,
+            'check_db_credentials': check_db_credentials,
             'package_ext_spatial_patch': package_ext_spatial_patch,
             # 'package_search': extended_package_search
             'package_patch': extended_package_patch,
