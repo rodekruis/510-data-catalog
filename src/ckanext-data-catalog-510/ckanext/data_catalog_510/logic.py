@@ -3,6 +3,7 @@ import ckan.logic as logic
 from ckan.common import g, config, _
 import ckan.model as model
 import ckan.plugins.toolkit as toolkit 
+import base64
 from ast import literal_eval as make_list
 from ckanext.data_catalog_510.utils.helpers import set_data_access
 
@@ -72,8 +73,25 @@ def get_db_connections(context, data_dict):
         db_connections = []
         db_type = data_dict.get('db_type', '')
         db_obj = validate_db_connections_and_init(db_type)
-        db_connections = db_obj.get_databases(db_type)        
+        db_connections = db_obj.get_databases(db_type)
         return db_connections
+    except Exception as e:
+        log.error(e)
+        raise e
+
+
+def check_db_credentials(context, data_dict):
+    logic.check_access(u'package_create', context)
+    log.info(data_dict)
+    log.info(context)
+    try:
+        db_name = data_dict.get('db_name', '')
+        db_type = data_dict.get('db_type', '')
+        token = data_dict.get('token', '')
+        username, password = base64.b64decode(token).decode('utf-8').split(':') if token else (None, None)
+        db_obj = validate_db_connections_and_init(db_type)
+        is_login = db_obj.check_login_credentials(db_type, db_name, username, password)
+        return is_login
     except Exception as e:
         log.error(e)
         raise e
@@ -94,8 +112,10 @@ def get_schemas(context, data_dict):
     try:
         db_name = data_dict.get('db_name', '')
         db_type = data_dict.get('db_type')
+        token = data_dict.get('token', '')
+        username, password = base64.b64decode(token).decode('utf-8').split(':') if token else (None, None)
         db_obj = validate_db_connections_and_init(db_type)
-        db_schema = db_obj.fetch_schema(db_type, db_name)
+        db_schema = db_obj.fetch_schema(db_type, db_name, username, password)
         return db_schema
     except Exception as e:
         log.error(e)
@@ -121,8 +141,10 @@ def get_tables(context, data_dict):
         db_name = data_dict.get('db_name', '')
         db_type = data_dict.get('db_type', '')
         schema = data_dict.get('schema', '')
+        token = data_dict.get('token', '')
+        username, password = base64.b64decode(token).decode('utf-8').split(':') if token else (None, None)
         db_obj = validate_db_connections_and_init(db_type)
-        db_tables = db_obj.fetch_tables(db_type, db_name, schema)
+        db_tables = db_obj.fetch_tables(db_type, db_name, schema, username, password)
         return db_tables
     except Exception as e:
         log.error(e)
@@ -151,8 +173,10 @@ def get_tables_metadata(context, data_dict):
         db_type = data_dict.get('db_type', '')
         schema = data_dict.get('schema', '')
         table = data_dict.get('table', '')
+        token = data_dict.get('token', '')
+        username, password = base64.b64decode(token).decode('utf-8').split(':') if token else (None, None)
         db_obj = validate_db_connections_and_init(db_type)
-        db_table_metadata = db_obj.fetch_metadata(db_type, db_name, schema, table)
+        db_table_metadata = db_obj.fetch_metadata(db_type, db_name, schema, table, username, password)
         return db_table_metadata
     except Exception as e:
         log.error(e)

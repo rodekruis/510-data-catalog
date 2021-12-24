@@ -11,6 +11,7 @@ from ckanext.data_catalog_510.controllers.database_handler import SQLHandler
 log = logging.getLogger(__name__)
 HERE = os.path.dirname(__file__)
 
+
 def get_countries(search):
     # log.info(HERE)
     with open(os.path.join(HERE, 'country.json'),'r') as f:
@@ -18,6 +19,7 @@ def get_countries(search):
         license_data = list(map(lambda x:x['name'],license_data))
         country_list = list(filter(lambda k: search.lower() in k.lower(), license_data))
     return country_list
+
 
 @core_helper
 def prefill_dataset_owner_details(data, call_type):
@@ -77,7 +79,7 @@ def get_storage_explorer_link(container):
 
 
 @core_helper
-def get_db_host(res):
+def get_db_host(database_connection_type, database_connection):
     '''
     Helper used to extract Database hostname from the internal connection string.
     :param res: The resource metadata that is injected into the template HTML.
@@ -85,37 +87,23 @@ def get_db_host(res):
     :rtype string
     '''
     try:
-        host = "Unknown Host"
         db_handler = SQLHandler()
-        if(res['database_connection_type']):
-            db_handler.db_type = res['database_connection_type']
-            host = db_handler.get_db_connection_string(res['database_connection']).split("@")[-1].split("/")[0]
-        return host
+        return db_handler.get_db_host(database_connection_type, database_connection)
     except Exception as e:
         log.error(e)
         raise e
 
 
 @core_helper
-def generate_sample_db_string(res):
+def generate_sample_db_string(database_connection_type, database_connection):
     '''
     Helper used to generate sample DB connection string for the provided resource, if retrieved from database.
     :param res: The resource metadata that is injected into the template HTML.
 
     :rtype string
     '''
-
-    host = get_db_host(res)
-    db_string = "Unknown DB String"
-    if res['database_connection_type'] == 'postgres':
-        db_string = f"postgres://<username>:<password>@{host}/{res['database_connection']}"
-    elif res['database_connection_type'] == 'mysql':
-        db_string = f"mysql+pymysql://<username>:<password>@{host}/{res['database_connection']}"
-    elif res['database_connection_type'] == 'azuresql':
-        db_string = f"mssql+pyodbc://<username>:<password>@{host}/{res['database_connection']}?driver=ODBC+Driver+17+for+SQL+Server"
-    else:
-        db_string = "Unknown DB String"
-    return db_string
+    db_handler = SQLHandler()
+    return db_handler.get_base_db_connection_string(database_connection_type, database_connection)
 
 
 @core_helper
@@ -146,6 +134,8 @@ def get_request_data_mailTo(package, res):
 
     :rtype string
     '''
+    # log.info(package)
+    # log.info(res)
     with open(os.path.join(HERE, 'request_data_mail.json'), 'r') as email_template:
         email_template = json.load(email_template)
         # Make sure '.' is replaced with '@@' in all email addresses to prevent spam.

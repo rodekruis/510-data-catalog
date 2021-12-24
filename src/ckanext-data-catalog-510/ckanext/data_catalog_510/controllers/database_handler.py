@@ -32,6 +32,7 @@ class SQLHandler:
                 }
             ]
         '''
+        db_connections = ""
         if db_type == 'postgres':
             db_connections = config.get('ckan.postgresql_db_connections', '')
         if db_type == 'mysql':
@@ -62,13 +63,44 @@ class SQLHandler:
         db_connections = self.get_databases(self.db_type, return_url=True)
         log.info(db_name)
         filtered = [db['url'] for db in db_connections if db['name'] == db_name]
-        # filtered = [db['url'] for db in db_connections if db['db_name'] == db_name]
         if bool(filtered):
             return filtered[0]
         else:
             raise ValidationError(_('Database not available'))
+    
+    def get_db_host(self, db_type, db_name):
+        self.db_type = db_type
+        host = self.get_db_connection_string(db_name).split("@")[-1].split("/")[0]
+        return host
+    
+    def get_base_db_connection_string(self, db_type, db_name):
+        host = self.get_db_host(db_type, db_name)
+        db_string = "Unknown DB String"
+        if db_type == 'postgres':
+            db_string = f"postgresql://<username>:<password>@{host}/{db_name}"
+        elif db_type == 'mysql':
+            db_string = f"mysql+pymysql://<username>:<password>@{host}/{db_name}"
+        elif db_type == 'azuresql':
+            db_string = f"mssql+pyodbc://<username>:<password>@{host}/{db_name}?driver=ODBC+Driver+17+for+SQL+Server"
+        else:
+            db_string = "Unknown DB String"
+        return db_string
 
-    def fetch_schema(self, db_type, db_name):
+    def get_user_db_connection_string(self, db_type, db_name, username, password):
+        base_uri = self.get_base_db_connection_string(db_type, db_name)
+        base_uri = base_uri.replace('<username>', username).replace('<password>', password)
+        log.info(base_uri)
+        return base_uri
+    
+    def check_login_credentials(self, db_type, db_name, username, password):
+        try:
+            schema = self.fetch_schema(db_type, db_name, username, password)
+            return True if schema else False
+        except Exception as e:
+            log.error(e)
+            return False
+
+    def fetch_schema(self, db_type, db_name, username=None, password=None):
         '''Method is used to get the fetch the schemas for given db
         :param db_name: will be given to find the the url of db connection
         string(required).
@@ -78,10 +110,15 @@ class SQLHandler:
         '''
         try:
             self.db_type = db_type
-            log.info(db_name)
-            self.db_uri = self.get_db_connection_string(db_name)
+            if username and password:
+                try:
+                    self.db_uri = self.get_user_db_connection_string(db_type, db_name, username, password)
+                except Exception as e:
+                    raise NotFound(_('No User {} found in Database'.format(username)))
+            else:
+                self.db_uri = self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
-            inspector = inspect(engine)            
+            inspector = inspect(engine)
             schemas = inspector.get_schema_names()
             schemas = [x for x in schemas if x not in EXCLUDE_SCHEMAS]
             if bool(schemas):
@@ -97,7 +134,7 @@ class SQLHandler:
             log.error(e)
             raise e
 
-    def fetch_tables(self, db_type, db_name, schema):
+    def fetch_tables(self, db_type, db_name, schema, username=None, password=None):
         '''Method is used to get the fetch the table for given db and schema
         :param db_name: will be given to find the the url of db connection
         string(required).
@@ -110,7 +147,13 @@ class SQLHandler:
         '''
         try:
             self.db_type = db_type
-            self.db_uri = self.get_db_connection_string(db_name)
+            if username and password:
+                try:
+                    self.db_uri = self.get_user_db_connection_string(db_type, db_name, username, password)
+                except Exception as e:
+                    raise NotFound(_('No User {} found in Database'.format(username)))
+            else:
+                self.db_uri = self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
             inspector = inspect(engine)
             tables = inspector.get_table_names(schema=schema)
@@ -128,7 +171,7 @@ class SQLHandler:
             log.error(e)
             raise e
 
-    def fetch_metadata(self, db_type, db_name, schema, table_name):
+    def fetch_metadata(self, db_type, db_name, schema, table_name, username=None, password=None):
         '''Method is used to get the fetch the metadata of tables for given
         db and schema
         :param db_name: will be given to find the the url of db connection
@@ -145,7 +188,13 @@ class SQLHandler:
         '''
         try:
             self.db_type = db_type
-            self.db_uri = self.get_db_connection_string(db_name)
+            if username and password:
+                try:
+                    self.db_uri = self.get_user_db_connection_string(db_type, db_name, username, password)
+                except Exception as e:
+                    raise NotFound(_('No User {} found in Database'.format(username)))
+            else:
+                self.db_uri = self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
             if db_type == 'mysql':
                 query = f'Select Count(*) from `{schema}`.{table_name};'

@@ -1,5 +1,4 @@
 <form class="border border-light p-5" [formGroup]="databaseForm" (submit)="submit()">
-
     <p class="h4 mb-4">Resource with Database</p>
     <div class="form-select form-group control-order-by">
         <label class="control-label" for="field-select_database_type">Select Database Type</label>
@@ -14,7 +13,7 @@
     <div class="form-select form-group control-order-by" *ngIf="dbConnections.length > 0">
         <label class="control-label" for="field-select_database">Select Database</label>
         <select formControlName="database_connection" #connection class="form-control"
-            (change)="selectSchema(connection.value)">
+            (change)="loginToDB(connection.value)">
             <option selected value="">Select Database</option>
             <option *ngFor='let connection of dbConnections' [value]="connection.name">{{connection?.name}}
             </option>

@@ -88,7 +88,7 @@ export class DatalakeComponent implements OnInit {
         (res) => {
           this.commonService.showLoader = false;
           this.resourceData = res.result;
-          if (this.resourceData?.geo_metadata) {
+          if (Object.values(this.resourceData?.geo_metadata).some(value => value !== null || value !== '')) {
             this.is_geo = true;
           }
           this.datalakeForm.patchValue({
