@@ -1,8 +1,10 @@
+import json
 import ckan.logic as logic
 from ckan.common import g, config, _
 import ckan.model as model
 import ckan.plugins.toolkit as toolkit 
-from ckanext.data_catalog_510.utils.helpers import get_file_format, set_data_access
+from ast import literal_eval as make_list
+from ckanext.data_catalog_510.utils.helpers import set_data_access
 
 from ckanext.data_catalog_510.\
      controllers.database_handler import SQLHandler
@@ -231,6 +233,48 @@ def get_geo_metadata(context, data_dict):
         container = data_dict.get('container', '')
         path = data_dict.get('path', '')
         return datalake_connection.get_geo_metadata(container, path)
+    except Exception as e:
+        log.error(e)
+        raise e
+
+
+@toolkit.side_effect_free
+def package_ext_spatial_patch(context, data_dict):
+    logic.check_access(u'package_create', context)
+    try:
+        log.info(data_dict)
+        spatial_extent = make_list(data_dict.get('spatial_extent'))
+        id = data_dict.get('id')
+        if spatial_extent:
+            package = logic.action.get.package_show(context, {"id": id})
+            if 'extras' not in package:
+                package['extras'] = []
+            if 'spatial' not in package.get('extras'):
+                from ckanext.data_catalog_510.utils.helpers import get_bbox_from_coords
+                package['extras'].append({'key': 'spatial', 'value': json.dumps(get_bbox_from_coords(spatial_extent))})
+                package = logic.action.patch.package_patch(context, package)
+        # log.info(package)
+        return package
+    except Exception as e:
+        log.error(e)
+        raise e
+
+
+@toolkit.side_effect_free
+def extended_package_search(context, data_dict):
+    logic.check_access(u'package_create', context)
+    try:
+        log.info(data_dict)
+        query = data_dict.get('q')
+        if query and query.startswith('location:'):
+            location = query.split('location:')[-1] if len(query.split('location:')) > 0 else ''
+            if location:
+                from ckanext.data_catalog_510.utils.helpers import get_location_geocode
+                coords = get_location_geocode(location)
+                log.info(coords)
+                if coords:
+                    data_dict['extras']['ext_bbox'] = str(','.join(coords))
+        return logic.action.get.package_search(context, data_dict)
     except Exception as e:
         log.error(e)
         raise e
