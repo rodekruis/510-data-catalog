@@ -21,7 +21,7 @@ mysql_env = json.dumps([
   {
     "name": "ckan-test",
     "title": "Test",
-    "url": "mysql+pymysql://test:test@mysql/test"
+    "url": "mysql+pymysql://test:test@mysql/ckan-test"
   }
 ])
 azuresql_env = json.dumps([
