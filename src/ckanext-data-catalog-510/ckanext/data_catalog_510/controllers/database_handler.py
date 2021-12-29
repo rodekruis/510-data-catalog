@@ -43,7 +43,7 @@ class SQLHandler:
         # log.info("****db_connections***")
         # log.info(db_connections)
         # to get the db_name from connection string
-        if db_type == 'azuresql':
+        if db_type == 'azuresql' or db_type == 'postgres':
             for item in db_connections:
                 item['name'] = item['url'].split('/')[-1].split('?')[0]
         else:  
