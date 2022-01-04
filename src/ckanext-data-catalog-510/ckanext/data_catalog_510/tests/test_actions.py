@@ -12,21 +12,21 @@ from ckanext.data_catalog_510.\
 
 postgres_env = json.dumps([
   {
-    "name": "test",
+    "name": "ckan",
     "title": "Test",
     "url": "postgresql://ckan:ckan@db/ckan"
   }
 ])
 mysql_env = json.dumps([
   {
-    "name": "test",
+    "name": "ckan-test",
     "title": "Test",
-    "url": "mysql+pymysql://test:test@mysql/test"
+    "url": "mysql+pymysql://test:test@mysql/ckan-test"
   }
 ])
 azuresql_env = json.dumps([
   {
-    "name": "test",
+    "name": "ckan-test",
     "title": "Test",
     "url": ""
   }
@@ -55,7 +55,7 @@ class TestDatabasesConnectionAction:
 
     def test_get_db_connections_postgres(self):
         '''Test for validating postgres connection type'''
-        expected_res = [{'name': 'test', 'title': 'Test'}]
+        expected_res = [{'name': 'ckan', 'title': 'Test'}]
         get_dbs = helpers.call_action(
             "get_db_connections",
             {},
@@ -67,7 +67,7 @@ class TestDatabasesConnectionAction:
 
     def test_get_db_connections_mysql(self):
         '''Test for validating mysql connection type'''
-        expected_res = [{'name': 'test', 'title': 'Test'}]
+        expected_res = [{'name': 'ckan-test', 'title': 'Test'}]
         get_dbs = helpers.call_action(
             "get_db_connections",
             {},
@@ -79,7 +79,7 @@ class TestDatabasesConnectionAction:
 
     def test_get_db_connections_azuresql(self):
         '''Test for validating azuresql connection type'''
-        expected_res = [{'name': 'test', 'title': 'Test'}]
+        expected_res = [{'name': '', 'title': 'Test'}]
         get_dbs = helpers.call_action(
             "get_db_connections",
             {},
