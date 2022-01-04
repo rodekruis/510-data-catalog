@@ -42,6 +42,7 @@ export class DatabasesComponent implements OnInit {
   is_geo: boolean = false;
   resource_data: any;
   dbLogin: boolean;
+  loadValue: boolean;
   token: string = null;
   @Input() pkg_name: any;
   @Input() type: any;
@@ -53,6 +54,7 @@ export class DatabasesComponent implements OnInit {
   ) {
     this.base_url = environment.base_url;
     this.dbLogin = false;
+    this.loadValue = true;
     this.databaseForm = new FormGroup({
       database_connection_type: new FormControl(
         '',
@@ -100,6 +102,13 @@ export class DatabasesComponent implements OnInit {
           no_of_records: '',
           no_of_attributes: '',
         },
+        geo_metadata: {
+          spatial_resolution: '',
+          temporal_resolution: '',
+          spatial_extent: '',
+          temporal_extent: '',
+          spatial_reference_system: '',
+        },
       });
     }
     if (type == 'connections') {
@@ -114,6 +123,13 @@ export class DatabasesComponent implements OnInit {
           no_of_records: '',
           no_of_attributes: '',
         },
+        geo_metadata: {
+          spatial_resolution: '',
+          temporal_resolution: '',
+          spatial_extent: '',
+          temporal_extent: '',
+          spatial_reference_system: '',
+        },
       });
     }
     if (type == 'schema') {
@@ -124,6 +140,13 @@ export class DatabasesComponent implements OnInit {
         metadata: {
           no_of_records: '',
           no_of_attributes: '',
+        },
+        geo_metadata: {
+          spatial_resolution: '',
+          temporal_resolution: '',
+          spatial_extent: '',
+          temporal_extent: '',
+          spatial_reference_system: '',
         },
       });
     }
@@ -155,26 +178,11 @@ export class DatabasesComponent implements OnInit {
       );
   }
 
-  async loginToDB(db_name) {
-    let loginStatus = false;
-    if(this.selectedDBType && this.selectedDBType !== 'azuresql') {
-      loginStatus = await this.openDbLogin(db_name, this.selectedDBType);
-    }
-    if(!loginStatus) {
-      this.clearSelects('connections');
-    }
-    this.clearSelects('schema');
-    if(loginStatus || this.selectedDBType === 'azuresql') {
-      this.selectSchema(db_name);
-    }
-  }
-
   async openDbLogin(db_name, db_type) {
-    console.log(db_name);
-    this.token = null;
+    // console.log(db_name);
     let status = false;
     status = await Swal.fire({
-      title: 'Login to Database',
+      title: `Login to ${db_type}/${db_name}`,
       html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
       <input type="password" id="password" class="swal2-input" placeholder="Password">`,
       confirmButtonText: 'Sign in',
@@ -191,9 +199,9 @@ export class DatabasesComponent implements OnInit {
       if(result.value) {
         let token = btoa(result.value.username + ':' + result.value.password)
         let isLoggedIn: boolean = await this.checkDbLogin(db_name, db_type, token);
-        console.log(isLoggedIn);
+        // console.log(isLoggedIn);
         if(isLoggedIn) {
-          this.token = token
+          this.token = token;
           return Swal.fire('Success!', 'Your credentials have been validated.', 'success').then((result) => { return true; });
         } else {
           return Swal.fire('Invalid!', 'Your credentials are invalid.', 'error').then((result) => { return false; });
@@ -248,7 +256,8 @@ export class DatabasesComponent implements OnInit {
           this.dbConnections = res.result;
           this.selectedDBType = db_type;
           this.clearSelects('connections');
-          if (this.type == 'edit') {
+          // console.log(this.loadValue);
+          if (this.type == 'edit' && this.loadValue) {
             this.selectSchema(this.resource_data.database_connection);
           }
         },
@@ -259,66 +268,90 @@ export class DatabasesComponent implements OnInit {
       );
   }
 
-  selectSchema(db_name) {
+  async selectSchema(db_name) {
     if (db_name == '') {
       return;
     }
-    this.commonService.showLoader = true;
-    this.selectedConnection = db_name;
-    let data = {
-      db_type: this.selectedDBType,
-      db_name,
-      token: this.token
-    };
-    this.http
-      .post<any>(this.base_url + this.API_LIST.get_schemas, data, {
-        headers: this.headers,
-      })
-      .subscribe(
-        (res) => {
-          this.commonService.showLoader = false;
-          this.dbSchemas = res.result;
-          this.clearSelects('schema');
-          if (this.type == 'edit') {
-            this.selectTable(this.resource_data.schema_name);
+    // console.log(this.selectedDBType);
+    let loggedIn: boolean;
+    if(this.type != "edit") {
+      this.loadValue = false;
+    }
+    if(this.selectedDBType !== 'azuresql' && !this.loadValue) {
+      loggedIn = await this.openDbLogin(db_name, this.selectedDBType);
+    } else { loggedIn = true; }
+    if(!loggedIn) {
+      this.clearSelects('connections');
+    } else {
+      this.commonService.showLoader = true;
+      this.selectedConnection = db_name;
+      let data = {
+        db_type: this.selectedDBType,
+        db_name,
+        token: this.token
+      };
+      this.http
+        .post<any>(this.base_url + this.API_LIST.get_schemas, data, {
+          headers: this.headers,
+        })
+        .subscribe(
+          (res) => {
+            this.commonService.showLoader = false;
+            this.dbSchemas = res.result;
+            this.clearSelects('schema');
+            if (this.type == 'edit') {
+              this.selectTable(this.resource_data.schema_name);
+            }
+          },
+          (error) => {
+            this.alertService.error(error?.error?.error?.message);
+            this.commonService.showLoader = false;
           }
-        },
-        (error) => {
-          this.alertService.error(error?.error?.error?.message);
-          this.commonService.showLoader = false;
-        }
-      );
+        );
+    }
   }
 
-  selectTable(schema) {
+  async selectTable(schema) {
     this.selectedSchema = schema;
     if (schema == '') {
       return;
     }
-    this.commonService.showLoader = true;
-
-    let data = {
-      db_type: this.selectedDBType,
-      db_name: this.selectedConnection,
-      schema,
-      token: this.token
-    };
-    this.http
-      .post<any>(this.base_url + this.API_LIST.get_tables, data, {
-        headers: this.headers,
-      })
-      .subscribe(
-        (res) => {
-          this.commonService.showLoader = false;
-          this.tables = res.result;
-          this.databaseForm.patchValue(this.resource_data);
-        },
-        (error) => {
-          this.tables = [];
-          this.alertService.error(error?.error?.error?.message);
-          this.commonService.showLoader = false;
-        }
-      );
+    let loggedIn: boolean;
+    if( !this.token && this.selectedDBType !== 'azuresql' && !this.loadValue) {
+      loggedIn = await this.openDbLogin(this.selectedConnection, this.selectedDBType);
+    } else {
+      loggedIn = true;
+    }
+    if(!loggedIn) {
+      this.clearSelects('schema');
+    } else {
+      this.commonService.showLoader = true;
+      let data = {
+        db_type: this.selectedDBType,
+        db_name: this.selectedConnection,
+        schema,
+        token: this.token
+      };
+      this.http
+        .post<any>(this.base_url + this.API_LIST.get_tables, data, {
+          headers: this.headers,
+        })
+        .subscribe(
+          (res) => {
+            this.commonService.showLoader = false;
+            this.tables = res.result;
+            if(this.type === "edit" && this.loadValue) {
+              this.databaseForm.patchValue(this.resource_data);
+              this.loadValue = false;
+            }
+          },
+          (error) => {
+            this.tables = [];
+            this.alertService.error(error?.error?.error?.message);
+            this.commonService.showLoader = false;
+          }
+        );
+      }
   }
 
   getResource() {
@@ -334,9 +367,7 @@ export class DatabasesComponent implements OnInit {
         (res) => {
           this.commonService.showLoader = false;
           this.resource_data = res?.result;
-          if (Object.values(this.resource_data.geo_metadata).some(value => value !== null || value !== '')) {
-            this.is_geo = true;
-          }
+          Object.values(this.resource_data.geo_metadata).forEach(element => { if (element != "" || element != undefined) this.is_geo = true });
           if (this.type == 'edit') {
             this.selectDatabase(this.resource_data.database_connection_type);
           }
@@ -348,51 +379,58 @@ export class DatabasesComponent implements OnInit {
       );
   }
 
-  selectMetaData(table) {
+  async selectMetaData(table) {
     if (table == '') {
       return;
     }
-    this.commonService.showLoader = true;
-
-    let data = {
-      db_type: this.selectedDBType,
-      db_name: this.selectedConnection,
-      schema: this.selectedSchema,
-      table,
-      token: this.token,
-    };
-    this.http
-      .post<any>(this.base_url + this.API_LIST.get_table_metadata, data, {
-        headers: this.headers,
-      })
-      .subscribe(
-        (res) => {
-          this.commonService.showLoader = false;
-          this.metaData = res.result;
-          // console.log(this.metaData)
-          if (this.metaData?.is_geo == true) {
-            this.is_geo = true;
+    let loggedIn: boolean;
+    if(!this.token && this.selectedDBType !== 'azuresql' && !this.loadValue) {
+      loggedIn = await this.openDbLogin(this.selectedConnection, this.selectedDBType);
+    } else {
+      loggedIn = true;
+    }
+    if(loggedIn) {
+      this.commonService.showLoader = true;
+      let data = {
+        db_type: this.selectedDBType,
+        db_name: this.selectedConnection,
+        schema: this.selectedSchema,
+        table,
+        token: this.token,
+      };
+      this.http
+        .post<any>(this.base_url + this.API_LIST.get_table_metadata, data, {
+          headers: this.headers,
+        })
+        .subscribe(
+          (res) => {
+            this.commonService.showLoader = false;
+            this.metaData = res.result;
+            // console.log(this.metaData)
+            if (this.metaData?.is_geo == true) {
+              this.is_geo = true;
+              this.databaseForm.patchValue({
+                geo_metadata: {
+                  spatial_extent: this.metaData.geo_metadata.spatial_extent,
+                  spatial_resolution: this.metaData.geo_metadata.spatial_resolution,
+                  spatial_reference_system: this.metaData.geo_metadata.spatial_reference_system
+                }
+              })
+            }
             this.databaseForm.patchValue({
-              geo_metadata: {
-                spatial_extent: this.metaData.geo_metadata.spatial_extent,
-                spatial_resolution: this.metaData.geo_metadata.spatial_resolution,
-                spatial_reference_system: this.metaData.geo_metadata.spatial_reference_system
-              }
-            })
+              metadata: {
+                no_of_records: this.metaData.no_of_records,
+                no_of_attributes: this.metaData.no_of_attributes,
+              },
+              format: this.metaData.format
+            });
+          },
+          (error) => {
+            this.alertService.error(error?.error?.error?.message);
+            this.commonService.showLoader = false;
           }
-          this.databaseForm.patchValue({
-            metadata: {
-              no_of_records: this.metaData.no_of_records,
-              no_of_attributes: this.metaData.no_of_attributes,
-            },
-            format: this.metaData.format
-          });
-        },
-        (error) => {
-          this.alertService.error(error?.error?.error?.message);
-          this.commonService.showLoader = false;
-        }
-      );
+        );
+      }
   }
 
   addSpatialExtra(id) {
@@ -400,10 +438,10 @@ export class DatabasesComponent implements OnInit {
       id,
       spatial_extent: this.databaseForm.get('geo_metadata').get('spatial_extent').value
     }
-    console.log(data)
+    // console.log(data)
     this.http.post<any>(this.base_url + this.API_LIST.package_ext_spatial_patch, data, {headers:this.headers})
     .subscribe((res) => {
-      console.log(res.result)
+      // console.log(res.result)
     }, (error) => {
       this.alertService.error(error?.error?.error?.message);
     })
