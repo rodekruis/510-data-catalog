@@ -12,7 +12,7 @@ from ckanext.data_catalog_510.\
 # import logging
 # log = logging.getLogger(__name__)
 
-
+@pytest.mark.ckan_config("ckan.plugins", "data_catalog_510")
 class TestDataLakeAction(object):
 
     def setup(self):
@@ -30,7 +30,7 @@ class TestDataLakeAction(object):
             context = {}
             context.setdefault("user", "")
             context.setdefault("ignore_auth", True)
-            get_list = logic.get_action("get_containers")(context,{})
+            get_list = helpers.call_action("get_containers",{})
 
             # Validating the get_containers
             assert get_list == expected_value
