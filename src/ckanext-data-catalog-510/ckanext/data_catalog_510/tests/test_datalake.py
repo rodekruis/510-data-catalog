@@ -6,6 +6,7 @@ import pytest
 import unittest.mock as mock
 from ckan.common import config, _
 from ckan.tests import helpers
+from ckan import logic
 from ckanext.data_catalog_510.\
     controllers.datalake_handler import DataLakeHandler
 # import logging
@@ -26,10 +27,10 @@ class TestDataLakeAction(object):
                        '.datalake_handler.DataLakeHandler.list_file_system')
         with mock.patch(mock_method) as r:
             r.return_value = [{'name': 'test'}]
-            get_list = helpers.call_action(
-                "get_containers",
-                {}
-            )
+            context = {}
+            context.setdefault("user", "")
+            context.setdefault("ignore_auth", True)
+            get_list = logic.get_action("get_containers")(context,{})
 
             # Validating the get_containers
             assert get_list == expected_value
