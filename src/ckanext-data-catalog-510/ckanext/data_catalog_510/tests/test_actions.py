@@ -181,3 +181,20 @@ class TestDatabasesConnectionAction:
     def test_get_metadata_for_mysql(self):
         # Todo
         pass
+
+    def test_get_containers(self):
+        ''' Test for get the files from container'''
+
+        expected_value = [{"name": 'test'}]
+
+        mock_method = ('ckanext.data_catalog_510.controllers'
+                       '.datalake_handler.DataLakeHandler.list_file_system')
+        with mock.patch(mock_method) as r:
+            r.return_value = [{'name': 'test'}]
+            context = {}
+            context.setdefault("user", "")
+            context.setdefault("ignore_auth", True)
+            get_list = helpers.call_action("get_containers",{})
+
+            # Validating the get_containers
+            assert get_list == expected_value
