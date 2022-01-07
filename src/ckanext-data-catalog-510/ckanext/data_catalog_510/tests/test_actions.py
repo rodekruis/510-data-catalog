@@ -8,7 +8,8 @@ import ckan.logic as logic
 
 from ckan.tests import helpers
 from ckanext.data_catalog_510.\
-     controllers.database_handler import SQLHandler
+     controllers.database_handler import SQLHandler   
+import ckanext.data_catalog_510.logic as dataCatalogLogic
 
 postgres_env = json.dumps([
   {
@@ -314,3 +315,26 @@ class TestDatabasesConnectionAction:
                 helpers.call_action("get_geo_metadata",{})
                 
             assert str(excinfo.value) == 'Mock Geo Metadata Exception'
+                    
+    
+    @pytest.mark.parametrize("text_input", [
+                                [{ "name": "mysql", "title": "MYSQL"},
+                                { "name": "postgres", "title": "Postgresql"},
+                                { "name": "azuresql", "title": "Azure SQL"}
+                                ]
+                            ])
+    def test_get_all_dbs(self,text_input):
+        
+        res = helpers.call_action("get_all_dbs",{})
+        assert( text_input == res )
+        
+        
+    def test_validate_db_connections_and_init_with_db_exception(self):
+        
+        with pytest.raises(Exception) as excinfo:
+            dataCatalogLogic.validate_db_connections_and_init('oracle')
+
+    def test_validate_db_connections_and_init_with_exception(self):
+        
+        with pytest.raises(Exception) as excinfo:
+            dataCatalogLogic.validate_db_connections_and_init()

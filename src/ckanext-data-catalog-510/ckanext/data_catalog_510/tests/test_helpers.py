@@ -9,8 +9,8 @@ import datetime
 import ckan.tests.factories as factories
 import unittest.mock as mock
 from ckan.common import c, config
-import logging
-log = logging.getLogger(__name__)
+# import logging
+# log = logging.getLogger(__name__)
 
 
 class TestHelpers(object):
@@ -31,11 +31,6 @@ class TestHelpers(object):
         # log.info(res)       
         assert (res == expected_result)
         
-    def test_get_current_date_with_exception(self):
-        '''Test used to get the current date in the format yyyy-mm-dd'''
-        
-        with pytest.raises(Exception) as excinfo:
-            res = helpers.get_current_date("")
              
     def test_get_current_date_with_exception(self):
         ''' Test used to verify the exception '''
