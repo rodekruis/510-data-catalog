@@ -113,3 +113,16 @@ class TestHelpers(object):
         ''' Test to check the data access '''
         assert( helpers.set_data_access(text_input) == expected)
         
+    
+    @pytest.mark.parametrize("text_input",[("geocode")])    
+    def test_storage_explorer_link(self,text_input):
+        ''' Test to check the storage link'''
+        res = helpers.get_storage_explorer_link(text_input)
+        assert( type(res) == str)
+        
+        
+    @pytest.mark.parametrize("text_input,expected",[("",None)])    
+    def test_storage_explorer_link_with_empty_input(self,text_input,expected):
+        ''' Test to check the storage link with empty input'''
+        assert( helpers.get_storage_explorer_link(text_input) == expected)
+        
