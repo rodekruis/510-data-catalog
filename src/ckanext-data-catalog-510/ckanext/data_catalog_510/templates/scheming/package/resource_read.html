@@ -106,7 +106,15 @@
                 <th scope="row">{{ _('Datalake Container Name') }}</th>
                 {% if c.user %}
                 {% set storage_url = h.get_storage_explorer_link(res.datalake_data.container) %}
-                <td><a href="{{ storage_url }}" target="_blank">{{ res.datalake_data.container }}</a></td>
+                <td>
+                    {% if h.is_preview_access(package, c.userobj) %}
+                    <a href="{{ storage_url }}" target="_blank">
+                    {% else %}
+                    <a href="javascript:void(0)" style="pointer-events: none; color: rgb(64, 64, 64);">
+                    {% endif %}
+                    {{ res.datalake_data.container }}
+                    </a>
+                </td>
                 {% else %}
                 <td>{{ res.datalake_data.container }}</td>
                 {% endif %}
