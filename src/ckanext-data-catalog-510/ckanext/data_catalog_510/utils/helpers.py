@@ -166,18 +166,19 @@ def set_data_access(package):
             package['private'] = False
     return package
 
-@core_helper
-def get_location_geocode(location):
-    bbox = {}
-    location_parsed = location.replace(" ", "%20").replace(",", "%2C")
-    url = 'https://nominatim.openstreetmap.org/search/' + location_parsed + '?format=json'
-    response = requests.get(url).json()
-    if response:
-        log.info(response)
-        bbox = response[0].get('boundingbox')
-        if bbox:
-            bbox = [bbox[0], bbox[2], bbox[1], bbox[3]]
-    return bbox
+# @core_helper
+# def get_location_geocode(location):
+#     bbox = {}
+#     location_parsed = location.replace(" ", "%20").replace(",", "%2C")
+#     url = 'https://nominatim.openstreetmap.org/search/' + location_parsed + '?format=json'
+#     response = requests.get(url).json()
+#     if response:
+#         log.info(response)
+#         bbox = response[0].get('boundingbox')
+#         if bbox:
+#             bbox = [bbox[0], bbox[2], bbox[1], bbox[3]]
+#     return bbox
+
 
 @core_helper
 def get_bbox_from_coords(bbox):

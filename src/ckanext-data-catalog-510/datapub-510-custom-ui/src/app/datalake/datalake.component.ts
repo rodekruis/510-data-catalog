@@ -189,10 +189,10 @@ export class DatalakeComponent implements OnInit {
       id,
       spatial_extent: this.datalakeForm.get('geo_metadata').get('spatial_extent').value
     }
-    console.log(data)
+    // console.log(data)
     this.http.post<any>(this.base_url + this.API_LIST.package_ext_spatial_patch, data, {headers:this.headers})
     .subscribe((res) => {
-      console.log(res.result)
+      // console.log(res.result)
     }, (error) => {
       this.alertService.error(error?.error?.error?.message);
     })

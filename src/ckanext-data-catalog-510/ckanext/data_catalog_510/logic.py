@@ -82,8 +82,8 @@ def get_db_connections(context, data_dict):
 
 def check_db_credentials(context, data_dict):
     logic.check_access(u'package_create', context)
-    log.info(data_dict)
-    log.info(context)
+    # log.info(data_dict)
+    # log.info(context)
     try:
         db_name = data_dict.get('db_name', '')
         db_type = data_dict.get('db_type', '')
@@ -247,7 +247,7 @@ def get_no_of_files(context, data_dict):
     except Exception as e:
         log.error(e)
         raise e
-    
+
 
 def get_geo_metadata(context, data_dict):
     logic.check_access(u'package_create', context)
@@ -266,7 +266,7 @@ def get_geo_metadata(context, data_dict):
 def package_ext_spatial_patch(context, data_dict):
     logic.check_access(u'package_create', context)
     try:
-        log.info(data_dict)
+        # log.info(data_dict)
         spatial_extent = make_list(data_dict.get('spatial_extent'))
         id = data_dict.get('id')
         if spatial_extent:
@@ -284,24 +284,24 @@ def package_ext_spatial_patch(context, data_dict):
         raise e
 
 
-@toolkit.side_effect_free
-def extended_package_search(context, data_dict):
-    logic.check_access(u'package_create', context)
-    try:
-        log.info(data_dict)
-        query = data_dict.get('q')
-        if query and query.startswith('location:'):
-            location = query.split('location:')[-1] if len(query.split('location:')) > 0 else ''
-            if location:
-                from ckanext.data_catalog_510.utils.helpers import get_location_geocode
-                coords = get_location_geocode(location)
-                log.info(coords)
-                if coords:
-                    data_dict['extras']['ext_bbox'] = str(','.join(coords))
-        return logic.action.get.package_search(context, data_dict)
-    except Exception as e:
-        log.error(e)
-        raise e
+# @toolkit.side_effect_free
+# def extended_package_search(context, data_dict):
+#     logic.check_access(u'package_create', context)
+#     try:
+#         log.info(data_dict)
+#         query = data_dict.get('q')
+#         if query and query.startswith('location:'):
+#             location = query.split('location:')[-1] if len(query.split('location:')) > 0 else ''
+#             if location:
+#                 from ckanext.data_catalog_510.utils.helpers import get_location_geocode
+#                 coords = get_location_geocode(location)
+#                 log.info(coords)
+#                 if coords:
+#                     data_dict['extras']['ext_bbox'] = str(','.join(coords))
+#         return logic.action.get.package_search(context, data_dict)
+#     except Exception as e:
+#         log.error(e)
+#         raise e
 
 
 @toolkit.side_effect_free
