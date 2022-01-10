@@ -64,7 +64,7 @@ class SQLHandler:
         :rtype: string
         '''
         db_connections = self.get_databases(self.db_type, return_url=True)
-        log.info(db_name)
+        # log.info(db_name)
         filtered = [db['url'] for db in db_connections if db['name'] == db_name]
         if bool(filtered):
             return filtered[0]
@@ -92,7 +92,7 @@ class SQLHandler:
     def get_user_db_connection_string(self, db_type, db_name, username, password):
         base_uri = self.get_base_db_connection_string(db_type, db_name)
         base_uri = base_uri.replace('<username>', username).replace('<password>', password)
-        log.info(base_uri)
+        # log.info(base_uri)
         return base_uri
     
     def check_login_credentials(self, db_type, db_name, username, password):
@@ -215,15 +215,15 @@ class SQLHandler:
             geo_metadata = {}
             if db_type == 'postgres':
                 for column_type in enumerate(col_type_list):
-                    log.info(str(column_type))
+                    # log.info(str(column_type))
                     if 'Geo' in str(column_type) or 'Rast' in str(column_type):
                         is_geo = True
-                        geom_col = "geom"
+                        geom_col = cols_list[col_type_list.index(column_type[1])]
                         spatial_ext = ""
                         spatial_ref_sys = ""
                         spatial_res = ""
                         if 'Rast' in str(column_type):
-                            geom_col = "rast"
+                            geom_col = cols_list[col_type_list.index(column_type[1])]
                             spatial_res = engine.execute(f'SELECT ST_PixelWidth({geom_col}), ST_PixelHeight({geom_col}) from {schema}.{table_name}').first()
                             if spatial_res:
                                 spatial_res = spatial_res[0]

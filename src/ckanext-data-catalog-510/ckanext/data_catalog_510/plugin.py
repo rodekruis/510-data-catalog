@@ -16,7 +16,7 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_no_of_files,
                                             get_geo_metadata,
                                             package_ext_spatial_patch,
-                                            extended_package_search,
+                                            # extended_package_search,
                                             country_autocomplete,
                                             country_autocomplete,
                                             check_db_credentials,
@@ -33,7 +33,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IFacets)
     plugins.implements(plugins.IDatasetForm, inherit=False)
     plugins.implements(plugins.IFacets)
-    # For plugin interfaces 
+    # For plugin interfaces
     # Please follow - https://docs.ckan.org/en/2.9/extensions/plugin-interfaces.html#plugin-interfaces-reference
     # IConfigurer
 
