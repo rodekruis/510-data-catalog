@@ -150,6 +150,22 @@ export class DatabasesComponent implements OnInit {
         },
       });
     }
+    if (type == 'table') {
+      this.databaseForm.patchValue({
+        table_name: '',
+        metadata: {
+          no_of_records: '',
+          no_of_attributes: '',
+        },
+        geo_metadata: {
+          spatial_resolution: '',
+          temporal_resolution: '',
+          spatial_extent: '',
+          temporal_extent: '',
+          spatial_reference_system: '',
+        },
+      });
+    }
   }
 
   getAllDatabasesType() {
@@ -430,6 +446,8 @@ export class DatabasesComponent implements OnInit {
             this.commonService.showLoader = false;
           }
         );
+      } else {
+        this.clearSelects('table');
       }
   }
 
