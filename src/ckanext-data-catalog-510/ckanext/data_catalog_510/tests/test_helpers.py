@@ -81,9 +81,9 @@ class TestHelpers(object):
 
         assert ( helpers.get_bbox_from_coords(text_input) == expected_res)
         
-    def test_get_location_geocode(self):
-        ''' Test to check the geocode function'''
-        assert ( type(helpers.get_location_geocode("Netherlands")) is list)
+    # def test_get_location_geocode(self):
+    #     ''' Test to check the geocode function'''
+    #     assert ( type(helpers.get_location_geocode("Netherlands")) is list)
         
        
     @pytest.mark.parametrize("text_input,expected",[
