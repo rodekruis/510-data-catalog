@@ -24,3 +24,7 @@ class TestValidators(object):
         '''
         with pytest.raises(Invalid):
             validators.validate_date_yyyy_mm_dd("2021-20-12", {})
+            
+    def test_date_yyyy_mm_dd_without_value(self):
+        '''Validate the date input without value'''
+        assert (validators.validate_date_yyyy_mm_dd("",{}) == None)
