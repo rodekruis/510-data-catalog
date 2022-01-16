@@ -153,4 +153,43 @@ class DataLakeHandler:
             raise e
         finally:
             return geo_metadata
-            
+
+    def get_search_results(self, container, query, page_num, records_per_page):
+        search_results = []
+        total_results = 0
+        try:
+            file_system_client = self.service_client.\
+                get_file_system_client(file_system=container)
+            paths = list(file_system_client.get_paths(path="/", recursive=True))
+            for path in paths:
+                path_name = path.name.split("/")[-1]
+                if path_name.lower().startswith(query.lower()):
+                    full_path = path.name
+                    path_format = get_file_format(path.name)
+                    path_type = "file"
+                    if path.is_directory:
+                        path_type = 'directory'
+                        if path.name:
+                            directory_paths = list(file_system_client.get_paths(path=path.name, recursive=False))
+                            for file_path in directory_paths:
+                                if not file_path.is_directory:
+                                    path_format = get_file_format(file_path.name)
+                                    break
+                    search_results.append({
+                        "path": full_path,
+                        "type": path_type,
+                        "name": path_name,
+                        "format": path_format
+                    })
+            total_results = len(search_results)
+            page_num -= 1
+            start_index = page_num * records_per_page
+            end_index = page_num * records_per_page + records_per_page
+            end_index = end_index if end_index < total_results else total_results
+            search_results = search_results[start_index: end_index]
+            return {
+                'search_results': search_results,
+                'total_results': total_results
+            }
+        except Exception as e:
+            log.error(e)

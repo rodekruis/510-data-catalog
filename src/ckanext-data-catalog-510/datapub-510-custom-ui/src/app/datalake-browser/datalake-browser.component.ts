@@ -5,6 +5,7 @@ import { AlertService } from 'src/app/common/services/alert.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'app-datalake-browser',
   templateUrl: './datalake-browser.component.html',
@@ -17,6 +18,7 @@ export class DatalakeBrowserComponent implements OnInit {
     get_containers: '/api/3/action/get_containers',
     get_directories_and_file: '/api/3/action/get_directories_and_files',
     get_no_of_files: '/api/3/action/get_no_of_files',
+    get_datalake_file_search: "/api/3/action/get_datalake_file_search",
   };
   headers = {
     Accept: 'application/json',
@@ -33,6 +35,7 @@ export class DatalakeBrowserComponent implements OnInit {
   selectedFileDetails: any = {};
   no_of_files: any = 0;
   totalRecords = 0;
+  queryString: string;
   recordsOptions: number[] = [5, 10, 15]
   @Input() pkg_name: any;
   @Input() type: any;
@@ -128,6 +131,7 @@ export class DatalakeBrowserComponent implements OnInit {
       this.getFiles(this.activeContainer, this.prev_path, 1, this.records_per_page);
     }
   }
+  
   getNoOfFiles(container, path) {
     let data = {
       container,
@@ -187,6 +191,7 @@ export class DatalakeBrowserComponent implements OnInit {
     this.fileSelected = false;
       this.pageType = 'files';
       this.commonService.showLoader = true;
+      if(!this.queryString) {
       let data = {
         container: this.activeContainer,
         path: this.currentDirectory,
@@ -211,6 +216,37 @@ export class DatalakeBrowserComponent implements OnInit {
             this.commonService.showLoader = false;
           }
         );
+      } else {
+        this.getSearchResults(this.queryString, page_num);
+      }
     }
+
+  getSearchResults(query: string, page_num: number) {
+    if(query) {
+      this.queryString = query;
+      this.commonService.showLoader = true;
+      let data = {
+        container: this.activeContainer,
+        query: query,
+        page_num: page_num,
+        records_per_page: this.records_per_page
+      }
+      this.http.post<any>(this.base_url + this.API_LIST.get_datalake_file_search, data, { headers: this.headers })
+      .subscribe(
+        (res) => {
+          this.files_and_directories = res.result.search_results;
+          this.totalRecords = res.result.total_results;
+          this.commonService.showLoader = false;
+        }, 
+        (error) => {
+          this.alertService.error(error?.error?.error?.message);
+          this.commonService.showLoader = false;
+      });
+    } else {
+      this.commonService.showLoader = false;
+      this.queryString = null;
+      this.getFiles(this.activeContainer, this.currentDirectory, 1, this.records_per_page);
+    }
+  }
 }
 
