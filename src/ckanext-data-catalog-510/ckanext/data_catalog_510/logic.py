@@ -226,6 +226,22 @@ def get_directories_and_files(context, data_dict):
         raise e
 
 
+def get_datalake_file_search(context, data_dict):
+    # Validate whether user has permission to create datasets or not
+    logic.check_access(u'package_create', context)
+    try:
+        datalake_connection = DataLakeHandler()
+        datalake_connection.initialize_storage_account()
+        container = data_dict.get('container', '')
+        query = data_dict.get('query', '')
+        page_num = data_dict.get('page_num', '')
+        records_per_page = data_dict.get('records_per_page', '')
+        return datalake_connection.get_search_results(container, query, page_num, records_per_page)
+    except Exception as e:
+        log.error(e)
+        raise e
+
+
 def get_no_of_files(context, data_dict):
     '''Return a no of files in the path
     :param container: Name of container for which files need to retrived

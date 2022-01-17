@@ -13,10 +13,11 @@
 </div>
 
 <div class="tree-wrapper" *ngIf="pageType == 'files'">
-    <h1 *ngIf="files_and_directories.length <= 0"> No Files or Directory Found</h1>
+    <app-searchbar (onQueryChange)="getSearchResults($event, 1)"></app-searchbar>
+    <h1 *ngIf="files_and_directories.length <= 0"> No Files or Directories Found</h1>
     <div class="folder-wrap">
         <ul class="list">
-            <li class="list-item" (click)="goBack()">
+            <li *ngIf="!queryString" class="list-item" (click)="goBack()">
                 <div class="folder">
                     <p class="name">..Back</p>
                 </div>
