@@ -208,7 +208,6 @@ def is_preview_access(pkg, userobj=None):
     :rtype bool
     '''
     sec_class = pkg.get('security_classification')
-    log.info(userobj)
     if sec_class == 'low':
         return True
     elif userobj:
