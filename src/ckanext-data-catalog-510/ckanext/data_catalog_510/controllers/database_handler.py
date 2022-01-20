@@ -201,6 +201,8 @@ class SQLHandler:
             engine = create_engine(self.db_uri)
             if db_type == 'mysql':
                 query = f'Select Count(*) from `{schema}`.{table_name};'
+            elif db_type == 'postgres':
+                query = f'Select Count(*) from "{schema}"."{table_name}";'
             else:
                 query = f'Select Count(*) from {schema}.{table_name};'
             
