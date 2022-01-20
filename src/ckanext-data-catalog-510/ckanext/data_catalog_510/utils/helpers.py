@@ -158,12 +158,13 @@ def set_data_access(package):
     sec_class = package.get('security_classification')
     if 'private' not in package:
         package['private'] = True
-    if sec_class == 'high' or sec_class == 'normal':
-        if package['private'] is not True:
-            package['private'] = True
-    else:
-        if package['private'] is not False:
-            package['private'] = False
+    if sec_class:
+        if sec_class == 'high' or sec_class == 'normal':
+            if package['private'] is not True:
+                package['private'] = True
+        else:
+            if package['private'] is not False:
+                package['private'] = False
     return package
 
 # @core_helper
