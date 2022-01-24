@@ -15,7 +15,9 @@
 {% endblock %}
 
 {% block data_preview %}
-{% if h.is_preview_access(package, c.userobj) %}
+{% if res.resource_type == 'database' or res.resource_type == 'datalake' %}
+<p> <strong>Note: </strong>A preview cannot be shown for data that is in the Datalake or a database.</p>
+{% elif h.is_preview_access(package, c.userobj) %}
 {{ super() }}
 {% else %}
 <p> <strong>Note: </strong>For 'High' security classification, data preview is not available.</p>
