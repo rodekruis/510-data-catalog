@@ -104,17 +104,28 @@ export class DatalakeBrowserComponent implements OnInit {
   }
 
   selectFile(file) {
-    this.getNoOfFiles(this.activeContainer, file?.path);
+    this.no_of_files = 0;
+    this.getNoOfFiles(this.activeContainer, file?.path)
+    .subscribe(
+      (res) => {
+        this.no_of_files = res.result;
+        this.selectedFileDetails = {
+          container: this.activeContainer,
+          file_path: file?.path,
+          name: file?.name,
+          type: file?.type,
+          no_of_files: this.no_of_files,
+          format: file?.format
+        };
+      },
+      (error) => {
+        this.alertService.error(error?.error?.error?.message);
+        this.commonService.showLoader = false;
+      }
+    );
     this.fileSelected = true;
-    this.selectedFileDetails = {
-      container: this.activeContainer,
-      file_path: file?.path,
-      name: file?.name,
-      type: file?.type,
-      no_of_files: this.no_of_files,
-      format: file?.format
-    };
   }
+
   goToResourcePage() {
     this.selectedDatalakeResource.emit(this.selectedFileDetails);
   }
@@ -137,19 +148,10 @@ export class DatalakeBrowserComponent implements OnInit {
       container,
       path,
     };
-    this.http
+    return this.http
       .post<any>(this.base_url + this.API_LIST.get_no_of_files, data, {
         headers: this.headers,
-      })
-      .subscribe(
-        (res) => {
-          this.no_of_files = res.result;
-        },
-        (error) => {
-          this.alertService.error(error?.error?.error?.message);
-          this.commonService.showLoader = false;
-        }
-      );
+      });
   }
 
   getFiles(container, path, page_num, records_per_page) {
