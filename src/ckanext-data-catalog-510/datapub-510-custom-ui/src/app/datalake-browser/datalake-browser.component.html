@@ -31,7 +31,7 @@
         </ul>
     </div>
     <div lass="form-actions" *ngIf="fileSelected">
-        <button class="btn btn-primary" name="save" type="submit" (click)="goToResourcePage()">Select</button>
+        <button class="btn btn-primary" name="save" type="submit" [disabled]="no_of_files == null" (click)="goToResourcePage()">Select</button>
     </div>
     <div *ngIf="totalRecords > 0">
         <app-pagination
