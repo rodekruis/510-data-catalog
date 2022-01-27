@@ -104,7 +104,7 @@ export class DatalakeBrowserComponent implements OnInit {
   }
 
   selectFile(file) {
-    this.no_of_files = 0;
+    this.no_of_files = null;
     this.getNoOfFiles(this.activeContainer, file?.path)
     .subscribe(
       (res) => {
