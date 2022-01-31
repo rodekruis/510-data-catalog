@@ -226,14 +226,14 @@ class SQLHandler:
                         spatial_res = ""
                         if 'Rast' in str(column_type):
                             geom_col = cols_list[col_type_list.index(column_type[1])]
-                            spatial_res = engine.execute(f'SELECT ST_PixelWidth({geom_col}), ST_PixelHeight({geom_col}) from {schema}.{table_name}').first()
+                            spatial_res = engine.execute(f'SELECT ST_PixelWidth({geom_col}), ST_PixelHeight({geom_col}) from "{schema}"."{table_name}"').first()
                             if spatial_res:
                                 spatial_res = spatial_res[0]
                                 
-                        spatial_ref_sys = engine.execute(f'SELECT ST_SRID({geom_col}) FROM {schema}.{table_name}').first()
+                        spatial_ref_sys = engine.execute(f'SELECT ST_SRID({geom_col}) FROM "{schema}"."{table_name}"').first()
                         if spatial_ref_sys:
                             spatial_ref_sys = spatial_ref_sys[0]
-                        json_string = engine.execute(f'SELECT ST_AsGeoJSON(ST_Envelope(ST_Union(ST_Envelope({geom_col})))) FROM {schema}.{table_name}').first()
+                        json_string = engine.execute(f'SELECT ST_AsGeoJSON(ST_Envelope(ST_Union(ST_Envelope({geom_col})))) FROM "{schema}"."{table_name}"').first()
                         if json_string:
                             json_dict = json.loads(json_string[0])
                             X = [pos[0] for pos in json_dict['coordinates'][0]]
