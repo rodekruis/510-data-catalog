@@ -5,7 +5,7 @@ import os
 import logging
 
 from ckan.lib.helpers import core_helper
-from ckan.common import c, config
+from ckan.common import c, config, _
 from ckanext.data_catalog_510.controllers.database_handler import SQLHandler
 # from ckanext.data_catalog_510.logic import check_user_access
 log = logging.getLogger(__name__)
@@ -14,9 +14,9 @@ HERE = os.path.dirname(__file__)
 
 def get_countries(search):
     # log.info(HERE)
-    with open(os.path.join(HERE, 'country.json'),'r') as f:
+    with open(os.path.join(HERE, 'country.json'), 'r') as f:
         license_data = json.load(f)
-        license_data = list(map(lambda x:x['name'],license_data))
+        license_data = list(map(lambda x: x['name'], license_data))
         country_list = list(filter(lambda k: search.lower() in k.lower(), license_data))
     return country_list
 
@@ -64,7 +64,7 @@ def get_current_date(data):
 def get_storage_explorer_link(container):
     '''Helper used to return the azure storage explorer URL so that container
     can be opened directly in storage explorer application.
-    :param container: The name of container which need to be opened 
+    :param container: The name of container which need to be opened
     string.
 
     :rtype: string
