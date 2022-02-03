@@ -166,13 +166,19 @@ export class DatalakeComponent implements OnInit {
             .subscribe((res) => {
               this.commonService.showLoader = false;
               // console.log(res.result)
-              if (res.result) {
+              if (!res.result['error']) {
                 this.datalakeForm.patchValue({
                   geo_metadata: {
-                    spatial_resolution: res.result['spatial_resolution'],
-                    spatial_extent: res.result['spatial_extent'],
-                    spatial_reference_system: res.result['spatial_reference_system']
+                    spatial_resolution: res.result['data']['spatial_resolution'],
+                    spatial_extent: res.result['data']['spatial_extent'],
+                    spatial_reference_system: res.result['data']['spatial_reference_system']
                   }
+                });
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "An Error Occured...",
+                  text: res.result['error']
                 });
               }
             }, (error) => {
