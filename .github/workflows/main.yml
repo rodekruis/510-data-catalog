@@ -67,4 +67,4 @@ jobs:
 
         ckan -c src/ckanext-data-catalog-510/test.ini db init
     - name: Run tests
-      run: pytest --ckan-ini=src/ckanext-data-catalog-510/test.ini --cov=ckanext.data_catalog_510 --disable-warnings src/ckanext-data-catalog-510/ckanext/data_catalog_510
+      run: pytest --ckan-ini=src/ckanext-data-catalog-510/test.ini --cov=ckanext.data_catalog_510 --cov-config=src/ckanext-data-catalog-510/.coveragerc --disable-warnings src/ckanext-data-catalog-510/ckanext/data_catalog_510

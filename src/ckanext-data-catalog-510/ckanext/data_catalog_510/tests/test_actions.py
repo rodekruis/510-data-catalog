@@ -8,42 +8,41 @@ import ckan.logic as logic
 
 from ckan.tests import helpers
 from ckanext.data_catalog_510.\
-     controllers.database_handler import SQLHandler   
+    controllers.database_handler import SQLHandler
 import ckanext.data_catalog_510.logic as dataCatalogLogic
 
 postgres_env = json.dumps([
-  {
-    "name": "ckan",
-    "title": "Test",
-    "url": "postgresql://ckan:ckan@db/ckan"
-  }
+    {
+        "name": "ckan",
+        "title": "Test",
+        "url": "postgresql://ckan:ckan@db/ckan"
+    }
 ])
 mysql_env = json.dumps([
-  {
-    "name": "ckan-test",
-    "title": "Test",
-    "url": "mysql+pymysql://test:test@mysql/ckan-test"
-  }
+    {
+        "name": "ckan-test",
+        "title": "Test",
+        "url": "mysql+pymysql://test:test@mysql/ckan-test"
+    }
 ])
 azuresql_env = json.dumps([
-  {
-    "name": "ckan-test",
-    "title": "Test",
-    "url": ""
-  }
+    {
+        "name": "ckan-test",
+        "title": "Test",
+        "url": ""
+    }
 ])
-
 
 
 @pytest.mark.ckan_config("ckan.postgresql_db_connections", postgres_env)
 @pytest.mark.ckan_config("ckan.mysql_db_connections", mysql_env)
 @pytest.mark.ckan_config("ckan.azuresql_db_connections", azuresql_env)
 @pytest.mark.ckan_config("ckan.plugins", "data_catalog_510")
-@pytest.mark.usefixtures("clean_db", "with_plugins")
+@pytest.mark.usefixtures("with_plugins")
 class TestDatabasesConnectionAction:
 
     def setup(self):
-        self.SQLHandler = SQLHandler()
+        self.db_handler = SQLHandler()
 
     def test_get_db_connections_not_found(self):
         '''Test for validating connection type which is not supported'''
@@ -90,7 +89,6 @@ class TestDatabasesConnectionAction:
         # log.info(get_dbs)
         assert expected_res == get_dbs
 
-    
     def test_get_schema_for_mysql(self):
         expected_value = ['test']
         mock_method = ('ckanext.data_catalog_510.controllers'
@@ -195,26 +193,24 @@ class TestDatabasesConnectionAction:
             context = {}
             context.setdefault("user", "")
             context.setdefault("ignore_auth", True)
-            get_list = helpers.call_action("get_containers",{})
+            get_list = helpers.call_action("get_containers", {})
 
             # Validating the get_containers
             assert get_list == expected_value
-            
-            
+
     def test_get_containers_with_exception(self):
         ''' Test to get containers information with exception '''
-        
+
         mock_method = ('ckanext.data_catalog_510.controllers'
                        '.datalake_handler.DataLakeHandler.list_file_system')
-        with mock.patch(mock_method,side_effect=Exception("Mock Containers Exception")) as r:
+        with mock.patch(mock_method, side_effect=Exception("Mock Containers Exception")) as r:
             with pytest.raises(Exception) as excinfo:
                 get_list = helpers.call_action(
-                "get_containers",
-                {}
-            )
-                
+                    "get_containers",
+                    {}
+                )
+
             assert str(excinfo.value) == 'Mock Containers Exception'
-        
 
     def test_get_directories_and_files(self):
         ''' Test for get the directories and files '''
@@ -244,21 +240,21 @@ class TestDatabasesConnectionAction:
 
             # Validating the get_directories_and_files
             assert get_dir_contents == expected_value
-            
+
     def test_get_directories_and_files_with_exception(self):
         ''' Test to catch the exception for directories and files '''
         mock_method = ('ckanext.data_catalog_510.controllers'
                        '.datalake_handler.DataLakeHandler.list_directory_contents')
-        
-        with mock.patch(mock_method,side_effect=Exception("Mock Directories Exception")) as r:
+
+        with mock.patch(mock_method, side_effect=Exception("Mock Directories Exception")) as r:
             with pytest.raises(Exception) as excinfo:
-                helpers.call_action("get_directories_and_files",{})
-                
+                helpers.call_action("get_directories_and_files", {})
+
             assert str(excinfo.value) == 'Mock Directories Exception'
 
     def test_get_no_of_files(self):
         ''' Test to get the no of files'''
-        
+
         expected_result = 10
 
         mock_method = ('ckanext.data_catalog_510.controllers'
@@ -270,17 +266,17 @@ class TestDatabasesConnectionAction:
 
             # Validating the get_no_of_files
             assert fetch_no_of_files == expected_result
-            
+
     def test_get_no_of_files_with_exception(self):
         ''' Test to catch the exception for no of files '''
-        
+
         mock_method = ('ckanext.data_catalog_510.controllers'
                        '.datalake_handler.DataLakeHandler.get_no_of_files')
-        
-        with mock.patch(mock_method,side_effect=Exception("Mock No Of Files Exception")) as r:
+
+        with mock.patch(mock_method, side_effect=Exception("Mock No Of Files Exception")) as r:
             with pytest.raises(Exception) as excinfo:
-                helpers.call_action("get_no_of_files",{})
-                
+                helpers.call_action("get_no_of_files", {})
+
             assert str(excinfo.value) == 'Mock No Of Files Exception'
 
     def test_get_geo_metadata(self):
@@ -302,39 +298,36 @@ class TestDatabasesConnectionAction:
 
             # Validating the get_geo_metadata
             assert fetch_geo_metadata == expected_result
-            
-    
+
     def test_get_geo_metadata_with_exception(self):
         ''' Test to check the exception for geo metadata'''
-        
+
         mock_method = ('ckanext.data_catalog_510.controllers'
                        '.datalake_handler.DataLakeHandler.get_geo_metadata')
-        
-        with mock.patch(mock_method,side_effect=Exception("Mock Geo Metadata Exception")) as r:
+
+        with mock.patch(mock_method, side_effect=Exception("Mock Geo Metadata Exception")) as r:
             with pytest.raises(Exception) as excinfo:
-                helpers.call_action("get_geo_metadata",{})
-                
+                helpers.call_action("get_geo_metadata", {})
+
             assert str(excinfo.value) == 'Mock Geo Metadata Exception'
-                    
-    
+
     @pytest.mark.parametrize("text_input", [
-                                [{ "name": "mysql", "title": "MYSQL"},
-                                { "name": "postgres", "title": "Postgresql"},
-                                { "name": "azuresql", "title": "Azure SQL"}
-                                ]
-                            ])
-    def test_get_all_dbs(self,text_input):
-        
-        res = helpers.call_action("get_all_dbs",{})
-        assert( text_input == res )
-        
-        
+        [{"name": "mysql", "title": "MYSQL"},
+         {"name": "postgres", "title": "Postgresql"},
+         {"name": "azuresql", "title": "Azure SQL"}
+         ]
+    ])
+    def test_get_all_dbs(self, text_input):
+
+        res = helpers.call_action("get_all_dbs", {})
+        assert(text_input == res)
+
     def test_validate_db_connections_and_init_with_db_exception(self):
-        
+
         with pytest.raises(Exception) as excinfo:
             dataCatalogLogic.validate_db_connections_and_init('oracle')
 
     def test_validate_db_connections_and_init_with_exception(self):
-        
+
         with pytest.raises(Exception) as excinfo:
             dataCatalogLogic.validate_db_connections_and_init()
