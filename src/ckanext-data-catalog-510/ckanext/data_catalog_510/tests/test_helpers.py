@@ -120,4 +120,21 @@ class TestHelpers(object):
     def test_storage_explorer_link_with_empty_input(self,text_input,expected):
         ''' Test to check the storage link with empty input'''
         assert( helpers.get_storage_explorer_link(text_input) == expected)
-        
+
+    @pytest.mark.parametrize("db_type", ['postgres'])
+    @pytest.mark.parametrize("db_name", ['test'])
+    def test_generate_sample_db_string(self, db_type, db_name):
+        expected_value = ['postgresql://<username>:<password>@postgres.com/test']
+        mock_method = ('ckanext.data_catalog_510.controllers.database_handler.SQLHandler.get_base_db_connection_string')
+        with mock.patch(mock_method) as r:
+            r.return_value = ['postgresql://<username>:<password>@postgres.com/test']
+            assert helpers.generate_sample_db_string(db_type, db_name) == expected_value
+    
+    @pytest.mark.parametrize("db_type", ['postgres'])
+    @pytest.mark.parametrize("db_name", ['test'])
+    def test_generate_db_host(self, db_type, db_name):
+        expected_value = ['postgres.com']
+        mock_method = ('ckanext.data_catalog_510.controllers.database_handler.SQLHandler.get_db_host')
+        with mock.patch(mock_method) as r:
+            r.return_value = ['postgres.com']
+            assert helpers.get_db_host(db_type, db_name) == expected_value

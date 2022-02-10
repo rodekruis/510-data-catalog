@@ -3,5 +3,5 @@ omit =
     */site-packages/*
     */python?.?/*
     ckan/*
-    ckanext/data_catalog_510/controllers/database_handler.py
-    ckanext/data_catalog_510/controllers/datalake_handler.py
+    *test*
+    */controllers/database_handler.py
