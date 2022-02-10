@@ -4,5 +4,4 @@ omit =
     */python?.?/*
     ckan/*
     *test*
-    *logic.py
     */controllers/database_handler.py

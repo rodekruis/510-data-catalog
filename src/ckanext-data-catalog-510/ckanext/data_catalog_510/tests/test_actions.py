@@ -174,12 +174,56 @@ class TestDatabasesConnectionAction:
         assert get_dbs == expected_value
 
     def test_get_metadata_for_postgres(self):
-        # Todo
-        pass
+        expected_value = [{
+                'no_of_records': 10,
+                'no_of_attributes': 5,
+                'is_geo': False,
+                'geo_metadata': {},
+                'format': 'Database Table'
+                }]
+        mock_method = ('ckanext.data_catalog_510.controllers'
+                       '.database_handler.SQLHandler.fetch_metadata')
+        with mock.patch(mock_method) as r:
+            r.return_value = [{
+                'no_of_records': 10,
+                'no_of_attributes': 5,
+                'is_geo': False,
+                'geo_metadata': {},
+                'format': 'Database Table'
+                }]
+            get_metadata = helpers.call_action(
+                "get_tables_metadata",
+                {},
+                db_type="postgres",
+            )
+        # Validating the get_tables
+        assert get_metadata == expected_value
 
     def test_get_metadata_for_mysql(self):
-        # Todo
-        pass
+        expected_value = [{
+                'no_of_records': 10,
+                'no_of_attributes': 5,
+                'is_geo': False,
+                'geo_metadata': {},
+                'format': 'Database Table'
+                }]
+        mock_method = ('ckanext.data_catalog_510.controllers'
+                       '.database_handler.SQLHandler.fetch_metadata')
+        with mock.patch(mock_method) as r:
+            r.return_value = [{
+                'no_of_records': 10,
+                'no_of_attributes': 5,
+                'is_geo': False,
+                'geo_metadata': {},
+                'format': 'Database Table'
+                }]
+            get_metadata = helpers.call_action(
+                "get_tables_metadata",
+                {},
+                db_type="mysql",
+            )
+        # Validating the get_tables
+        assert get_metadata == expected_value
 
     def test_get_containers(self):
         ''' Test for get the files from container'''
@@ -331,3 +375,74 @@ class TestDatabasesConnectionAction:
 
         with pytest.raises(Exception) as excinfo:
             dataCatalogLogic.validate_db_connections_and_init()
+    
+    @pytest.mark.parametrize('package', [{'security_classification': 'high'}])
+    def test_extended_package_patch_high_security(self, package):
+        expected_value = [{'security_classification': 'high', 'private': 'true'}]
+        mock_method = ('ckan.logic.action.patch.package_patch')
+        with mock.patch(mock_method) as r:
+            r.return_value = expected_value
+            new_package = helpers.call_action('package_patch', package)
+            assert new_package == expected_value
+    
+    @pytest.mark.parametrize('package', [{'security_classification': 'low'}])
+    def test_extended_package_patch_low_security(self, package):
+        expected_value = [{'security_classification': 'low', 'private': 'false'}]
+        with mock.patch('ckan.logic.action.patch.package_patch') as r:
+            r.return_value = expected_value
+            new_package = helpers.call_action('package_patch', package)
+            assert new_package == expected_value
+    
+    @pytest.mark.parametrize('package', [{'security_classification': 'high'}])
+    def test_extended_package_create_high_security(self, package):
+        expected_value = [{'security_classification': 'high', 'private': 'true'}]
+        with mock.patch('ckan.logic.action.create.package_create') as r:
+            r.return_value = expected_value
+            new_package = helpers.call_action('package_create', package)
+            assert new_package == expected_value
+    
+    @pytest.mark.parametrize('package', [{'security_classification': 'low'}])
+    def test_extended_package_create_low_security(self, package):
+        expected_value = [{'security_classification': 'low', 'private': 'false'}]
+        with mock.patch('ckan.logic.action.create.package_create') as r:
+            r.return_value = expected_value
+            new_package = helpers.call_action('package_create', package)
+            assert new_package == expected_value
+    
+    @pytest.mark.parametrize('package', [{'security_classification': 'high'}])
+    def test_extended_package_update_high_security(self, package):
+        expected_value = [{'security_classification': 'high', 'private': 'true'}]
+        mock_method = ('ckan.logic.action.update.package_update')
+        with mock.patch(mock_method) as r:
+            r.return_value = expected_value
+            new_package = helpers.call_action('package_update', package)
+            assert new_package == expected_value
+    
+    @pytest.mark.parametrize('package', [{'security_classification': 'low'}])
+    def test_extended_package_update_low_security(self, package):
+        expected_value = [{'security_classification': 'low', 'private': 'false'}]
+        mock_method = ('ckan.logic.action.update.package_update')
+        with mock.patch(mock_method) as r:
+            r.return_value = expected_value
+            new_package = helpers.call_action('package_update', package)
+            assert new_package == expected_value
+    
+    @pytest.mark.parametrize('token', ['YWRtaW46YWRtaW4xMjM='])
+    def test_check_db_credentials(self, token):
+        expected_value = True
+        mock_method = ('ckanext.data_catalog_510.controllers.database_handler.SQLHandler.check_login_credentials')
+        with mock.patch(mock_method) as r:
+            r.return_value = True
+            is_logged_in = helpers.call_action('check_db_credentials', {}, db_type='postgres', token=token)
+            assert is_logged_in == expected_value
+    
+    @pytest.mark.parametrize('container', ['container'])
+    @pytest.mark.parametrize('query', ['foo'])
+    def test_get_datalake_file_search(self, container, query):
+        expected_value = {'search_results': [{'path': '/foo.pdf', 'type': 'file', 'name': 'foo.pdf', 'format': 'application/pdf'}], 'total_results': 1}
+        mock_method = ('ckanext.data_catalog_510.controllers.datalake_handler.DataLakeHandler.get_search_results')
+        with mock.patch(mock_method) as r:
+            r.return_value = {'search_results': [{'path': '/foo.pdf', 'type': 'file', 'name': 'foo.pdf', 'format': 'application/pdf'}], 'total_results': 1}
+            search_results = helpers.call_action('get_datalake_file_search', {}, container=container, query=query)
+
+            assert search_results == expected_value
