@@ -446,3 +446,24 @@ class TestDatabasesConnectionAction:
             search_results = helpers.call_action('get_datalake_file_search', {}, container=container, query=query)
 
             assert search_results == expected_value
+    
+    @pytest.mark.parametrize('package', [{
+        'id': 1,
+        'spatial_extent': "[50.7295671, 1.9193492, 53.7253321, 7.2274985]"
+        }])
+    def test_package_ext_spatial_patch(self, package):
+        expected_values = {'id': 1, 'spatial_extent': '[50.7295671, 1.9193492, 53.7253321, 7.2274985]', 'extras': [{'key': 'spatial', 'value': '[{"type": "Polygon", "coordinates": [[[7.2274985, 50.7295671], [7.2274985, 53.7253321], [1.9193492, 53.7253321], [1.9193492, 50.7295671], [7.2274985, 50.7295671]]]}]'}]}
+        with mock.patch('ckanext.data_catalog_510.logic.make_list') as make_list:
+            with mock.patch('ckan.logic.action.get.package_show') as package_show:
+                with mock.patch('ckanext.data_catalog_510.utils.helpers.get_bbox_from_coords') as get_polygon:
+                    with mock.patch('ckan.logic.action.patch.package_patch') as package_patch:
+                        make_list.return_value = [['50.7295671', '1.9193492', '53.7253321', '7.2274985']]
+                        package_show.return_value = package
+                        get_polygon.return_value = [{ 
+                            'type': 'Polygon',
+                            'coordinates': [[[7.2274985, 50.7295671], [7.2274985, 53.7253321], [1.9193492, 53.7253321], [1.9193492, 50.7295671], [7.2274985, 50.7295671]]]
+                            }]
+                        package_patch.return_value = package
+                        polygon = helpers.call_action('package_ext_spatial_patch', {}, package=package)
+                        assert expected_values == polygon
+
