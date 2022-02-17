@@ -152,7 +152,7 @@ class DataLakeHandler:
                     response["error"] = None
                 else:
                     response["data"] = None,
-                    response["error"] = f"File size is too big. Please ensure file size does not exceed {GEO_METADATA_AUTOFILL_SIZE_LIMIT / 1000000} MB."
+                    response["error"] = f"File size is too big for auto-fill. Please ensure that for auto-fill, file size does not exceed {GEO_METADATA_AUTOFILL_SIZE_LIMIT / 1000000} MB."
         except Exception as e:
             log.error(e)
             raise e
