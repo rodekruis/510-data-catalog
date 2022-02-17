@@ -16,7 +16,7 @@ def get_countries(search):
     # log.info(HERE)
     with open(os.path.join(HERE, 'country.json'),'r') as f:
         license_data = json.load(f)
-        license_data = list(map(lambda x:x['name'],license_data))
+        license_data = list(map(lambda x: " ".join(x['name'].split(",")[::-1]).strip(), license_data))
         country_list = list(filter(lambda k: search.lower() in k.lower(), license_data))
     return country_list
 
