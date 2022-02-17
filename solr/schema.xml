@@ -168,6 +168,10 @@ schema. In this case the version should be set to the next CKAN version number.
     <field name="data_dict" type="string" indexed="false" stored="true" />
     <field name="validated_data_dict" type="string" indexed="false" stored="true" />
 
+    <field name="country" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="forecast_project" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="forecast_product" type="string" indexed="true" stored="true" multiValued="true"/>
+
     <field name="_version_" type="string" indexed="true" stored="true"/>
 
     <dynamicField name="*_date" type="date" indexed="true" stored="true" multiValued="false"/>

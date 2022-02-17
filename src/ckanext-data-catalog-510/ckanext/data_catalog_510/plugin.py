@@ -34,6 +34,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IFacets)
     plugins.implements(plugins.IDatasetForm, inherit=False)
     plugins.implements(plugins.IFacets)
+    plugins.implements(plugins.IPackageController, inherit=True)
     # For plugin interfaces
     # Please follow - https://docs.ckan.org/en/2.9/extensions/plugin-interfaces.html#plugin-interfaces-reference
     # IConfigurer
@@ -106,3 +107,13 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
     def organization_facets(self, facets_dict, organization_type,
                             package_type):
         return facets_dict
+
+    # IPackageController
+    def before_index(self, data_dict):
+        if 'country' in data_dict and isinstance(data_dict['country'], str):
+            data_dict['country'] = data_dict.get('country', []).split(",")
+        if 'forecast_project' in data_dict and isinstance(data_dict['forecast_project'], str):
+            data_dict['forecast_project'] = data_dict.get('forecast_project', []).split(",")
+        if 'forecast_product' in data_dict and isinstance(data_dict['forecast_product'], str):
+            data_dict['forecast_product'] = data_dict.get('forecast_product', []).split(",")
+        return data_dict
