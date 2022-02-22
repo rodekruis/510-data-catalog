@@ -99,10 +99,14 @@
             "help_text": "The List of countries"
         },
         {
-            "field_name": "initially_used",
-            "label": "Initially Used in Project",
-            "validators": "ignore_missing unicode",
-            "form_placeholder": "e.g Project Name"
+            "field_name": "forecast_project",
+            "label": "Used in Project",
+            "form_snippet": "forecast_project.html"
+        },
+        {
+            "field_name": "forecast_product",
+            "label": "Used in Product",
+            "form_snippet": "forecast_product.html"
         },
         {
             "field_name": "expected_update_frequency",
