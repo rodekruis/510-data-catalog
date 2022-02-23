@@ -277,7 +277,7 @@ class SQLHandler:
                 raise Exception('Invalid request.')
             response = engine.execute(query).fetchall()
             result = [row['name'] for row in response]
-            log.info(result)
+            # log.info(result)
             return result
         except Exception as e:
             log.error(e)
