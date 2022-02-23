@@ -13,12 +13,23 @@ HERE = os.path.dirname(__file__)
 
 
 def get_countries(search):
-    # log.info(HERE)
-    with open(os.path.join(HERE, 'country.json'),'r') as f:
+    with open(os.path.join(HERE, 'country.json'), 'r') as f:
         license_data = json.load(f)
         license_data = list(map(lambda x: " ".join(x['name'].split(",")[::-1]).strip(), license_data))
         country_list = list(filter(lambda k: search.lower() in k.lower(), license_data))
     return country_list
+
+
+def get_forecast_projects(search):
+    db_handler = SQLHandler()
+    project_list = db_handler.fetch_forecast_details('project', search)
+    return project_list
+
+
+def get_forecast_products(search):
+    db_handler = SQLHandler()
+    project_list = db_handler.fetch_forecast_details('product', search)
+    return project_list
 
 
 @core_helper
