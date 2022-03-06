@@ -1,0 +1,6 @@
+requests
+SQLAlchemy
+sendgrid
+azure-core==1.19.0
+azure-storage-blob==12.9.0
+azure-storage-file-datalake==12.5.0
