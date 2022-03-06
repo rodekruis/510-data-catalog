@@ -1,0 +1,21 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: data-validation-cron
+spec:
+  schedule: "0 0 * * 7"
+  failedJobsHistoryLimit: 10
+  startingDeadlineSeconds: 600 # 10 min
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: data-validation-cron
+              image: data-validation-cron:latest
+              envFrom:
+                - secretRef:
+                    name: ckan-510-test-data-validator-cron-envvars
+              command: ["python"]
+              args: ["./datachecker.py"]
+          restartPolicy: OnFailure
