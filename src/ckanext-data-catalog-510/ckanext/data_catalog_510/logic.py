@@ -326,6 +326,19 @@ def country_autocomplete(context, data_dict):
     search = data_dict.get('search')
     return get_countries(search)
 
+@toolkit.side_effect_free
+def forecast_project_autocomplete(context, data_dict):
+    from ckanext.data_catalog_510.utils.helpers import get_forecast_projects
+    search = data_dict.get('search')
+    return get_forecast_projects(search)
+
+
+@toolkit.side_effect_free
+def forecast_product_autocomplete(context, data_dict):
+    from ckanext.data_catalog_510.utils.helpers import get_forecast_products
+    search = data_dict.get('search')
+    return get_forecast_products(search)
+
 
 @toolkit.side_effect_free
 def extended_package_patch(context, data_dict):

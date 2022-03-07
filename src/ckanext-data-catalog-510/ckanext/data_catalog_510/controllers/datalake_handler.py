@@ -16,6 +16,7 @@ NotAuthorized = logic.NotAuthorized
 ValidationError = logic.ValidationError
 GEO_METADATA_AUTOFILL_SIZE_LIMIT = 100000000
 
+
 class DataLakeHandler:
     def __init__(self):
         '''Initalize the class with the account name and key for the data
@@ -123,12 +124,13 @@ class DataLakeHandler:
             raise e
     
     def get_geo_metadata(self, container, user_path=None):
+        response = {}
         geo_metadata = {}
         try:
             file_client = self.service_client.get_file_client(file_system=container, file_path=user_path)
             if file_client.exists():
                 file_properties = file_client.get_file_properties()
-                # log.info(file_properties)
+                # log.info(file_properties.size)
                 if file_properties.size < GEO_METADATA_AUTOFILL_SIZE_LIMIT:
                     if endsWith(user_path, ['.tiff', '.tif']):
                         geoFile = file_client.download_file()
@@ -146,13 +148,16 @@ class DataLakeHandler:
                             geo_metadata['spatial_resolution'] = ""
                             geo_metadata['spatial_reference_system'] = str(geoData.crs.to_epsg())
                     # log.info(geo_metadata)
+                    response["data"] = geo_metadata
+                    response["error"] = None
                 else:
-                    raise "Size too big"
+                    response["data"] = None,
+                    response["error"] = f"File size is too big for auto-fill. Please ensure that for auto-fill, file size does not exceed {GEO_METADATA_AUTOFILL_SIZE_LIMIT / 1000000} MB."
         except Exception as e:
             log.error(e)
             raise e
         finally:
-            return geo_metadata
+            return response
 
     def get_search_results(self, container, query, page_num, records_per_page):
         search_results = []

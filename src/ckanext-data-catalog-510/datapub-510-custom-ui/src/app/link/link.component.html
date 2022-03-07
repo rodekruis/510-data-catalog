@@ -3,22 +3,22 @@
     <p class="h4 mb-4">Resource with Link</p>
     <div class="form-group">
         <label class="control-label" for="field-url">URL</label>
-        <input type="text" formControlName="url" class="form-control mb-4" placeholder="URL">
         <app-validator *ngIf="f.url.invalid" [control]="f.url">
         </app-validator>
+        <input type="text" formControlName="url" class="form-control mb-4" placeholder="URL">
     </div>
     <div class="form-group">
         <label class="control-label" for="field-name">Name</label>
-        <input type="text" formControlName="name" class="form-control mb-4" placeholder="Name">
         <app-validator *ngIf="f.name.invalid" [control]="f.name">
         </app-validator>
+        <input type="text" formControlName="name" class="form-control mb-4" placeholder="Name">
     </div>
     <div class="form-group">
         <label class="control-label" for="field-description">Description</label>
+        <app-validator *ngIf="f.description.invalid" [control]="f.description">
+        </app-validator>
         <textarea class="form-control rounded-0" formControlName="description" placeholder="Description"></textarea>
     </div>
-    <app-validator *ngIf="f.description.invalid" [control]="f.description">
-    </app-validator>
     <div class="form-group">
         <label class="control-label" for="field-format">Format</label>
         <input type="text" formControlName="format" class="form-control mb-4" placeholder="Format">

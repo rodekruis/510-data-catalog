@@ -1,0 +1,6 @@
+{% import 'macros/form.html' as form %}
+
+{% set tag_attrs = {'data-module': 'autocomplete', 'data-module-tags': '', 'data-module-source':
+'/api/3/action/forecast_product_autocomplete?search=?'} %}
+{{ form.input('forecast_product', id='field-tags', label=_('Used in Product'), placeholder=_('e.g Project Name'), value=data.forecast_product,
+error=errors.tags, classes=['control-full'], attrs=tag_attrs) }}

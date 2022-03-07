@@ -39,6 +39,7 @@ class SQLHandler:
             db_connections = config.get('ckan.mysql_db_connections', '')
         if db_type == 'azuresql':
             db_connections = config.get('ckan.azuresql_db_connections', '')
+        # log.info("Connections: " + str(db_connections))
         db_connections = json.loads(db_connections)
         # log.info("****db_connections***")
         # log.info(db_connections)
@@ -46,7 +47,7 @@ class SQLHandler:
         if db_type == 'azuresql' or db_type == 'postgres':
             for item in db_connections:
                 item['name'] = item['url'].split('/')[-1].split('?')[0]
-        else:  
+        else:
             for item in db_connections:
                 item['name'] = item['url'].split('/')[-1]
         if not return_url:
@@ -256,6 +257,28 @@ class SQLHandler:
             error = str(e.__dict__['orig'])
             log.error(error)
             raise ValidationError(_(error))
+        except Exception as e:
+            log.error(e)
+            raise e
+    
+    def fetch_forecast_details(self, request_type, search_string):
+        try:
+            self.db_type = 'azuresql'
+            db_name = self.get_databases(self.db_type)[0]['name']
+            self.db_uri = self.get_db_connection_string(db_name)
+            engine = create_engine(self.db_uri)
+            query = None
+            if request_type == 'project':
+                query = f"SELECT name, project_number FROM [dbo].[running_projects_overview] WHERE UPPER(name) LIKE '%{search_string.upper()}%' ORDER BY name"
+            elif request_type == 'product':
+                query = f"SELECT name FROM [dbo].[products] WHERE UPPER(name) LIKE '%{search_string.upper()}%' ORDER BY name"
+                # query = "SELECT * FROM [dbo].[products]"
+            else:
+                raise Exception('Invalid request.')
+            response = engine.execute(query).fetchall()
+            result = [row['name'] for row in response]
+            # log.info(result)
+            return result
         except Exception as e:
             log.error(e)
             raise e
