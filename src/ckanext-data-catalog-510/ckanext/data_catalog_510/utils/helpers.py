@@ -5,7 +5,7 @@ import os
 import logging
 
 from ckan.lib.helpers import core_helper
-from ckan.common import c, config
+from ckan.common import c, config, _
 from ckanext.data_catalog_510.controllers.database_handler import SQLHandler
 # from ckanext.data_catalog_510.logic import check_user_access
 log = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ def get_current_date(data):
 def get_storage_explorer_link(container):
     '''Helper used to return the azure storage explorer URL so that container
     can be opened directly in storage explorer application.
-    :param container: The name of container which need to be opened 
+    :param container: The name of container which need to be opened
     string.
 
     :rtype: string
