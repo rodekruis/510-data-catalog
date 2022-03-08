@@ -74,7 +74,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             # 'package_search': extended_package_search
             'package_patch': extended_package_patch,
             'package_update': extended_package_update,
-            'package_create': extended_package_create
+            'package_create': extended_package_create,
         }
 
     # ITemplateHelpers
@@ -84,7 +84,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'get_db_string': get_db_host,
             'generate_sample_db_string': generate_sample_db_string,
             'get_request_data_mailTo': get_request_data_mailTo,
-            'get_bbox_from_coords': get_bbox_from_coords
+            'get_bbox_from_coords': get_bbox_from_coords,
         }
 
     def is_fallback(self):
