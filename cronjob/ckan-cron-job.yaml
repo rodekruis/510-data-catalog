@@ -3,19 +3,22 @@ kind: CronJob
 metadata:
   name: data-validation-cron
 spec:
-  schedule: "0 0 * * 7"
+  schedule: "0 0 * * 0"
   failedJobsHistoryLimit: 10
   startingDeadlineSeconds: 600 # 10 min
   jobTemplate:
     spec:
       template:
         spec:
+          imagePullSecrets:
+            - name: -<ACR_CREDENTIALS_SECRET_NAME>
           containers:
             - name: data-validation-cron
-              image: data-validation-cron:latest
+              image: <ACR_DOMAIN/IMAGE_REPO_NAME:LATEST_TAG>
               envFrom:
                 - secretRef:
-                    name: ckan-510-test-data-validator-cron-envvars
+                    name: <CRONJOB_ENVVARS_SECRET_NAME>
               command: ["python"]
               args: ["./datachecker.py"]
+              imagePullPolicy: Always
           restartPolicy: OnFailure

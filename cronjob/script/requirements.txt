@@ -1,5 +1,7 @@
 requests
 SQLAlchemy
+pymysql
+psycopg2-binary
 sendgrid
 azure-core==1.19.0
 azure-storage-blob==12.9.0
