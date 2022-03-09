@@ -1,4 +1,5 @@
 from azure.storage.filedatalake import DataLakeServiceClient
+import json
 from sqlalchemy import create_engine, inspect
 
 from .config import ENV
@@ -53,7 +54,8 @@ class DatabaseController:
                 conn_details = ENV['CKAN__AZURESQL_DB_CONNECTIONS']
             else:
                 raise Exception("Unsupported database type: " + db_type)
-
+            conn_details = json.loads(conn_details)
+            print("Connection Details: ", conn_details)
             for conn in conn_details:
                 conn_db_name = conn['url'].split('/')[-1].split('?')[0]
                 if conn_db_name == db_name:

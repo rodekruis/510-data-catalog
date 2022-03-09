@@ -5,7 +5,7 @@ from sys import stdout
 
 def configure_global_logger():
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     file_handler = RotatingFileHandler("./log/app_log.log", maxBytes=512)
