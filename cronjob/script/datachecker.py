@@ -154,7 +154,7 @@ if __name__ == "__main__":
                     )
                     print(email_content)
                     response = send_mail(
-                        [resource_info["dataset_owner_email"], ENV["TEAMS_EMAIL"]],
+                        [resource_info["dataset_owner_email"], ENV["TEAMS_CHANNEL_EMAIL"]],
                         email_content,
                     )
     except Exception as e:
