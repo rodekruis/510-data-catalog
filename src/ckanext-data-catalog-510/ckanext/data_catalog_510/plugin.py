@@ -3,7 +3,7 @@ import ckan.plugins.toolkit as toolkit
 from ckanext.data_catalog_510.\
      utils.validators import (validate_date_yyyy_mm_dd)
 from ckanext.data_catalog_510.\
-     utils.helpers import (get_countries, get_db_host, generate_sample_db_string, get_request_data_mailTo, get_bbox_from_coords)
+     utils.helpers import (get_countries, get_db_host, generate_sample_db_string, get_request_data_mailTo, get_bbox_from_coords, generate_pending_files_list_helper)
 from collections import OrderedDict
 
 from ckanext.data_catalog_510.logic import (get_db_connections,
@@ -85,6 +85,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'generate_sample_db_string': generate_sample_db_string,
             'get_request_data_mailTo': get_request_data_mailTo,
             'get_bbox_from_coords': get_bbox_from_coords,
+            'generate_pending_files_list_helper': generate_pending_files_list_helper,
         }
 
     def is_fallback(self):

@@ -1,13 +1,14 @@
-import requests
-import datetime
 import json
 import os
 import logging
+from datetime import datetime
 
 from ckan.lib.helpers import core_helper
 from ckan.common import c, config, _
 from ckanext.data_catalog_510.controllers.database_handler import SQLHandler
+from ckanext.data_catalog_510.utils.pending_files import generate_pending_file_list
 # from ckanext.data_catalog_510.logic import check_user_access
+
 log = logging.getLogger(__name__)
 HERE = os.path.dirname(__file__)
 
@@ -65,7 +66,7 @@ def get_current_date(data):
         if data:
             return data
         else:
-            return datetime.datetime.today().strftime(format)
+            return datetime.today().strftime(format)
     except Exception as e:
         log.error(e)
         raise e
@@ -226,3 +227,8 @@ def is_preview_access(pkg, userobj=None):
         if sec_class == 'normal':
             return True
     return False
+
+
+@core_helper
+def generate_pending_files_list_helper():
+    generate_pending_file_list()

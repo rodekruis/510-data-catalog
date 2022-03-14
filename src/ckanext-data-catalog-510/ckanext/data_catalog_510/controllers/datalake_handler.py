@@ -1,3 +1,4 @@
+from tkinter import E
 from azure.storage.filedatalake import DataLakeServiceClient
 from ckan.common import config, _
 import ckan.logic as logic
@@ -36,7 +37,7 @@ class DataLakeHandler:
                 credential=self.storage_account_key)
             self.service_client = service_client
         except Exception as e:
-            print(e)
+            log.error(e)
 
     def list_file_system(self, page_num):
         '''Get the File System/Containers List
@@ -196,5 +197,41 @@ class DataLakeHandler:
                 'search_results': search_results,
                 'total_results': total_results
             }
+        except Exception as e:
+            log.error(e)
+    
+    def get_all_paths(self):
+        path_list = []
+        try:
+            container_list = list(self.service_client.list_file_systems())
+            for container in container_list:
+                file_system_client = self.service_client.get_file_system_client(container=container['name'])
+                paths = list(file_system_client.get_paths(paths="/", recursive=True))
+                for path in paths:
+                    if path.is_directory:
+                        paths.remove(path)
+                    else:
+                        container_path = {
+                            'container': container['name'],
+                            'path': path.name,
+                        }
+                        path_list.append(container_path)
+                # container_paths = {
+                #     'container': container,
+                #     'paths': [path.name for path in paths],
+                # }
+                # path_list.extend(container_paths)
+        except Exception as e:
+            log.error(e)
+        finally:
+            return path_list
+    
+    def upload_file(self, container, file_path, data):
+        try:
+            file_client = self.service_client.get_file_system_client(file_system=container, file_path=file_path)
+            file_client.create_file()
+            file_client.append_data(data, offset=0, length=len(data))
+            file_client.flush_data(len(data))
+
         except Exception as e:
             log.error(e)

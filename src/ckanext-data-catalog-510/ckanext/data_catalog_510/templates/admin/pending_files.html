@@ -1,0 +1,6 @@
+{% extends "admin/base.html" %}
+
+{% block primary_inner_content %}
+    <h2>{{ _('Generate List of Pending Files') }}</h2>
+    <a class="btn btn-primary" href="{{ h.generate_pending_files_helper() }}">{{ _('Generate Pending List') }}</a>
+{% endblock %}

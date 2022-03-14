@@ -282,3 +282,29 @@ class SQLHandler:
         except Exception as e:
             log.error(e)
             raise e
+    
+    def get_all_tables(self):
+        db_types = ['postgres', 'mysql', 'azuresql']
+        table_list = []
+        try:
+            for db_type in db_types:
+                db_connections = self.get_databases(db_type)
+                for db_conn in db_connections:
+                    db_name = db_conn['name']
+                    schema_list = self.fetch_schema(db_type, db_name)
+                    for schema in schema_list:
+                        table_list = self.fetch_tables(db_type, db_name, schema)
+                        for table in table_list:
+                            table_data = {
+                                "db_type": db_type,
+                                "db_name": db_name,
+                                "schema_name": schema,
+                                "table_name": table
+                            }
+                            table_list.append(table_data)
+        except Exception as e:
+            log.error(e)
+            raise e
+        finally:
+            return table_list
+
