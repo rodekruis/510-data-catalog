@@ -3,7 +3,7 @@ import ckan.plugins.toolkit as toolkit
 from ckanext.data_catalog_510.\
      utils.validators import (validate_date_yyyy_mm_dd)
 from ckanext.data_catalog_510.\
-     utils.helpers import (get_countries, get_db_host, generate_sample_db_string, get_request_data_mailTo, get_bbox_from_coords, generate_pending_files_list_helper)
+     utils.helpers import (get_countries, get_db_host, generate_sample_db_string, get_request_data_mailTo, get_bbox_from_coords, get_site_url)
 from collections import OrderedDict
 
 from ckanext.data_catalog_510.logic import (get_db_connections,
@@ -24,6 +24,8 @@ from ckanext.data_catalog_510.logic import (get_db_connections,
                                             check_db_credentials,
                                             extended_package_patch,
                                             extended_package_create,
+                                            generate_pending_file_list_job,
+                                            update_ignore_pending_file_list,
                                             extended_package_update)
 
 
@@ -34,10 +36,10 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IFacets)
     plugins.implements(plugins.IDatasetForm, inherit=False)
-    plugins.implements(plugins.IFacets)
     plugins.implements(plugins.IPackageController, inherit=True)
     # For plugin interfaces
     # Please follow - https://docs.ckan.org/en/2.9/extensions/plugin-interfaces.html#plugin-interfaces-reference
+
     # IConfigurer
 
     def update_config(self, config_):
@@ -75,6 +77,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'package_patch': extended_package_patch,
             'package_update': extended_package_update,
             'package_create': extended_package_create,
+            'generate_pending_files_list': generate_pending_file_list_job,
+            'update_ignore_pending_file_list': update_ignore_pending_file_list
         }
 
     # ITemplateHelpers
@@ -85,7 +89,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             'generate_sample_db_string': generate_sample_db_string,
             'get_request_data_mailTo': get_request_data_mailTo,
             'get_bbox_from_coords': get_bbox_from_coords,
-            'generate_pending_files_list_helper': generate_pending_files_list_helper,
+            'get_site_url': get_site_url
         }
 
     def is_fallback(self):

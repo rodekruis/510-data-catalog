@@ -6,7 +6,7 @@ import ckan.plugins.toolkit as toolkit
 import base64
 
 from ast import literal_eval as make_list
-from ckanext.data_catalog_510.utils.helpers import set_data_access, generate_pending_files_list_helper
+from ckanext.data_catalog_510.utils.helpers import set_data_access, generate_pending_files_list_helper, update_ignored_pending_list_helper
 
 from ckanext.data_catalog_510.\
      controllers.database_handler import SQLHandler
@@ -362,6 +362,11 @@ def extended_package_update(context, data_dict):
     return package
 
 @toolkit.side_effect_free
+def update_ignore_pending_file_list(context, data_dict):
+    ignore_data = json.loads(data_dict.get('ignore_data'))
+    return update_ignored_pending_list_helper(ignore_data)
+
+
+@toolkit.side_effect_free
 def generate_pending_file_list_job(context, data_dict):
-    toolkit.enqueue_job(generate_pending_file_list_helper, [context], timeout=3600)
-    return True
+    return generate_pending_files_list_helper(context)

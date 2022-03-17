@@ -1,13 +1,12 @@
-from tkinter import E
 from azure.storage.filedatalake import DataLakeServiceClient
-from ckan.common import config, _
-import ckan.logic as logic
-from ckanext.data_catalog_510.utils.utilities import endsWith
-from ckanext.data_catalog_510.utils.helpers import get_file_format
 import rioxarray as rxr
 import geopandas as gpd
 import fiona
 from rasterio.io import MemoryFile
+
+from ckan.common import config, _
+import ckan.logic as logic
+from ckanext.data_catalog_510.utils.utilities import endsWith, get_file_format
 
 import logging
 log = logging.getLogger(__name__)
@@ -205,33 +204,28 @@ class DataLakeHandler:
         try:
             container_list = list(self.service_client.list_file_systems())
             for container in container_list:
-                file_system_client = self.service_client.get_file_system_client(container=container['name'])
-                paths = list(file_system_client.get_paths(paths="/", recursive=True))
+                file_system_client = self.service_client.get_file_system_client(container)
+                paths = list(file_system_client.get_paths(path="/", recursive=True))
                 for path in paths:
                     if path.is_directory:
                         paths.remove(path)
                     else:
                         container_path = {
-                            'container': container['name'],
+                            'container': container.name,
                             'path': path.name,
                         }
                         path_list.append(container_path)
-                # container_paths = {
-                #     'container': container,
-                #     'paths': [path.name for path in paths],
-                # }
-                # path_list.extend(container_paths)
         except Exception as e:
-            log.error(e)
+            log.error(e, exc_info=True)
         finally:
             return path_list
     
     def upload_file(self, container, file_path, data):
         try:
-            file_client = self.service_client.get_file_system_client(file_system=container, file_path=file_path)
+            file_client = self.service_client.get_file_client(file_system=container, file_path=file_path)
             file_client.create_file()
             file_client.append_data(data, offset=0, length=len(data))
             file_client.flush_data(len(data))
-
         except Exception as e:
             log.error(e)
+            raise e

@@ -1,0 +1,28 @@
+{
+    "datalake": [
+        {
+            "container": "data-catalog",
+            "paths": [
+                "*"
+            ]
+        }
+    ],
+    "database": [
+        {
+            "db_name": "ckan",
+            "db_type": "postgres",
+            "schema_name": "public",
+            "tables": [
+                "*"
+            ]
+        },
+        {
+            "db_name": "ckan-test",
+            "db_type": "postgres",
+            "schema_name": "public",
+            "tables": [
+                "*"
+            ]
+        }
+    ]
+}
