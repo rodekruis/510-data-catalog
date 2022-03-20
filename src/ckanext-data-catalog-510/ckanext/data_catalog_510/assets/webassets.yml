@@ -7,6 +7,7 @@ data_catalog_510-js:
     - js/data_catalog_510-common.js
     - js/data_catalog_510-security-classification.js
     - js/data_catalog_510-request-btn.js
+    - js/data_catalog_510-pending-files.js
 
   extra:
     preload:

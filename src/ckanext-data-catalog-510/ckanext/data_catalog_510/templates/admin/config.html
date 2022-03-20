@@ -1,0 +1,44 @@
+{% ckan_extends %}
+
+{% block primary_content_inner %}
+<div>
+    <h3>{{ _('Generate List of Pending Files') }}</h3>
+    <p>{{ _('Set the files to be ignored while checking the file upload status.') }}</p>
+    <ul>
+        <li>{{ _('Ignore data is represented as JSON objects. You can create multiple objects within the list (square brackets) of each data source to be ignored.') }}</li>
+        <li>{{ _('Ensure that filepath/table names are properly written.') }}</li>
+        <li>{{ _('You may give a single "*" in the "paths" or "tables" list to ignore all in the location provided.') }}</li>
+        <li>{{ _('All other fields should given the correct names in double quotes ("").') }}</li>
+    </ul>
+    {% set ignore_data = h.get_ignore_pending_files_list() %}
+    {% set site_url = h.get_site_url() %}
+    <div>
+        <!-- <form id="ignore-data-form" class="dataset-form dataset-resource-form" method="post", action="/api/3/action/update_ignore_pending_file_list">
+        </form> -->
+        {{ form.textarea('ignore_data', id="field-ignore_data", label=_('Ignored Files'), value=ignore_data) }}
+        <button id="ignore_files_save_button" class="btn btn-primary" data-module="ignore-pending-files" data-siteurl="{{ site_url }}" name="save">{{ _('Save') }}</button>
+        <div class="alert alert-success" id='file-saved-notif' data-module="warning-display">
+            {{ _('Config has been saved.') }}
+        </div>
+        <div class="alert alert-danger" id='file-not-saved-notif' data-module="warning-display">
+            {{ _('Sonething went wrong while saving the config. Please refresh and try again.') }}
+        </div>
+    </div>
+    <p style="margin-top: 10px;">
+       {{ _('Click the following button to generate list of files pending upload into CKAN.') }}
+    </p>
+    <button id="generate_pending_files_list_button" data-module="get_pending_files_list" data-siteurl="{{ site_url }}" class="btn btn-primary" type="submit">{{ _('Generate Pending List') }}</button>
+    <div class="alert alert-info" id='pending-file-wait-notif' data-module="warning-display">
+        {{ _('Please wait while our script generates the file...') }}
+    </div>
+    <div class="alert alert-success" id='pending-file-created-notif' data-module="warning-display">
+        {{ _('File list is created in desginated storage.') }}
+    </div>
+    <div class="alert alert-danger" id='pending-file-not-created-notif' data-module="warning-display">
+        {{ _('Sonething went wrong while creating file. Please refresh and try again.') }}
+    </div>
+    <hr />
+</div>
+<h3>{{ _('Configuration Settings') }}</h3>
+{{ super() }}
+{% endblock %}
