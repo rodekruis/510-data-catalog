@@ -25,4 +25,4 @@ class TestUtil(object):
     def test_get_file_format(self,text_input, expected):
         '''Test to format of a file located at the path provided.'''
         
-        assert(helpers.get_file_format((text_input)) == expected)
+        assert(util.get_file_format((text_input)) == expected)
