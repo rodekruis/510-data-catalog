@@ -292,19 +292,25 @@ class SQLHandler:
                 if len(db_connections) > 0:
                     for db_conn in db_connections:
                         db_name = db_conn['name']
-                        schema_list = self.fetch_schema(db_type, db_name)
-                        if len(schema_list) > 0:
-                            for schema in schema_list:
-                                table_data = self.fetch_tables(db_type, db_name, schema)
-                                if len(table_data) > 0:
-                                    for table in table_data:
-                                        table_dict = {
-                                            "db_type": db_type,
-                                            "db_name": db_name,
-                                            "schema_name": schema,
-                                            "table_name": table
-                                        }
-                                        table_list.append(table_dict)
+                        try:
+                            schema_list = self.fetch_schema(db_type, db_name)
+                            if len(schema_list) > 0:
+                                for schema in schema_list:
+                                    try:
+                                        table_data = self.fetch_tables(db_type, db_name, schema)
+                                        if len(table_data) > 0:
+                                            for table in table_data:
+                                                table_dict = {
+                                                    "db_type": db_type,
+                                                    "db_name": db_name,
+                                                    "schema_name": schema,
+                                                    "table_name": table
+                                                }
+                                                table_list.append(table_dict)
+                                    except Exception as e:
+                                        log.error(e)
+                        except Exception as e:
+                            log.error(e)
         except Exception as e:
             log.error(e)
             raise e
