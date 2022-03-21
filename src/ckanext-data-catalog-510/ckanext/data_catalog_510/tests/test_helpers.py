@@ -36,17 +36,7 @@ class TestHelpers(object):
         ''' Test used to verify the exception '''
         with pytest.raises(Exception) as excinfo:
             helpers.get_current_date()
-            
-            
-    @pytest.mark.parametrize("text_input, expected", [
-        ('hrsl_egy_pop_resized_100.geojson', 'application/geo+json'),
-        ('hrsl_egy_pop_resized_100.tiff', 'image/tiff'),
-        ('test_file.gif', 'GIF'),
-        ('test_file', None)])
-    def test_get_file_format(self,text_input, expected):
-        '''Test to format of a file located at the path provided.'''
-        
-        assert(helpers.get_file_format((text_input)) == expected)
+
         
     @pytest.mark.parametrize("text_input,expected", [
                 ({"security_classification":"high"},False),

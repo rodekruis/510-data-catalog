@@ -1,13 +1,14 @@
-import requests
-import datetime
 import json
 import os
 import logging
+from datetime import datetime
 
 from ckan.lib.helpers import core_helper
 from ckan.common import c, config, _
 from ckanext.data_catalog_510.controllers.database_handler import SQLHandler
+from ckanext.data_catalog_510.utils.pending_files import generate_pending_file_list
 # from ckanext.data_catalog_510.logic import check_user_access
+
 log = logging.getLogger(__name__)
 HERE = os.path.dirname(__file__)
 
@@ -65,7 +66,7 @@ def get_current_date(data):
         if data:
             return data
         else:
-            return datetime.datetime.today().strftime(format)
+            return datetime.today().strftime(format)
     except Exception as e:
         log.error(e)
         raise e
@@ -115,26 +116,6 @@ def generate_sample_db_string(database_connection_type, database_connection):
     '''
     db_handler = SQLHandler()
     return db_handler.get_base_db_connection_string(database_connection_type, database_connection)
-
-
-@core_helper
-def get_file_format(file_path: str):
-    '''
-    Helper used to detect format of a file located at the path provided.
-    :param file_path: Path of the file.
-
-    :rtype string
-    '''
-    extension = os.path.splitext(file_path)[1][1:]
-    with open(os.path.join(HERE, 'mimetypes.json'), 'r') as format_list_file:
-        format_list = json.load(format_list_file)
-        if extension:
-            if extension in format_list:
-                return format_list[extension]
-            else:
-                return extension.upper()
-        else:
-            return None
 
 
 @core_helper
@@ -226,3 +207,33 @@ def is_preview_access(pkg, userobj=None):
         if sec_class == 'normal':
             return True
     return False
+
+
+@core_helper
+def generate_pending_files_list_helper(context):
+    return generate_pending_file_list(context)
+
+@core_helper
+def get_ignore_pending_files_list():
+    with open(os.path.join(HERE, 'ignore_pending_files.json')) as fp:
+        data = fp.read()
+        return data
+
+@core_helper
+def update_ignored_pending_list_helper(file_data):
+    result = False
+    try:
+        with open(os.path.join(HERE, 'ignore_pending_files.json'), 'w') as fp:
+            fp.write(json.dumps(file_data, indent=4))
+            result = True
+    except Exception as e:
+        log.error(e)
+        result = False
+    finally:
+        return result
+
+
+@core_helper
+def get_site_url():
+    print(config.get('ckan_site_url'))
+    return config.get('ckan_site_url')
