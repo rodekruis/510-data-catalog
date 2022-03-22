@@ -87,7 +87,7 @@ def handle_package_job(package):
                     resource_data = {
                         "name": resource["name"],
                         "ckan_url": generate_ckan_url(
-                            package["dataset_name"], resource["id"]
+                            package["name"], resource["id"]
                         ),
                         "resource_type": resource["resource_type"],
                         "data_source_path": get_path(resource),

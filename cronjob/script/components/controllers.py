@@ -55,7 +55,7 @@ class DatabaseController:
             else:
                 raise Exception("Unsupported database type: " + db_type)
             conn_details = json.loads(conn_details)
-            print("Connection Details: ", conn_details)
+            # print("Connection Details: ", conn_details)
             for conn in conn_details:
                 conn_db_name = conn['url'].split('/')[-1].split('?')[0]
                 if conn_db_name == db_name:
