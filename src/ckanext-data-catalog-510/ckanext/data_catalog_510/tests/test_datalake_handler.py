@@ -21,16 +21,19 @@ class TestDataLakeHandler:
     def test_list_file_system(self, page_num):
         expected_values = [{'name': 'container1'}, {'name': 'container2'}]
         mock_method = ('azure.storage.filedatalake.DataLakeServiceClient.list_file_systems')
+        mock_access_method = ('ckanext.data_catalog_510.controllers.datalake_handler.DataLakeHandler.check_container_access')
         with mock.patch(mock_method) as r:
             a = Object()
             a.name = 'container1'
             b = Object()
             b.name = 'container2'
             r.return_value = [a, b]
-            handler = DataLakeHandler()
-            handler.initialize_storage_account()
-            containers = handler.list_file_system(page_num)
-            assert containers == expected_values
+            with mock.patch(mock_access_method) as s:
+                s.return_value = True
+                handler = DataLakeHandler()
+                handler.initialize_storage_account()
+                containers = handler.list_file_system(page_num)
+                assert containers == expected_values
     
     @pytest.mark.parametrize('container', ['container'])
     def test_list_directory_contents(self, container, user_path=None, page_num=None, records_per_page=None):
