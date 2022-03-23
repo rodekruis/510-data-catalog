@@ -2,9 +2,10 @@ from azure.storage.filedatalake import DataLakeServiceClient
 import rioxarray as rxr
 import geopandas as gpd
 import fiona
+import pyodbc
 from rasterio.io import MemoryFile
 
-from ckan.common import config, _
+from ckan.common import config, _, c
 import ckan.logic as logic
 from ckanext.data_catalog_510.utils.utilities import endsWith, get_file_format
 
@@ -38,6 +39,41 @@ class DataLakeHandler:
         except Exception as e:
             log.error(e)
 
+    def check_container_access(self, container):
+        result = False
+        try:
+            user_email = c.userobj.email.upper()
+            log.info(user_email)
+            acl_group_mapping =  config.get('ckan.datalake_groups_mapping')
+            log.info(acl_group_mapping)
+            root_directory_client = self.service_client.get_directory_client(file_system=container, directory="/")
+            container_acl_data = root_directory_client.get_access_control()['acl']
+            if container_acl_data:
+                acl_string_list = container_acl_data.split(",")
+                acl_groups_list = [group_string for group_string in acl_string_list if group_string.startswith("group")]
+                acl_group_ids = [group_string.split(":")[1] for group_string in acl_groups_list if group_string.split(":")[1] and group_string.split(":")[2].startswith("r")]
+                log.info(acl_group_ids)
+                acl_group_names = [mapping['name'] for mapping in acl_group_mapping if mapping['objectId'] in acl_group_ids]
+                if len(acl_group_names) > 0:
+                    connString = config.get("ckan.datalake_groups_db_connection")
+                    log.info(connString)
+                    try:
+                        with pyodbc.connect(connString) as sqlconn:
+                            cursor = sqlconn.cursor()
+                            for group_name in acl_group_names:
+                                cursor.execute(f"select [isMemberOf{group_name}] from [cleaned_ckan].[CkanPermissions] where UPPER(mail) = {user_email}")
+                                value = cursor.fetchval()
+                                if value:
+                                    result = True
+                                    break
+                    except Exception as e:
+                        raise e
+        except Exception as e:
+            log.error(e, exc_info=True)
+        finally:
+            return result
+
+
     def list_file_system(self, page_num):
         '''Get the File System/Containers List
         '''
@@ -46,7 +82,8 @@ class DataLakeHandler:
                                     list_file_systems(include_metadata=True)
             containers = []
             for data in file_system:
-                containers.append({'name': data.name})
+                if self.check_container_access(data):
+                    containers.append({'name': data.name})
             return containers
         except Exception as e:
             log.error(e)
