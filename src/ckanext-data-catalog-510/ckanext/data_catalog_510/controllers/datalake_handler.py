@@ -1,3 +1,4 @@
+import json
 from azure.storage.filedatalake import DataLakeServiceClient
 import rioxarray as rxr
 import geopandas as gpd
@@ -44,8 +45,8 @@ class DataLakeHandler:
         try:
             user_email = c.userobj.email.upper()
             log.info(user_email)
-            acl_group_mapping =  config.get('ckan.datalake_groups_mapping')
-            log.info(acl_group_mapping)
+            acl_group_mapping = json.loads(config.get('ckan.datalake_groups_mapping'))
+            log.info(type(acl_group_mapping))
             root_directory_client = self.service_client.get_directory_client(file_system=container, directory="/")
             container_acl_data = root_directory_client.get_access_control()['acl']
             if container_acl_data:
@@ -72,7 +73,6 @@ class DataLakeHandler:
             log.error(e, exc_info=True)
         finally:
             return result
-
 
     def list_file_system(self, page_num):
         '''Get the File System/Containers List
