@@ -21,7 +21,7 @@ class TestDataLakeHandler:
     def test_list_file_system(self, page_num):
         expected_values = [{'name': 'container1'}, {'name': 'container2'}]
         mock_method = ('azure.storage.filedatalake.DataLakeServiceClient.list_file_systems')
-        mock_access_method = ('azure.storage.filedatalake.DataLakeServiceClient.check_container_access')
+        mock_access_method = ('ckanext.data_catalog_510.controllers.datalake_handler.DataLakeHandler.check_container_access')
         with mock.patch(mock_method) as r:
             a = Object()
             a.name = 'container1'
