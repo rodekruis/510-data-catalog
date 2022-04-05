@@ -1,4 +1,4 @@
-<section class="module module-narrow module-shallow">
+<!-- <section class="module module-narrow module-shallow">
     <h2 class="module-heading"><i class="fa fa-info-circle"></i> {{ _('Section Title Here') }}</h2>
     <div class="module-content">
       <p>
@@ -7,15 +7,175 @@
         {% endtrans %}
       </p>
     </div>
+</section> -->
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Create Dataset</h2>
+  <div class="module-content">
+    <p>
+      There are two important entities in this catalog.
+      <ol>
+          <li>the dataset</li> 
+          <li>the resource</li>
+      </ol>
+      The dataset includes all important (background) information about the dataset. The resource has information (location, amount, type, etc.) about the specific files related to it. A resource is always part of a dataset and one dataset can have multiple resources.
+<br><br>
+      Fill in all fields to add a new dataset to the 510 data catalog. Additional information about the fields can be found below.
+    </p>
+  </div>
 </section>
 <section class="module module-narrow module-shallow">
     <h2 class="module-heading"><i class="fa fa-info-circle"></i> Dataset name</h2>
     <div class="module-content">
       <p>
         {% trans %}
-          Choose for the Dataset name something that is understandable for people searching for data. There are no (strict) conventions on what needs to be in it. Just remember that many of the details will be in the other metadata fields so they don't all need to be included in the name.
+          For the Dataset name you should choose something that is understandable for people searching for data and is short and consise. 
+          <br>
+          There are no rules on what needs to be in it. Just remember that many of the details will be in the other metadata fields so they don't all need to be included in the name.
+          <br><br>
+          The dataset name is stored as lower case and a whitespace is replaced by a dash '-'.
         {% endtrans %}
       </p>
     </div>
 </section>
-<!-- Add more sections by duplicating the entire section block. -->
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Description</h2>
+  <div class="module-content">
+    <p>
+        You are free to put in anything that is important to know about this dataset that is not recorded in any of the other fields. You can for example briefly explain how the dataset was generated or acquired.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+    <h2 class="module-heading"><i class="fa fa-info-circle"></i> Tags</h2>
+    <div class="module-content">
+      <p>
+          Here you add tags. Start typing and tags that are used before are listed down so you can select them. If a tag hasn't been used before it will be newly created. Tags are used to easily filter datasets.
+      </p>
+    </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> License</h2>
+  <div class="module-content">
+    <p>
+        Select the license of the dataset if you know it. Otherwise leave the field empty.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Organization</h2>
+  <div class="module-content">
+    <p>
+        Always select just 510, as is the default. So no need to change this.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Source</h2>
+  <div class="module-content">
+    <p>
+        Put here the source of the dataset. If it is downloaded from a website you can put the url, otherwise mention the organization or person.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Dataset Owner</h2>
+  <div class="module-content">
+    <p>
+        This is you by default. Only change it when you are adding data for someone else. Please keep the format the same as the account name, which is normally the same as the microsoft account name. E.g. "Ottow, Bouke".
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Dataset Owner Email</h2>
+  <div class="module-content">
+    <p>
+        Also filled in automatically. See Dataset Owner, only change when the owner is someone else. This email address is used for correspondence about this dataset.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Dataset Version</h2>
+  <div class="module-content">
+    <p>
+        Mention here the version number or name when a dataset has versioning. It can also be a year or date for example for admin boundaries.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Security classification</h2>
+  <div class="module-content">
+    <p>
+        The security classification is used for accessibility of the datasets through this catalog. Low means everyone can see the dataset in the catalog (also when not logged in). Normal means only logged in people can see the dataset and if possible a preview will be displayed. High means only logged in people can see the dataset and no preview will be displayed.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Country</h2>
+  <div class="module-content">
+    <p>
+        Select the country which is covered by the dataset. You can select multiple countries if needed. You can also select <i>Global</i>. Please only select countries from the list (just start typing and select the right one).
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Used in Project</h2>
+  <div class="module-content">
+    <p>
+        Select here the name (as in Forecast) of the <b>project</b> where you initially used the data in. Start typing and the options will appear.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Used in Product</h2>
+  <div class="module-content">
+    <p>
+        Select here the name (as in Forecast) of the <b>product</b> where you initially used the data in. Start typing and the options will appear. You can also leave it empty if it isn't used by any of the 510 products.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Expected Update Frequency</h2>
+  <div class="module-content">
+    <p>
+        How often is the dataset expected to be updated? Is it daily, or yearly or not at all?
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Accuracy</h2>
+  <div class="module-content">
+    <p>
+        This field relates to the data quality as <a href="https://510public.blob.core.windows.net/data-catalog/Data_Quality_Assessment_Template.pdf" target="_blank">explained in the data responsibility policy</a>.
+        <br><br>
+        Accuracy is the degree of closeness of data values to real values.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Consistency</h2>
+  <div class="module-content">
+    <p>
+      This field relates to the data quality as <a href="https://510public.blob.core.windows.net/data-catalog/Data_Quality_Assessment_Template.pdf" target="_blank">explained in the data responsibility policy</a>.
+      <br><br>
+      Consistency is the degree to which data values of two sets of attributes within a record, or within a dataset, or between datasets, or within a record at different points in time, comply with a rule.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Completeness</h2>
+  <div class="module-content">
+    <p>
+      This field relates to the data quality as <a href="https://510public.blob.core.windows.net/data-catalog/Data_Quality_Assessment_Template.pdf" target="_blank">explained in the data responsibility policy</a>.
+      <br><br>
+      Completeness is the degree to which all required data values are present.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Date added</h2>
+  <div class="module-content">
+    <p>
+        This is filled in automatically, there is no need to change it.
+    </p>
+  </div>
+</section>
