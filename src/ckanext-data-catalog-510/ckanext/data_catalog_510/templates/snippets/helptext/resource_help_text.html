@@ -1,11 +1,98 @@
 <section class="module module-narrow module-shallow">
-    <h2 class="module-heading"><i class="fa fa-info-circle"></i> {{ _('Section Title Here') }}</h2>
+    <h2 class="module-heading"><i class="fa fa-info-circle"></i> Add new resource</h2>
     <div class="module-content">
       <p>
-        {% trans %}
-          Add resource help text here.
-        {% endtrans %}
+        To add a new resource to an existing or newly created dataset you first have to select where the data(files) are stored. This is either through
+        <ul>
+          <li><i>External Link</i>, when the data is not in the 510 data platform but can be accessed online through a link (e.g. a google sheet);</li>
+          <li><i>Databases</i>, when the data is stored in one of the data bases in the 510 data platform;</li>
+          <li><i>Datalake</i>, when the data is stored in the Azure Data Lake Storage in the 510 data platform.</li>
+        </ul>
+
       </p>
     </div>
 </section>
-<!-- Add more sections by duplicating the entire section block. -->
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> URL (External Link)</h2>
+  <div class="module-content">
+    <p>
+        Put here the url through which the data can be accessed.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Select database type (Databases)</h2>
+  <div class="module-content">
+    <p>
+        Select here the type and server in the 510 data platform where the data is stored. This is either mySQL, Azure SQL or PostgreSQL.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Select database (Databases)</h2>
+  <div class="module-content">
+    <p>
+        Select here the database (in the before selected server) where the data is stored. A popup will open that asks you to login to check if you actually have access to the database. The format is &lt;username&gt;@&lt;servername&gt;, e.g. bottow@510-postgresql-server.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Select Schema (Databases)</h2>
+  <div class="module-content">
+    <p>
+        Select here the schema (in the before selected database) where the data is stored.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Select Table (Databases)</h2>
+  <div class="module-content">
+    <p>
+        Select here the table (in the before selected schema) which has the data.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Select Data from Datalake (Datalake)</h2>
+  <div class="module-content">
+    <p>
+        Click the button and browse through the file structure in the data lake to select your data. Double click to go deeper in to a container or directory and click once to select the file or directory.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Geo-data (Databases &amp; Datalake)</h2>
+  <div class="module-content">
+    <p>
+        Check the <i>Is Data Geo-data?</i> checkbox to be able to (auto-) fill in the spatial metadata fields. 
+        <br><br>
+        If the data is a table in a <b>postgres database</b> the box is automatically checked if the table has a geometry column and the fields are automatically populated. Depending if the data is raster data or vector data not all the fields might be applicable.
+        <br><br>
+        If the data is stored in the <b>data lake</b> you have to select the checkbox if it is geo data. You then have to select the file from which the system has to extract the metadata from (in case you have selected a folder). And then click <i>Auto-fill Spatial Metadata</i>. Be warned that the file needs to be downloaded to the server which has a limit on the size.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Name</h2>
+  <div class="module-content">
+    <p>
+        Fill in the name of the resource.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Description</h2>
+  <div class="module-content">
+    <p>
+        Give a description to the resource. This is especially important when there are multiple resources as part of one dataset.
+    </p>
+  </div>
+</section>
+<section class="module module-narrow module-shallow">
+  <h2 class="module-heading"><i class="fa fa-info-circle"></i> Format</h2>
+  <div class="module-content">
+    <p>
+        Sometimes this is filled in automatically. If not, fill in what kind of file it is. (e.g. csv, json, etc.)
+    </p>
+  </div>
+</section>
