@@ -4,11 +4,12 @@ import rioxarray as rxr
 import geopandas as gpd
 import fiona
 import pyodbc
+import struct
 from rasterio.io import MemoryFile
 
-from ckan.common import config, _, c
+from ckan.common import config, _, c, g
 import ckan.logic as logic
-from ckanext.data_catalog_510.utils.utilities import endsWith, get_file_format
+from ckanext.data_catalog_510.utils.utilities import endsWith, get_file_format, get_db_access_token
 
 import logging
 log = logging.getLogger(__name__)
@@ -45,28 +46,21 @@ class DataLakeHandler:
         try:
             user_email = c.userobj.email.upper()
             log.info(user_email)
-            acl_group_mapping = json.loads(config.get('ckan.datalake_groups_mapping'))
-            log.info(type(acl_group_mapping))
             root_directory_client = self.service_client.get_directory_client(file_system=container, directory="/")
             container_acl_data = root_directory_client.get_access_control()['acl']
             if container_acl_data:
-                acl_string_list = container_acl_data.split(",")
-                acl_groups_list = [group_string for group_string in acl_string_list if group_string.startswith("group")]
-                acl_group_ids = [group_string.split(":")[1] for group_string in acl_groups_list if group_string.split(":")[1] and group_string.split(":")[2].startswith("r")]
-                log.info(acl_group_ids)
-                acl_group_names = [mapping['name'] for mapping in acl_group_mapping if mapping['objectId'] in acl_group_ids]
+                acl_group_names = get_acl_group_names(container_acl_data)
                 if len(acl_group_names) > 0:
-                    connString = config.get("ckan.datalake_groups_db_connection")
-                    log.info(connString)
                     try:
-                        with pyodbc.connect(connString) as sqlconn:
-                            cursor = sqlconn.cursor()
-                            for group_name in acl_group_names:
-                                cursor.execute(f"select [isMemberOf{group_name}] from [cleaned_ckan].[CkanPermissions] where UPPER(mail) = {user_email}")
-                                value = cursor.fetchval()
-                                if value:
-                                    result = True
-                                    break
+                        if not hasattr(g, 'msi_conn'):
+                            g.msi_conn = get_datalake_groups_db_connection()
+                        cursor = g.msi_conn.cursor()
+                        for group_name in acl_group_names:
+                            cursor.execute(f"select [isMemberOf{group_name}] from [cleaned_ckan].[CkanPermissions] where UPPER(mail)='{user_email}'")
+                            value = cursor.fetchval()
+                            if value:
+                                result = True
+                                break
                     except Exception as e:
                         raise e
         except Exception as e:
@@ -81,9 +75,11 @@ class DataLakeHandler:
             file_system = self.service_client.\
                                     list_file_systems(include_metadata=True)
             containers = []
+            # g.msi_conn = get_datalake_groups_db_connection()
             for data in file_system:
                 if self.check_container_access(data):
                     containers.append({'name': data.name})
+            # g.msi_conn.close()
             return containers
         except Exception as e:
             log.error(e)
@@ -266,3 +262,34 @@ class DataLakeHandler:
         except Exception as e:
             log.error(e)
             raise e
+
+
+def get_acl_group_names(container_acl_data):
+    acl_group_mapping = json.loads(config.get('ckan.datalake_groups_mapping'))
+
+    acl_string_list = container_acl_data.split(",")
+    acl_groups_list = [group_string for group_string in acl_string_list if group_string.startswith("group")]
+    acl_group_ids = [group_string.split(":")[1] for group_string in acl_groups_list if group_string.split(":")[1] and group_string.split(":")[2].startswith("r")]
+    acl_group_names = [mapping['name'] for mapping in acl_group_mapping if mapping['objectId'] in acl_group_ids]
+    return acl_group_names
+
+
+def get_msi_access_token_struct():
+    db_token_request_data = json.loads(config.get('ckan.datalake_groups_db_token_data'))
+    msi_endpoint = config.get('ckan.msi_endpoint')
+
+    access_token = get_db_access_token(msi_endpoint, db_token_request_data)
+    accesstoken = bytes(access_token, 'utf-8')
+    exptoken = b""
+    for i in accesstoken:
+        exptoken += bytes({i})
+        exptoken += bytes(1)
+    tokenstruct = struct.pack("=i", len(exptoken)) + exptoken
+    return tokenstruct
+
+
+def get_datalake_groups_db_connection():
+    tokenstruct = get_msi_access_token_struct()
+    conn_string = config.get("ckan.datalake_groups_db_connection")
+    conn = pyodbc.connect(conn_string, attrs_before={1256: bytearray(tokenstruct)})
+    return conn
