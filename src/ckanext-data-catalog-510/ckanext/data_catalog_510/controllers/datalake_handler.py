@@ -75,11 +75,11 @@ class DataLakeHandler:
             file_system = self.service_client.\
                                     list_file_systems(include_metadata=True)
             containers = []
-            # g.msi_conn = get_datalake_groups_db_connection()
+            g.msi_conn = get_datalake_groups_db_connection()
             for data in file_system:
                 if self.check_container_access(data):
                     containers.append({'name': data.name})
-            # g.msi_conn.close()
+            g.msi_conn.close()
             return containers
         except Exception as e:
             log.error(e)
