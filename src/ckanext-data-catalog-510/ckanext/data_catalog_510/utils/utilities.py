@@ -1,8 +1,12 @@
 import os
 import json
+import requests
 
+import logging
+
+from sqlalchemy import true
+log = logging.getLogger(__name__)
 HERE = os.path.dirname(__file__)
-
 
 def endsWith(string: str, suffix_list: list):
     for suffix in suffix_list:
@@ -35,3 +39,17 @@ def get_file_format(file_path: str):
                 return extension.upper()
         else:
             return None
+
+
+def get_db_access_token(endpoint, request_data):
+    try:
+        log.info([type(endpoint), type(request_data)])
+        resp = requests.post(endpoint, request_data)
+        resp_data = resp.json()
+        if resp_data:
+            access_token = resp_data['access_token']
+            log.info(access_token)
+            if access_token:
+                return access_token
+    except Exception as e:
+        log.error(e, exc_info=true)
