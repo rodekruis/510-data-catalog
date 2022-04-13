@@ -59,7 +59,7 @@ class DataLakeHandler:
                             value = cursor.fetchval()
                             if value:
                                 result = True
-                                print(result)
+                                log.info(result)
                                 g.msi_conn.close()
                                 break
                     except Exception as e:
