@@ -45,7 +45,6 @@ class DataLakeHandler:
         result = False
         try:
             user_email = c.userobj.email.upper()
-            log.info(user_email)
             root_directory_client = self.service_client.get_directory_client(file_system=container, directory="/")
             container_acl_data = root_directory_client.get_access_control()['acl']
             if container_acl_data:
@@ -60,6 +59,7 @@ class DataLakeHandler:
                             value = cursor.fetchval()
                             if value:
                                 result = True
+                                print(result)
                                 g.msi_conn.close()
                                 break
                     except Exception as e:
