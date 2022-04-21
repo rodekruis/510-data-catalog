@@ -51,16 +51,15 @@ class DataLakeHandler:
                 acl_group_names = get_acl_group_names(container_acl_data)
                 if len(acl_group_names) > 0:
                     try:
-                        if not hasattr(g, 'msi_conn'):
-                            g.msi_conn = get_datalake_groups_db_connection()
-                        cursor = g.msi_conn.cursor()
+                        msi_conn = get_datalake_groups_db_connection()
+                        cursor = msi_conn.cursor()
                         for group_name in acl_group_names:
                             cursor.execute(f"select [isMemberOf{group_name}] from [cleaned_ckan].[CkanPermissions] where UPPER(mail)='{user_email}'")
                             value = cursor.fetchval()
                             if value:
                                 result = True
                                 log.info(result)
-                                g.msi_conn.close()
+                                msi_conn.close()
                                 break
                     except Exception as e:
                         raise e
