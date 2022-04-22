@@ -48,7 +48,6 @@ def get_db_access_token(endpoint, request_data):
         resp_data = resp.json()
         if resp_data:
             access_token = resp_data['access_token']
-            log.info(access_token)
             if access_token:
                 return access_token
     except Exception as e:

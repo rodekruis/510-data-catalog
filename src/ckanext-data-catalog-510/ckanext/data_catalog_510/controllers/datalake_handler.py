@@ -45,22 +45,21 @@ class DataLakeHandler:
         result = False
         try:
             user_email = c.userobj.email.upper()
-            log.info(user_email)
             root_directory_client = self.service_client.get_directory_client(file_system=container, directory="/")
             container_acl_data = root_directory_client.get_access_control()['acl']
             if container_acl_data:
                 acl_group_names = get_acl_group_names(container_acl_data)
                 if len(acl_group_names) > 0:
                     try:
-                        if not hasattr(g, 'msi_conn'):
-                            g.msi_conn = get_datalake_groups_db_connection()
-                        cursor = g.msi_conn.cursor()
+                        msi_conn = get_datalake_groups_db_connection()
+                        cursor = msi_conn.cursor()
                         for group_name in acl_group_names:
                             cursor.execute(f"select [isMemberOf{group_name}] from [cleaned_ckan].[CkanPermissions] where UPPER(mail)='{user_email}'")
                             value = cursor.fetchval()
                             if value:
                                 result = True
-                                g.msi_conn.close()
+                                log.info(result)
+                                msi_conn.close()
                                 break
                     except Exception as e:
                         raise e
