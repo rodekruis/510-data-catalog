@@ -2,6 +2,7 @@
 
 # Install the Extensions
 /bin/sh scripts/install_extensions.sh
+pip install --upgrade cryptography==36.0.2
 
 # Update the Plugins from the ENV
 ckan config-tool $CKAN_CONFIG/production.ini "ckan.plugins = ${CKAN__PLUGINS}"
