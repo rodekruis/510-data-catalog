@@ -85,7 +85,7 @@ WORKDIR $CKAN_VENV/src/
 RUN git clone https://github.com/ckan/ckan.git
 WORKDIR $CKAN_VENV/src/ckan
 RUN git reset --hard 
-RUN git checkout tags/ckan-2.9.3 
+RUN git checkout master
 WORKDIR $CKAN_VENV/src/
 RUN ckan-pip3 install -U pip && \
     ckan-pip3 install --upgrade --no-cache-dir -r $CKAN_VENV/src/ckan/requirement-setuptools.txt && \
