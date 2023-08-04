@@ -88,9 +88,13 @@ RUN git reset --hard
 RUN git checkout master
 WORKDIR $CKAN_VENV/src/
 RUN ckan-pip3 install -U pip && \
+    ckan-pip3 install --upgrade --no-cache-dir -r $CKAN_VENV/src/ckan/requirement-setuptools.txt && \
+    ckan-pip3 install zope.interface>=4.3.2 && \
+    sed -i "/$zope.interface==4.3.2/d" $CKAN_VENV/src/ckan/requirements.txt && \
     ckan-pip3 install --upgrade --no-cache-dir -r $CKAN_VENV/src/ckan/requirements.txt && \
     ckan-pip3 install -e $CKAN_VENV/src/ckan/ && \
     ckan generate config $CKAN_CONFIG/production.ini && \
+    ckan-pip3 install pyopenssl --upgrade && \
     ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
     cp -v $CKAN_VENV/src/ckan/contrib/docker/ckan-entrypoint.sh /ckan-entrypoint.sh && \
     chmod +x /ckan-entrypoint.sh && \
