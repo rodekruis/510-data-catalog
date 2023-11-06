@@ -20,6 +20,7 @@ export class DatalakeComponent implements OnInit {
     resource_create: '/api/3/action/resource_create',
     resource_patch: '/api/3/action/resource_patch',
     resource_show: '/api/3/action/resource_show',
+    resource_delete: '/api/3/action/resource_delete',
     package_show: '/api/3/action/package_show',
     package_patch: '/api/3/action/package_patch',
     package_ext_spatial_patch: '/api/3/action/package_ext_spatial_patch',
@@ -65,10 +66,18 @@ export class DatalakeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getCSRFToken()
     if (this.type == 'edit') {
       this.getResource();
     }
     this.selectedBaseFilePath = null
+  }
+
+  private getCSRFToken(): void {
+    const csrfMetaTag = document.querySelector('meta[name="_csrf_token"]');
+    if (csrfMetaTag) {
+      this.headers['X-CSRFToken'] = csrfMetaTag.getAttribute('content');
+    } 
   }
 
   get f() {
@@ -238,6 +247,52 @@ export class DatalakeComponent implements OnInit {
         }
       );
   }
+
+  delete() {
+    let api_url = this.API_LIST.resource_delete
+    Swal.fire({
+      title: 'Do you want to delete the resource',
+      showDenyButton: true,
+      confirmButtonText: 'Yes',
+      denyButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.http.post < any > (this.base_url + api_url, {
+          id: this.resource
+        }, {
+          headers: this.headers,
+        }).subscribe(
+          (res) => {
+            this.commonService.showLoader = false;
+            let message;
+            if (this.type == 'edit') {
+              message = 'Resource Updated Successfully';
+            } else {
+              message = 'Resource Created Successfully';
+            }
+            Swal.fire({
+              icon: 'success',
+              text: message,
+            }).then((result) => {
+              window.location.assign(
+                window.location.origin + '/dataset/' + this.resourceData?.package_id
+              );
+            });
+          },
+          (error) => {
+            this.alertService.error(error?.error?.error?.message);
+            this.commonService.showLoader = false;
+          }
+        );
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info')
+      }
+    })
+  
+  
+  
+  }
+
 
   submit() {
     let api_url = this.API_LIST.resource_create;
