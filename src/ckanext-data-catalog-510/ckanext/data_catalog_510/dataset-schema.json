@@ -65,7 +65,7 @@
         {
             "field_name": "dataset_version",
             "label": "Dataset Version",
-            "validators": "ignore_missing unicode package_version_validator",
+            "validators": "ignore_missing unicode_safe package_version_validator",
             "form_placeholder": "1.0"
         },
         {
@@ -111,7 +111,7 @@
         {
             "field_name": "expected_update_frequency",
             "label": "Expected Update Frequency",
-            "validators": "ignore_missing unicode",
+            "validators": "ignore_missing unicode_safe",
             "form_placeholder": "e.g 10 days",
             "form_snippet": "data_quality.html"
         },
@@ -120,7 +120,7 @@
             "label": "Accuracy",
             "help_text": "Accuracy of the Data",
             "help_inline": true,
-            "validators": "ignore_missing unicode",
+            "validators": "ignore_missing unicode_safe",
             "preset": "select",
             "choices": [
                 {
@@ -150,7 +150,7 @@
             "label": "Consistency",
             "help_text": "Consistency of the Data",
             "help_inline": true,
-            "validators": "ignore_missing unicode",
+            "validators": "ignore_missing unicode_safe",
             "preset": "select",
             "choices": [
                 {
@@ -180,7 +180,7 @@
             "label": "Completeness",
             "help_text": "Completeness of the Data",
             "help_inline": true,
-            "validators": "ignore_missing unicode",
+            "validators": "ignore_missing unicode_safe",
             "form_snippet": "data_quality_completeness.html",
             "choices": [
                 {
@@ -208,7 +208,7 @@
         {
             "field_name": "date_added",
             "label": "Date Added",
-            "validators": "ignore_missing unicode validate_date_yyyy_mm_dd",
+            "validators": "ignore_missing unicode_safe validate_date_yyyy_mm_dd",
             "form_placeholder": "e.g 2020-12-21",
             "form_snippet": "date_added.html"
         }

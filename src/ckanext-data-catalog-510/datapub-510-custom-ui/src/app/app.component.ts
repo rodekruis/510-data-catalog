@@ -29,7 +29,18 @@ export class AppComponent implements OnInit {
   }
   ngOnInit(): void {
     this.getResource();
+    this.getCSRFToken()
   }
+
+
+  getCSRFToken() {
+    const csrfMetaTag = document.querySelector('meta[name="_csrf_token"]');
+    if (csrfMetaTag) {
+      return csrfMetaTag.getAttribute('content');
+    } 
+    return ''
+  }
+
 
   getResource() {
     this.http
@@ -39,6 +50,7 @@ export class AppComponent implements OnInit {
         {
           headers: {
             Accept: 'application/json',
+            'X-CSRFToken': this.getCSRFToken()
           },
         }
       )

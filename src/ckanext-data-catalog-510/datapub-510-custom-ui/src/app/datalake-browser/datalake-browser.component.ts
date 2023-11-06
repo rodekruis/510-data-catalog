@@ -49,8 +49,17 @@ export class DatalakeBrowserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAllContainers();
+    this.getCSRFToken();
+    
     // this.getPageContainers(1);
+  }
+
+  private getCSRFToken(): void {
+    const csrfMetaTag = document.querySelector('meta[name="_csrf_token"]');
+    if (csrfMetaTag) {
+      this.headers['X-CSRFToken'] = csrfMetaTag.getAttribute('content');
+      this.getAllContainers();
+    } 
   }
 
   getAllContainers() {

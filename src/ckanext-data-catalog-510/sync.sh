@@ -35,7 +35,7 @@ fi
 cd ..
 
 echo "Updating upload_module.html template..."
-export ASSETS=$(python -c "import sys;print(sys.argv[1].replace('build/static','datapub'))" "$bundles")
+export ASSETS=$(python3 -c "import sys;print(sys.argv[1].replace('build/static','datapub'))" "$bundles")
 bash templater.sh ${UPLOAD_MODULE_PATH}.template > ${UPLOAD_MODULE_PATH}.html
 
 echo "Updating assets ..."

@@ -46,6 +46,10 @@ WORKDIR $CKAN_HOME
 
 # Generate CKAN Config
 RUN ckan generate config $CKAN_CONFIG/production.ini
+RUN ckan-pip3 install --upgrade cryptography==36.0.2 pyOpenSSL==22.0.0
+
+# Install Extensions
+RUN /bin/sh ${CKAN_HOME}/scripts/install_extensions.sh
 
 ENTRYPOINT [ ]
 CMD ["/bin/sh", "scripts/start_ckan.sh"]

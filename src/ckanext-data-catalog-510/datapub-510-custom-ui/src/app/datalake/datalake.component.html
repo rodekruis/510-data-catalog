@@ -68,8 +68,9 @@
             <label class="control-label" for="field-format">No of Files</label>
             <input type="text" [value]="no_of_files" readonly class="form-control mb-4" placeholder="No of Files">
         </div>
-        <div class="form-actions">
-            <button class="btn btn-primary" name="save" type="submit">Submit</button>
+        <div lass="form-actions">
+            <button class="btn btn-danger float-start" name="delete" type='button'  (click)="delete()">Delete Resource</button>
+            <button class="btn btn-primary float-end" name="save" type="submit">Submit</button>
         </div>
     </div>
 
