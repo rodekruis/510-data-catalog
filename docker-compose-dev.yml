@@ -67,14 +67,10 @@ services:
 
   solr:
     container_name: solr
-    image: ckan/ckan-solr:2.10-solr8
+    build:
+      context: solr/
     volumes:
       - solr_data:/var/solr
-      - ./solr/schema.xml:${SOLR_CONFIG_CKAN_DIR}/managed-schema.xml
-      - ./solr/solrconfig.xml:${SOLR_CONFIG_CKAN_DIR}/solrconfig.xml
-
-      # - ./solr/schema.xml:/opt/solr/server/solr/configsets/ckan/conf/managed-schema
-
     ports:
       - "8983:8983"
     networks:
@@ -99,10 +95,7 @@ services:
         - DATAPUSHER_SQLALCHEMY_DATABASE_URI=${DATAPUSHER_SQLALCHEMY_DATABASE_URI}
     ports:
       - "8800:8800"
-    networks:
-      main:
-        aliases:
-          - solr
+
 volumes:
   ckan_storage:
   pg_data_510:
