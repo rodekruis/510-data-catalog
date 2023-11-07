@@ -125,8 +125,20 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
                             package_type):
         return facets_dict
 
+    def before_dataset_index(self, pkg_dict):
+        # Fix the reindex for the res_extras
+        return self.before_index(pkg_dict)
+
     # IPackageController
     def before_index(self, data_dict):
+        # Fix the res_extras_ for json fields
+        res_extras_data = []
+        for keys, value in data_dict.items():
+            if keys.startswith('res_extras_'):
+                for data in value:
+                    res_extras_data.append(str(data))
+                data_dict[keys] = res_extras_data
+            res_extras_data = []
         if 'country' in data_dict and isinstance(data_dict['country'], str):
             data_dict['country'] = data_dict.get('country', []).split(",")
         if 'forecast_project' in data_dict and isinstance(data_dict['forecast_project'], str):
