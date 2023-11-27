@@ -2,6 +2,7 @@ data_catalog_510-js:
   filter: rjsmin
   output: ckanext-data_catalog_510/%(version)s-resource.js
   contents:
+    - js/data_catalog_510-daterange.js
     - js/main.js
     - js/polyfills.js
     - js/data_catalog_510-common.js
