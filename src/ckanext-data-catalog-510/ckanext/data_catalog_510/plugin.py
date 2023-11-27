@@ -6,6 +6,10 @@ from ckanext.data_catalog_510.\
      utils.helpers import (get_countries, get_db_host, generate_sample_db_string, get_request_data_mailTo, get_bbox_from_coords, get_site_url)
 from collections import OrderedDict
 
+
+import logging
+log = logging.getLogger(__name__)
+
 from ckanext.data_catalog_510.logic import (get_db_connections,
                                             get_schemas,
                                             get_tables,
@@ -104,6 +108,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
 
     def dataset_facets(self, facets_dict, package_type):
         return OrderedDict([('dataset_owner', 'Dataset Owner'),
+                            ('tags', 'Tags'),
+                            ('date_added', 'Date Added'),
                             ('country', 'Country'),
                             ('accuracy', 'Dataset Quality: Accuracy'),
                             ('consistency', 'Dataset Quality: Consistency'),
@@ -119,8 +125,20 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
                             package_type):
         return facets_dict
 
+    def before_dataset_index(self, pkg_dict):
+        # Fix the reindex for the res_extras
+        return self.before_index(pkg_dict)
+
     # IPackageController
     def before_index(self, data_dict):
+        # Fix the res_extras_ for json fields
+        res_extras_data = []
+        for keys, value in data_dict.items():
+            if keys.startswith('res_extras_'):
+                for data in value:
+                    res_extras_data.append(str(data))
+                data_dict[keys] = res_extras_data
+            res_extras_data = []
         if 'country' in data_dict and isinstance(data_dict['country'], str):
             data_dict['country'] = data_dict.get('country', []).split(",")
         if 'forecast_project' in data_dict and isinstance(data_dict['forecast_project'], str):
