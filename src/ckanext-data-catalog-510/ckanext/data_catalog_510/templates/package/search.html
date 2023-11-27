@@ -1,6 +1,25 @@
 {% ckan_extends %} 
-{% block secondary_content %} 
+{% block secondary_content %}
 {% snippet "spatial/snippets/spatial_query.html", default_extent="{ \"type\": \"Polygon\",
-\"coordinates\": [[[7.2274985, 50.7295671],[7.2274985, 53.7253321], [1.9193492, 53.7253321], [1.9193492, 50.7295671], [7.2274985, 50.7295671]]]}" %} 
-{{ super() }}
+\"coordinates\": [[[7.2274985, 50.7295671],[7.2274985, 53.7253321], [1.9193492, 53.7253321], [1.9193492, 50.7295671], [7.2274985, 50.7295671]]]}" %}  
+<!-- {{ super() }} -->
+
+{% for facet in facet_titles %}
+{% if facet == 'date_added' %}
+<section class="module module-narrow module-shallow">
+		    
+    <h2 class="module-heading">
+        <i class="fa fa-filter"></i>
+        Date Added
+    </h2>
+        <div class="module-content">
+            <input type="date" id="startrange" name="date_from"   />
+            <input type="date" id="endrange" name="date_to"  />
+            <button class="btn btn-primary mt-2" data-module="daterange">SEARCH</button>
+        </div>
+</section>
+{% else %}
+  {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets) }}
+{% endif %}
+{% endfor %}
 {% endblock %}
