@@ -15,6 +15,14 @@ this.ckan.module('daterange', function ($) {
             
             $('#startrange').val(dateRange[0]);
             $('#endrange').val(dateRange[1]);
+
+            let message = document.querySelector("#search_title").innerHTML
+
+            message = message.split('"date_added')[0]
+
+            message = `${message} "${dateRange[0]}" To "${dateRange[1]}"`
+
+            document.querySelector("#search_title").innerHTML = message
         }
      } else {
             $('#startrange').val('');
