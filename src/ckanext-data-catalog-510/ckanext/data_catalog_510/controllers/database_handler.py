@@ -1,5 +1,5 @@
 from sqlalchemy.sql.schema import Table
-from ckan.common import config, _
+from ckan.common import c, config, _
 import ckan.logic as logic
 
 import json
@@ -261,6 +261,28 @@ class SQLHandler:
             log.error(e)
             raise e
     
+
+    def validate_azure(self):
+        try:
+            self.db_type = 'azuresql'
+            db_name = self.get_databases(self.db_type)[0]['name']
+            self.db_uri = self.get_db_connection_string(db_name)
+            engine = create_engine(self.db_uri)
+            userQuery = f"SELECT * FROM sys.database_principals WHERE name = '{c.userobj.email}';"
+            user = engine.execute(userQuery).fetchall()
+            isValid = False
+            if(len(user) > 0):
+                roleQuery = f"SELECT role.name AS RoleName FROM sys.database_role_members roleMembers JOIN sys.database_principals role ON roleMembers.role_principal_id = role.principal_id JOIN sys.database_principals users ON roleMembers.member_principal_id = users.principal_id WHERE users.name = '{c.userobj.email}';"
+                roleObj = engine.execute(roleQuery).fetchall()
+                roleList = [row['RoleName'] for row in roleObj]
+                isValid = 'db_datareader' in roleList
+            return isValid
+        except Exception as e:
+            log.error(e)
+            raise e
+            
+
+
     def fetch_forecast_details(self, request_type, search_string):
         try:
             self.db_type = 'azuresql'
