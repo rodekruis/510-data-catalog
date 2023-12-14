@@ -322,10 +322,16 @@ export class DatabasesComponent implements OnInit {
         .subscribe(
           (res) => {
             this.commonService.showLoader = false;
-            this.dbSchemas = res.result;
-            this.clearSelects('schema');
-            if (this.type == 'edit') {
-              this.selectTable(this.resource_data.schema_name);
+            
+            if(this.selectedDBType === 'azuresql' && !res.result) {
+              this.clearSelects('connections');
+              Swal.fire('Unauthorized!', 'You are not authorized for this action.', 'error').then((result) => { return false; });
+            } else {
+              this.dbSchemas = res.result;
+              this.clearSelects('schema');
+              if (this.type == 'edit') {
+                this.selectTable(this.resource_data.schema_name);
+              }
             }
           },
           (error) => {

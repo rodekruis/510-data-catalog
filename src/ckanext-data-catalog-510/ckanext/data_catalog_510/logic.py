@@ -116,7 +116,12 @@ def get_schemas(context, data_dict):
         token = data_dict.get('token', '')
         username, password = base64.b64decode(token).decode('utf-8').split(':') if token else (None, None)
         db_obj = validate_db_connections_and_init(db_type)
-        db_schema = db_obj.fetch_schema(db_type, db_name, username, password)
+        isValid = True
+        db_schema = None
+        if db_type == 'azuresql':
+            isValid = db_obj.validate_azure()
+        if isValid:
+            db_schema = db_obj.fetch_schema(db_type, db_name, username, password)
         return db_schema
     except Exception as e:
         log.error(e)
