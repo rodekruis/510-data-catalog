@@ -1,5 +1,5 @@
 from sqlalchemy.sql.schema import Table
-from ckan.common import config, _
+from ckan.common import c, config, _
 import ckan.logic as logic
 
 import json
@@ -191,6 +191,7 @@ class SQLHandler:
         :rtype: list of metadata
         '''
         try:
+            preview_data_count = config.get('ckan.preview_data_count', 10)
             self.db_type = db_type
             if username and password:
                 try:
@@ -200,15 +201,24 @@ class SQLHandler:
             else:
                 self.db_uri = self.db_uri = self.get_db_connection_string(db_name)
             engine = create_engine(self.db_uri)
-            if db_type == 'mysql':
-                query = f'Select Count(*) from `{schema}`.{table_name};'
-            elif db_type == 'postgres':
+            if db_type == "mysql":
+                query = f"Select Count(*) from `{schema}`.{table_name};"
+                data_query = (
+                    f"Select * from `{schema}`.{table_name} limit {preview_data_count};"
+                )
+            elif db_type == "postgres":
                 query = f'Select Count(*) from "{schema}"."{table_name}";'
+                data_query = f'Select * from "{schema}"."{table_name}" limit {preview_data_count};'
             else:
-                query = f'Select Count(*) from {schema}.{table_name};'
-            
+                query = f"Select Count(*) from {schema}.{table_name};"
+                data_query = (
+                    f"Select * from {schema}.{table_name} limit {preview_data_count};"
+                )
+
             result = engine.execute(query)
             count = result.first()[0]
+            data_results = engine.execute(data_query)
+            rs = data_results.fetchall()
             inspector = inspect(engine)
             columns = inspector.get_columns(table_name, schema=schema)
             # log.info(columns)
@@ -248,6 +258,7 @@ class SQLHandler:
                 'no_of_records': count,
                 'no_of_attributes': len(cols_list),
                 'is_geo': is_geo,
+                'attributes_data': rs or [],
                 'geo_metadata': geo_metadata,
                 'format': DATABASE_FORMAT
             }
@@ -261,6 +272,28 @@ class SQLHandler:
             log.error(e)
             raise e
     
+
+    def validate_azure(self):
+        try:
+            self.db_type = 'azuresql'
+            db_name = self.get_databases(self.db_type)[0]['name']
+            self.db_uri = self.get_db_connection_string(db_name)
+            engine = create_engine(self.db_uri)
+            userQuery = f"SELECT * FROM sys.database_principals WHERE name = '{c.userobj.email}';"
+            user = engine.execute(userQuery).fetchall()
+            isValid = False
+            if(len(user) > 0):
+                roleQuery = f"SELECT role.name AS RoleName FROM sys.database_role_members roleMembers JOIN sys.database_principals role ON roleMembers.role_principal_id = role.principal_id JOIN sys.database_principals users ON roleMembers.member_principal_id = users.principal_id WHERE users.name = '{c.userobj.email}';"
+                roleObj = engine.execute(roleQuery).fetchall()
+                roleList = [row['RoleName'] for row in roleObj]
+                isValid = 'db_datareader' in roleList
+            return isValid
+        except Exception as e:
+            log.error(e)
+            raise e
+            
+
+
     def fetch_forecast_details(self, request_type, search_string):
         try:
             self.db_type = 'azuresql'

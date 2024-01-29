@@ -25,6 +25,7 @@ export class DatalakeComponent implements OnInit {
     package_patch: '/api/3/action/package_patch',
     package_ext_spatial_patch: '/api/3/action/package_ext_spatial_patch',
     get_geo_metadata: '/api/3/action/get_geo_metadata',
+    get_file_contents: '/api/3/action/get_file_contents',
     get_directories_and_files: '/api/3/action/get_directories_and_files',
     
   };
@@ -59,6 +60,7 @@ export class DatalakeComponent implements OnInit {
         temporal_extent: new FormControl(''),
         spatial_reference_system: new FormControl(''),
       }),
+      preview_data: new FormControl({}),
       description: new FormControl('', [Validators.required]),
       format: new FormControl(''),
       datalake_data: new FormControl(''),
@@ -127,7 +129,29 @@ export class DatalakeComponent implements OnInit {
     this.datalakeForm.patchValue({ datalake_data: value });
     this.datalakeForm.patchValue({ format: value.format })
     // console.log(value);
+    if(value.type == 'file' && value.no_of_files == 1) {
+
+      this.getFileContent(value)
+    }
     this.getListOfFiles(value)
+  }
+
+  getFileContent(value) {
+    this.http.post<any>(this.API_LIST.get_file_contents,
+      {
+        container: value.container,
+        path: value.file_path
+      },
+      {
+        headers: this.headers
+      }).subscribe((res) => {
+        if (res.result) {
+         this.datalakeForm.patchValue({preview_data: res.result})
+        }
+      }, (error) => {
+        this.alertService.error(error?.error?.error?.message);
+      })
+    this.selectedBaseFilePath = null
   }
 
   getListOfFiles(value) {

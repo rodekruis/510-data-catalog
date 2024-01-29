@@ -88,6 +88,10 @@ services:
 
   datapusher:
     container_name: datapusher
+    networks:
+      main:
+        aliases:
+          - datapusher
     build:
       context: datapusher/
       args:
