@@ -270,6 +270,30 @@ def get_no_of_files(context, data_dict):
         log.error(e)
         raise e
 
+def get_file_contents(context, data_dict):
+    '''Return a top x line of file set in env or otherwise 10
+    :param container: Name of container for which files need to retrived
+    (required).
+    :type container: string
+    :param path: will be given to fetch the files/directory in the path Instead
+    of container
+    :type path: string
+    :rtype: number
+    '''
+    # Validate whether user has permission to create datasets or not
+    logic.check_access(u'package_create', context)
+    try:
+        datalake_connection = DataLakeHandler()
+        datalake_connection.initialize_storage_account()
+        container = data_dict.get('container', '')
+        path = data_dict.get('path', '')
+        if path.endswith('.csv'):
+            return datalake_connection.get_csv_data(container, path)
+        else:
+            return []
+    except Exception as e:
+        log.error(e)
+        raise e
 
 def get_geo_metadata(context, data_dict):
     logic.check_access(u'package_create', context)

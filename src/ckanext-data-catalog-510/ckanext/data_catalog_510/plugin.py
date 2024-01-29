@@ -27,6 +27,7 @@ from ckanext.data_catalog_510.logic import (
     get_datalake_file_search,
     get_no_of_files,
     get_geo_metadata,
+    get_file_contents,
     package_ext_spatial_patch,
     # extended_package_search,
     country_autocomplete,
@@ -78,6 +79,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             "get_datalake_file_search": get_datalake_file_search,
             "get_no_of_files": get_no_of_files,
             "get_geo_metadata": get_geo_metadata,
+            "get_file_contents": get_file_contents,
             "country_autocomplete": country_autocomplete,
             "forecast_project_autocomplete": forecast_project_autocomplete,
             "forecast_product_autocomplete": forecast_product_autocomplete,
@@ -179,8 +181,17 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         except Exception as e:
             log.error(e)
         try:
-            resource = toolkit.get_action("datastore_create")(context, request)
-            login_view = toolkit.get_action("resource_view_create")(context,{"resource_id": data.get('id'), "view_type":'recline_view', 'title':data.get('name')})
+            datastore_create = toolkit.get_action("datastore_create")(context, request)
+            resource_view_list = toolkit.get_action("resource_view_list")(context, {"id":data.get('id')})
+            if len(resource_view_list) == 0:
+                resource_view_create = toolkit.get_action("resource_view_create")(
+                    context,
+                    {
+                        "resource_id": data.get("id"),
+                        "view_type": "recline_view",
+                        "title": "Preview",
+                    },
+                )
         except Exception as e:
             log.error(e)
         pass
