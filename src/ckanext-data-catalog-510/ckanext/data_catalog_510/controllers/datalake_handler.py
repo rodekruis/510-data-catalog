@@ -6,6 +6,8 @@ import fiona
 import pyodbc
 import struct
 from rasterio.io import MemoryFile
+import io
+import csv
 
 from ckan.common import config, _, c, g
 import ckan.logic as logic
@@ -155,6 +157,26 @@ class DataLakeHandler:
         except Exception as e:
             log.error(e)
             raise e
+
+    def get_csv_data(self, container, user_path=None):
+        preview_data_count = config.get('ckan.preview_data_count', 10)
+        try:
+            file_client = self.service_client.get_file_client(file_system=container, file_path=user_path)
+            if file_client.exists():
+                file_properties = file_client.get_file_properties()
+                csvFile = file_client.download_file()
+                csv_content = csvFile.readall()
+                csv_data = []
+                csv_content_str = csv_content.decode('utf-8')
+                top_20_lines = csv_content_str.split('\n')[:preview_data_count]
+                csv_reader = csv.reader(top_20_lines, delimiter=',')
+                headers = next(csv_reader)
+                for row in csv_reader:
+                    row_dict = dict(zip(headers, row))
+                    csv_data.append(row_dict)
+                return csv_data
+        except Exception as e:
+            log.error(e)
     
     def get_geo_metadata(self, container, user_path=None):
         response = {}

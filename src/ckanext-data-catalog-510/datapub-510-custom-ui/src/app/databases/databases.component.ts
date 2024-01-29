@@ -75,6 +75,7 @@ export class DatabasesComponent implements OnInit {
         temporal_extent: new FormControl(''),
         spatial_reference_system: new FormControl(''),
       }),
+      preview_data: new FormControl({}),
       name: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required]),
       format: new FormControl(''),
@@ -398,7 +399,7 @@ export class DatabasesComponent implements OnInit {
         (res) => {
           this.commonService.showLoader = false;
           this.resource_data = res?.result;
-          Object.values(this.resource_data.geo_metadata).forEach(element => { if (element != "" || element != undefined) this.is_geo = true });
+          Object.values(this.resource_data.geo_metadata).forEach(element => { if (element != "" && element != undefined) this.is_geo = true });
           if (this.type == 'edit') {
             this.selectDatabase(this.resource_data.database_connection_type);
           }
@@ -453,6 +454,7 @@ export class DatabasesComponent implements OnInit {
                 no_of_records: this.metaData.no_of_records,
                 no_of_attributes: this.metaData.no_of_attributes,
               },
+              preview_data: this.metaData.attributes_data,
               format: this.metaData.format
             });
           },
