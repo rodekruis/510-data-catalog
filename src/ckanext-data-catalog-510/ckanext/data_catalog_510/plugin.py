@@ -173,6 +173,8 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             "resource_id": data.get("id"),
             "force": True,
             "records": data.get("preview_data"),
+            "fields":  [{"id": key, "type": "text"} for key in data.get('preview_data')[0]]
+
         }
         try:
             delete = toolkit.get_action("datastore_delete")(
@@ -181,8 +183,13 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         except Exception as e:
             log.error(e)
         try:
+            import pdb
+
+            pdb.set_trace()
             datastore_create = toolkit.get_action("datastore_create")(context, request)
-            resource_view_list = toolkit.get_action("resource_view_list")(context, {"id":data.get('id')})
+            resource_view_list = toolkit.get_action("resource_view_list")(
+                context, {"id": data.get("id")}
+            )
             if len(resource_view_list) == 0:
                 resource_view_create = toolkit.get_action("resource_view_create")(
                     context,
@@ -204,14 +211,12 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         except Exception as e:
             log.error(e)
         return current
-    
+
     def after_resource_create(self, context, current):
         try:
-         
-            self.current_resource_with_preview['id'] = current.get('id')
-            self.fetch_data_for_datapusher(
-                context, self.current_resource_with_preview
-            )
+
+            self.current_resource_with_preview["id"] = current.get("id")
+            self.fetch_data_for_datapusher(context, self.current_resource_with_preview)
         except Exception as e:
             log.error(e)
         return current
@@ -220,7 +225,7 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         try:
             self.fetch_data_for_datapusher(context, data_dict)
             data_dict["datastore_active"] = True
-            if 'preview_data' in data_dict:
+            if "preview_data" in data_dict:
                 del data_dict["preview_data"]
         except Exception as e:
             log.error(e)
