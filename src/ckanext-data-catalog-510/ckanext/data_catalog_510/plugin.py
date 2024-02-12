@@ -173,8 +173,9 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
             "resource_id": data.get("id"),
             "force": True,
             "records": data.get("preview_data"),
-            "fields":  [{"id": key, "type": "text"} for key in data.get('preview_data')[0]]
-
+            "fields": [
+                {"id": key, "type": "text"} for key in data.get("preview_data")[0]
+            ],
         }
         try:
             delete = toolkit.get_action("datastore_delete")(
@@ -183,9 +184,6 @@ class DataCatalog510Plugin(plugins.SingletonPlugin):
         except Exception as e:
             log.error(e)
         try:
-            import pdb
-
-            pdb.set_trace()
             datastore_create = toolkit.get_action("datastore_create")(context, request)
             resource_view_list = toolkit.get_action("resource_view_list")(
                 context, {"id": data.get("id")}
