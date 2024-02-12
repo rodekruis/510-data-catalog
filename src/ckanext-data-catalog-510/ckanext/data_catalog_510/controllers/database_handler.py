@@ -302,7 +302,7 @@ class SQLHandler:
             engine = create_engine(self.db_uri)
             query = None
             if request_type == 'project':
-                query = f"SELECT * FROM [ckan].[projects]('%{search_string}%') ORDER BY name"
+                query = f"SELECT name FROM [Forecast].[projects] WHERE UPPER(name) LIKE '%{search_string}%' ORDER BY name"
             elif request_type == 'product':
                 query = f"SELECT name FROM [dbo].[products] WHERE UPPER(name) LIKE '%{search_string.upper()}%' ORDER BY name"
                 # query = "SELECT * FROM [dbo].[products]"
